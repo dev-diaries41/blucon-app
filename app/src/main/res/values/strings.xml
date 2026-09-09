@@ -1,0 +1,26 @@
+<resources>
+    <!-- About -->
+    <string name="app_name">Blucon</string>
+    <string name="copyright">© 2026 D41 Dev</string>
+    <string name="source_code_url">https://github.com/dev-diaries41/</string>
+
+    <!-- Screen titles-->
+    <string name="title_scan">Scan</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_donate">Donate</string>
+
+    <!-- Notifications -->
+    <string name="scan_channel_name">Scan notifications</string>
+    <string name="scan_channel_description">Notifications for scan updates</string>
+
+    <!-- Donate screen -->
+    <string name="label_btc">Bitcoin</string>
+    <string name="label_eth">Ethereum</string>
+    <string name="label_ltc">Litecoin</string>
+    <string name="btc_wallet">bc1qw46nxjp5gkh460ewamjd3jfeu0xv6ytq5et6xm</string>
+    <string name="eth_wallet">0xa53aC18B25942C71019f85314AF67F6132E525ad</string>
+    <string name="ltc_wallet">ltc1q2hspfea9rw5j2ymvv22hx7dmckh8c99sqk7av3</string>
+
+
+
+</resources>
