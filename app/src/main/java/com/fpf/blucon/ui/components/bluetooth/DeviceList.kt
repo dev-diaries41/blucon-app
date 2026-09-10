@@ -16,8 +16,8 @@ import com.fpf.blucon.bluetooth.BTDevice
 @Composable
 fun DeviceList(
     devices: List<BTDevice>,
-    companyIdMap: Map<Int, String>,
-    serviceUuidMap: Map<Int, String>,
+    onGetCompanyName: (manufacturerId: Int) -> String?,
+    onGetServiceName: (serviceId: Int) -> String?,
     modifier: Modifier = Modifier,
 ) {
     if (devices.isEmpty()) {
@@ -40,8 +40,8 @@ fun DeviceList(
         ) { device ->
             DeviceRow(
                 device = device,
-                companyIdMap=companyIdMap,
-                serviceUuidMap=serviceUuidMap
+                onGetServiceName=onGetServiceName,
+                onGetCompanyName =onGetCompanyName
             )
             HorizontalDivider()
         }

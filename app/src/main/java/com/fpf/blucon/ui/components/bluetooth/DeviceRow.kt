@@ -28,24 +28,23 @@ import com.fpf.blucon.bluetooth.toBluetoothSigUuid
 @Composable
 fun DeviceRow(
     device: BTDevice,
-    companyIdMap: Map<Int, String>,
-    serviceUuidMap: Map<Int, String>
+    onGetCompanyName: (manufacturerId: Int) -> String?,
+    onGetServiceName: (serviceId: Int) -> String?,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     val knownServices = device.serviceUuids.mapNotNull { uuid ->
-        serviceUuidMap[uuid.toBluetoothSigUuid()]
+        onGetServiceName(uuid.toBluetoothSigUuid())
     }
 
     val knownServiceData = device.serviceData.mapNotNull { (uuid, data) ->
         if (data.isEmpty()) return@mapNotNull null
-        serviceUuidMap[uuid.toBluetoothSigUuid()]?.let {
-            "$it: ${data.toHexString()}"
-        }
+        onGetServiceName(uuid.toBluetoothSigUuid())
+            ?.let { "$it: ${data.toHexString()}" }
     }
 
     val manufacturer = device.manufacturerData.entries.firstOrNull()?.let { (id, _) ->
-        companyIdMap[id] ?: id.toString()
+        onGetCompanyName(id) ?: id.toString()
     }
 
     val hasMoreDetails =
