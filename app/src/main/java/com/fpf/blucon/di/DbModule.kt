@@ -1,5 +1,6 @@
 package com.fpf.blucon.di
 
+import com.fpf.blucon.data.MetadataRepository
 import com.fpf.blucon.data.ScanDatabase
 import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.data.scans.ScanRepository
@@ -15,4 +16,5 @@ val dbModule = module {
     single { get<ScanDatabase>().scanEntryDao() }
     single { ScanRepository(get()) }
     single { ScanEntryRepository(get()) }
+    single{ MetadataRepository(get()) }
 }
