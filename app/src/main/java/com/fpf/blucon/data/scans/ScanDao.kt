@@ -53,4 +53,8 @@ interface ScanDao {
 
     @Query("SELECT COUNT(*) FROM scan")
     suspend fun countScans(): Int
+
+    @Query("DELETE  FROM scan")
+    suspend fun clearScans()
+
 }
