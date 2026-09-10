@@ -5,7 +5,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
     kotlin("plugin.serialization") version "2.0.21"
+    kotlin("plugin.parcelize")
     id("com.google.devtools.ksp")
+
 }
 
 extensions.configure<ApplicationExtension> {
