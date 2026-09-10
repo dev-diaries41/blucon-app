@@ -8,3 +8,8 @@ fun formatDate(epochMillis: Long): String {
     val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     return sdf.format(Date(epochMillis))
 }
+
+fun formatDateTime(epochMillis: Long): String {
+    val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+    return sdf.format(Date(epochMillis))
+}

@@ -24,7 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.fpf.blucon.bluetooth.BTScan
 import com.fpf.blucon.ui.components.common.CircularCheckbox
-import com.fpf.blucon.utils.formatDate
+import com.fpf.blucon.utils.formatDateTime
 
 
 @Composable
@@ -80,7 +80,7 @@ fun ScanCard(
             )
 
             Text(
-                text = formatDate(item.timestamp),
+                text = formatDateTime(item.timestamp),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
