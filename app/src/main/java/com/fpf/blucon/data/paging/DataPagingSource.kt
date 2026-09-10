@@ -5,7 +5,7 @@ import androidx.paging.PagingState
 import com.fpf.blucon.query.SortBy
 
 abstract class DataPagingSource<Output: Any, Filter>(
-    private val filter: Filter,
+    private val filter: Filter? = null,
     private val sortBy: SortBy = SortBy.Date(),
 ) : PagingSource<Int, Output>() {
 
@@ -16,7 +16,7 @@ abstract class DataPagingSource<Output: Any, Filter>(
 
         // over-fetch by 1 item to detect end of data without using count()
         return try {
-            val mediaMetadataList = getItems(filter, sortBy=sortBy, pageSize=pageSize, offset=offset)
+            val mediaMetadataList = getItems( sortBy=sortBy, pageSize=pageSize, offset=offset, filter)
             val hasMore = mediaMetadataList.size > pageSize
             val pageItems = if (hasMore) mediaMetadataList.dropLast(1) else mediaMetadataList
 
@@ -38,5 +38,5 @@ abstract class DataPagingSource<Output: Any, Filter>(
         }
     }
 
-    protected abstract suspend fun getItems(filter: Filter, sortBy: SortBy, pageSize: Int, offset: Int): List<Output>
+    protected abstract suspend fun getItems(sortBy: SortBy, pageSize: Int, offset: Int, filter: Filter?): List<Output>
 }
