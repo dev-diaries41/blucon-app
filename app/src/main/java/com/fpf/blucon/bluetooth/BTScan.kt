@@ -18,3 +18,11 @@ data class NewBTScan(
     val timestamp: Long = System.currentTimeMillis(),
     val size: Int = 0
 )
+
+fun NewBTScan.toScan(id: Long): BTScan = BTScan(
+    id = id,
+    timestamp=timestamp,
+    latitude = latitude,
+    longitude = longitude,
+    size = size
+)
