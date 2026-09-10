@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import com.fpf.blucon.di.dbModule
+import com.fpf.blucon.di.storageModule
 import com.fpf.blucon.di.viewModelModule
 import com.fpf.blucon.notifications.NotificationChannels
 import org.koin.android.ext.koin.androidContext
@@ -22,6 +23,7 @@ class App : Application() {
                 modules(
                     dbModule,
                     viewModelModule,
+                    storageModule
                 )
             }
         }
@@ -35,6 +37,7 @@ class App : Application() {
             modules(
                 dbModule,
                 viewModelModule,
+                storageModule
             )
         }
 
