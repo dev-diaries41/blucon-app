@@ -3,16 +3,40 @@ package com.fpf.blucon
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import com.fpf.blucon.di.dbModule
+import com.fpf.blucon.di.viewModelModule
 import com.fpf.blucon.notifications.NotificationChannels
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 
 class App : Application() {
 
     companion object {
         private const val TAG = "App"
+
+        fun resetKoin(app: Application){
+            stopKoin()
+            startKoin {
+                androidContext(app)
+                modules(
+                    dbModule,
+                    viewModelModule,
+                )
+            }
+        }
     }
 
     override fun onCreate() {
         super.onCreate()
+
+        startKoin {
+            androidContext(this@App)
+            modules(
+                dbModule,
+                viewModelModule,
+            )
+        }
 
         createNotificationChannels()
     }
@@ -31,5 +55,4 @@ class App : Application() {
             listOf(scanChannel)
         )
     }
-
 }
