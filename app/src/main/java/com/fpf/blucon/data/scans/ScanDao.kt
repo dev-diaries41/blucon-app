@@ -51,10 +51,15 @@ interface ScanDao {
     @Delete
     suspend fun deleteScans(scans: List<ScanEntity>)
 
+    @Query("DELETE FROM scan WHERE id in (:ids)")
+    suspend fun deleteScans(ids: List<Long>)
+
     @Query("SELECT COUNT(*) FROM scan")
     suspend fun countScans(): Int
 
     @Query("DELETE  FROM scan")
     suspend fun clearScans()
+
+
 
 }
