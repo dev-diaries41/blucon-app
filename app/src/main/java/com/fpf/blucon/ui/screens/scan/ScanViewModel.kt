@@ -12,6 +12,7 @@ import com.fpf.blucon.bluetooth.BluetoothDocsYamlParser
 import com.fpf.blucon.bluetooth.BluetoothScanner
 import com.fpf.blucon.bluetooth.NewBTScan
 import com.fpf.blucon.bluetooth.toScan
+import com.fpf.blucon.data.MetadataRepository
 import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.data.scans.ScanRepository
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +26,8 @@ import kotlinx.coroutines.launch
 class ScanViewModel(
     application: Application,
     private val scanRepository: ScanRepository,
-    private val scanEntryRepository: ScanEntryRepository
+    private val scanEntryRepository: ScanEntryRepository,
+    private val metadataRepository: MetadataRepository
 ) : AndroidViewModel(application) {
 
     companion object {
@@ -37,9 +39,6 @@ class ScanViewModel(
     private val _state = MutableStateFlow(ScanState())
     val state: StateFlow<ScanState> = _state
     val devices = scanner.devices
-
-    private val companyIdMap: Map<Int, String> = BluetoothDocsYamlParser.parseCompanyIdentifiers(application, R.raw.bluetooth_company_id)
-    private val serviceUuidMap: Map<Int, String> = BluetoothDocsYamlParser.parseServiceUuids(application, R.raw.bluetooth_service_uuids)
 
     private val _event = MutableSharedFlow<String>()
     val event = _event.asSharedFlow()
@@ -90,10 +89,9 @@ class ScanViewModel(
     }
 
 
-    fun getCompanyName(manufacturerId: Int?): String? = manufacturerId?.let{companyIdMap[it]}
+    fun getCompanyName(manufacturerId: Int?): String? = metadataRepository.getCompanyName(manufacturerId)
 
-    fun getServiceName(serviceId: Int?): String? = serviceId?.let{serviceUuidMap[it]}
-
+    fun getServiceName(serviceId: Int?): String? = metadataRepository.getServiceName(serviceId)
     private fun setScan(value: BTScan?) = _state.update { it.copy(scan=value) }
 
     private fun setIsScanning(value: Boolean) = _state.update { it.copy(isScanning = value) }
@@ -115,13 +113,16 @@ class ScanViewModel(
 
         scanEntryRepository.addEntries(
             btDevices.map{
+                val manufacturerId = it.manufacturerData.keys.firstOrNull()
+
                 BTScanEntry(
                     scanId = scan.id,
                     timestamp = scanStart,
                     deviceAddress = it.address,
                     rssi = it.rssi,
                     deviceName = it.name,
-                    manufacturerId = it.manufacturerData.keys.firstOrNull()
+                    manufacturerId = manufacturerId,
+                    manufacturerName = metadataRepository.getCompanyName(manufacturerId)
                 )
             }
         )

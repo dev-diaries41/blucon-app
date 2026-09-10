@@ -16,6 +16,7 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.fpf.blucon.bluetooth.BTScan
 import com.fpf.blucon.bluetooth.BTScanEntry
+import com.fpf.blucon.data.MetadataRepository
 import com.fpf.blucon.data.paging.ScanEntriesPagingSource
 import com.fpf.blucon.data.paging.ScanHistoryPagingSource
 import com.fpf.blucon.data.scans.ScanEntryRepository
@@ -32,6 +33,7 @@ import kotlinx.coroutines.withContext
 class DevicesViewModel(
     application: Application,
     private val scanEntryRepository: ScanEntryRepository,
+    private val metadataRepository: MetadataRepository,
     private val sharedPrefs: SharedPreferences
 ) : AndroidViewModel(application) {
     companion object {
@@ -57,6 +59,7 @@ class DevicesViewModel(
                         ScanEntriesPagingSource(
                             sortBy=sortBy,
                             scanEntryRepository = scanEntryRepository,
+                            metadataRepository = metadataRepository
                         )
                     }
                 ).flow

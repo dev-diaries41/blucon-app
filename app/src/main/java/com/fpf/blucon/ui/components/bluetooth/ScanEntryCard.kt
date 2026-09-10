@@ -38,7 +38,7 @@ fun ScanEntryCard(
     onItemLongClick: ((BTScanEntry) -> Unit)? = null,
 ) {
     val shape = RoundedCornerShape(12.dp)
-
+    val manufacturer: String? = item.manufacturerName?: item.manufacturerId?.let{it.toString()}
     Box(
         modifier = modifier
             .heightIn(max = 216.dp)
@@ -82,7 +82,7 @@ fun ScanEntryCard(
 
             item.manufacturerId?.let {
                 Text(
-                    text = "Manufacturer: $it",
+                    text = "Manufacturer: $manufacturer",
                     style = MaterialTheme.typography.bodyMedium
                 )
             }

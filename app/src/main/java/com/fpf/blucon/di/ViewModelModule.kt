@@ -11,7 +11,8 @@ val viewModelModule = module {
         ScanViewModel(
             application = get(),
             scanRepository = get(),
-            scanEntryRepository = get()
+            scanEntryRepository = get(),
+            metadataRepository = get()
         )
     }
 
@@ -20,7 +21,7 @@ val viewModelModule = module {
         ScanHistoryViewModel(
             application = get(),
             scanRepository = get(),
-            sharedPrefs = get()
+            sharedPrefs = get(),
         )
     }
 
@@ -28,6 +29,7 @@ val viewModelModule = module {
         DevicesViewModel(
             application = get(),
             scanEntryRepository = get(),
+            metadataRepository = get(),
             sharedPrefs = get()
         )
     }

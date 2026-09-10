@@ -44,7 +44,8 @@ fun ScanEntryEntity.toDomain(): BTScanEntry = BTScanEntry(
     timestamp = timestamp,
     deviceAddress=deviceAddress,
     deviceName = deviceName,
-    manufacturerId = manufacturerId
+    manufacturerId = manufacturerId,
+    manufacturerName = null
 )
 
 

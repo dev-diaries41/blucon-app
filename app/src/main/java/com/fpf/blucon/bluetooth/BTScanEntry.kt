@@ -6,5 +6,6 @@ data class BTScanEntry(
     val timestamp: Long,
     val rssi: Int,
     val manufacturerId: Int?,
+    val manufacturerName: String?,
     val deviceName: String?
 )
