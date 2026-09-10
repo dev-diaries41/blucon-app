@@ -23,7 +23,7 @@ fun BTScan.toEntity(): ScanEntity = ScanEntity(
     longitude = longitude,
 )
 
-fun NewBTScan.toEntity(id: Long): ScanEntity = ScanEntity(
+fun NewBTScan.toEntity(): ScanEntity = ScanEntity(
     timestamp=timestamp,
     latitude = latitude,
     longitude = longitude,
