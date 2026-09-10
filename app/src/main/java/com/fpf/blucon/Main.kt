@@ -5,11 +5,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.*
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.res.stringResource
 import com.fpf.blucon.bluetooth.BTScan
 import com.fpf.blucon.navigation.NavDataKeys
 import com.fpf.blucon.navigation.Routes
@@ -18,7 +13,6 @@ import com.fpf.blucon.ui.screens.devices.DevicesScreen
 import com.fpf.blucon.ui.screens.donate.DonateScreen
 import com.fpf.blucon.ui.screens.history.ScanHistoryScreen
 import com.fpf.blucon.ui.screens.scan.ScanScreen
-import com.fpf.blucon.ui.screens.scan.ScanViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,16 +20,6 @@ import com.fpf.blucon.ui.screens.scan.ScanViewModel
 fun Main() {
     val navController = rememberNavController()
     val topBarState = remember { mutableStateOf(TopBarState()) }
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-
-    val headerTitle = when (currentRoute) {
-        Routes.SCAN -> stringResource(R.string.title_scan)
-        Routes.SETTINGS -> stringResource(R.string.title_settings)
-        Routes.DONATE -> stringResource(R.string.title_donate)
-        else -> ""
-    }
-
 
     Scaffold(
         topBar = {
@@ -58,7 +42,10 @@ fun Main() {
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(Routes.SCAN) {
-                ScanScreen()
+                ScanScreen(
+                    onTopBarChange = { topBarState.value = it },
+                    onViewScanHistory = { navController.navigate(Routes.SCAN_HISTORY) }
+                )
             }
             composable(Routes.SCAN_HISTORY) {
                 ScanHistoryScreen(

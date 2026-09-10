@@ -9,7 +9,9 @@ import org.koin.core.module.dsl.viewModel
 val viewModelModule = module {
     viewModel {
         ScanViewModel(
-            application = get()
+            application = get(),
+            scanRepository = get(),
+            scanEntryRepository = get()
         )
     }
 

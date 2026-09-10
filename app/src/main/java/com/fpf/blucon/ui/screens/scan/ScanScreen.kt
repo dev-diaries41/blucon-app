@@ -1,5 +1,6 @@
 package com.fpf.blucon.ui.screens.scan
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,29 +9,57 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.fpf.blucon.R
+import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.components.bluetooth.DeviceList
 import com.fpf.blucon.ui.permissions.RequestPermissions
+import org.koin.compose.viewmodel.koinViewModel
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material3.Icon
+
 
 @Composable
 fun ScanScreen(
-    viewModel: ScanViewModel = viewModel()
+    onTopBarChange: (TopBarState) -> Unit,
+    onViewScanHistory: () -> Unit,
+    viewModel: ScanViewModel = koinViewModel()
 ) {
+    val context = LocalContext.current
     val state by viewModel.state.collectAsState()
     val devices by viewModel.devices.collectAsState()
-    val companyIdMap = viewModel.companyIdMap
-    val serviceUuidMap = viewModel.serviceUuidMap
     var bluetoothGranted by remember { mutableStateOf(false) }
+    val screenTitle = stringResource(R.string.title_scan)
+
+    LaunchedEffect(Unit) {
+        onTopBarChange(
+            TopBarState(
+                title = screenTitle,
+                actions = {
+                    IconButton (onClick = { onViewScanHistory()}) {
+                        Icon(
+                            imageVector = Icons.Filled.History,
+                            contentDescription = "scan history"
+                        )
+                    }
+                }
+            )
+        )
+    }
 
     RequestPermissions { _, bluetoothOk ->
         bluetoothGranted = bluetoothOk
@@ -60,8 +89,8 @@ fun ScanScreen(
 
             DeviceList(
                 devices = devices.values.toList(),
-                companyIdMap=companyIdMap,
-                serviceUuidMap=serviceUuidMap,
+                onGetCompanyName = viewModel::getCompanyName,
+                onGetServiceName = viewModel::getServiceName,
                 modifier = Modifier.weight(1f),
             )
 
@@ -80,6 +109,8 @@ fun ScanScreen(
                     onClick = {
                         if (state.isScanning) {
                             viewModel.stopScan()
+                            Toast.makeText(context, "total: ${devices.size}", Toast.LENGTH_SHORT).show()
+
                         } else {
                             viewModel.startScan()
                         }
