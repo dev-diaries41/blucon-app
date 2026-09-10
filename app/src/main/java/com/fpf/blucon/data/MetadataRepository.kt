@@ -17,4 +17,12 @@ class MetadataRepository(context: Context) {
     fun getCompanyName(manufacturerId: Int?): String? = manufacturerId?.let{companyIdMap[it]}
 
     fun getServiceName(serviceId: Int?): String? = serviceId?.let{serviceUuidMap[it]}
+
+    fun findCompanyIds(query: String): List<Int> {
+        if (query.isBlank()) return emptyList()
+        return companyIdMap
+            .filterValues { it.contains(query, ignoreCase = true) }
+            .keys
+            .toList()
+    }
 }

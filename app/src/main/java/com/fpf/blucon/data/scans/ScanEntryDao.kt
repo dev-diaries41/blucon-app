@@ -39,6 +39,46 @@ interface ScanEntryDao {
     suspend fun getEntriesAsc(scanId: Long?, limit: Int, offset: Int): List<ScanEntryEntity>
 
 
+    @Query("""
+    SELECT *
+    FROM scan_entry
+    WHERE (scanId = :scanId OR :scanId IS NULL)
+      AND (
+          :query IS NULL
+          OR deviceName LIKE '%' || :query || '%'
+          OR manufacturerId IN (:manufacturerIds)
+      )
+    ORDER BY timestamp DESC, deviceAddress DESC
+    LIMIT :limit OFFSET :offset
+""")
+    suspend fun queryEntriesDsc(
+        query: String,
+        scanId: Long?,
+        manufacturerIds: List<Int>?,
+        limit: Int,
+        offset: Int
+    ): List<ScanEntryEntity>
+
+    @Query("""
+    SELECT *
+    FROM scan_entry
+    WHERE (scanId = :scanId OR :scanId IS NULL)
+      AND (
+          :query IS NULL
+          OR deviceName LIKE '%' || :query || '%'
+          OR manufacturerId IN (:manufacturerIds)
+      )
+    ORDER BY timestamp ASC, deviceAddress ASC
+    LIMIT :limit OFFSET :offset
+""")
+    suspend fun queryEntriesAsc(
+        query: String,
+        scanId: Long?,
+        manufacturerIds: List<Int>,
+        limit: Int,
+        offset: Int
+    ): List<ScanEntryEntity>
+
     @Delete
     suspend fun deleteEntries(entries: List<ScanEntryEntity>)
 
