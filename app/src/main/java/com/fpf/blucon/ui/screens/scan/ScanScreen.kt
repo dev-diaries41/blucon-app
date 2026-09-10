@@ -1,9 +1,11 @@
 package com.fpf.blucon.ui.screens.scan
 
+import android.widget.Space
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,6 +32,8 @@ import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material3.Icon
+import androidx.compose.ui.Alignment
+import com.fpf.blucon.ui.components.common.LoadingIndicator
 
 
 @Composable
@@ -72,17 +76,19 @@ fun ScanScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = "Nearby devices",
-                style = MaterialTheme.typography.headlineSmall
-            )
 
-            if (state.isScanning) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
-                    text = "Scanning...",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary
+                    text = "Nearby devices",
+                    style = MaterialTheme.typography.headlineSmall
                 )
+
+                Spacer( modifier = Modifier.weight(1f))
+                LoadingIndicator(isVisible = state.isScanning, size = 24.dp)
             }
 
             DeviceList(
