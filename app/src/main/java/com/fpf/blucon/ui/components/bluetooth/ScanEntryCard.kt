@@ -11,6 +11,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
@@ -25,7 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.fpf.blucon.ui.components.common.CircularCheckbox
-import com.fpf.blucon.utils.formatDate
+import com.fpf.blucon.utils.formatDateTime
 
 
 @Composable
@@ -63,12 +65,22 @@ fun ScanEntryCard(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = item.deviceName ?: "Unknown device",
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = item.deviceName ?: "Unknown device",
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Spacer(modifier.weight(1f))
+
+                Text(
+                    text = "Scan #${item.scanId}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
 
             Text(
                 text = item.deviceAddress,
@@ -86,12 +98,6 @@ fun ScanEntryCard(
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
-
-            Text(
-                text = "Scan #${item.scanId} · ${formatDate(item.timestamp)}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
 
         if (isSelecting) {
