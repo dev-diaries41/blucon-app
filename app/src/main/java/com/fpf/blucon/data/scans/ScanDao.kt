@@ -30,10 +30,23 @@ interface ScanDao {
          WHERE (:startDate IS NULL OR s.timestamp >= :startDate)
             AND (:endDate IS NULL OR s.timestamp <= :endDate)
         GROUP by s.id
-        ORDER BY s.timestamp
+        ORDER BY s.timestamp DESC
         LIMIT :limit OFFSET :offset
         """)
-    suspend fun getScans(limit: Int, offset: Int, startDate: Long?, endDate: Long?): List<ScanWithCount>
+    suspend fun getScansDesc(limit: Int, offset: Int, startDate: Long?, endDate: Long?): List<ScanWithCount>
+
+    @Query("""
+        SELECT s.*, COUNT(entry.deviceAddress) AS count
+        FROM scan s
+        LEFT JOIN scan_entry entry ON s.id = entry.scanId
+         WHERE (:startDate IS NULL OR s.timestamp >= :startDate)
+            AND (:endDate IS NULL OR s.timestamp <= :endDate)
+        GROUP by s.id
+        ORDER BY s.timestamp ASC
+        LIMIT :limit OFFSET :offset
+        """)
+    suspend fun getScansAsc(limit: Int, offset: Int, startDate: Long?, endDate: Long?): List<ScanWithCount>
+
 
     @Delete
     suspend fun deleteScans(scans: List<ScanEntity>)

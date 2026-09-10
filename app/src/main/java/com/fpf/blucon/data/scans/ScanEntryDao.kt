@@ -27,7 +27,17 @@ interface ScanEntryDao {
         ORDER BY timestamp DESC, deviceAddress DESC
         LIMIT :limit OFFSET :offset
         """)
-    suspend fun getEntries(scanId: Long?, limit: Int, offset: Int): List<ScanEntryEntity>
+    suspend fun getEntriesDesc(scanId: Long?, limit: Int, offset: Int): List<ScanEntryEntity>
+
+
+    @Query("""
+        SELECT * from scan_entry 
+        WHERE (scanId =:scanId OR :scanId IS NULL)
+        ORDER BY timestamp ASC, deviceAddress ASC
+        LIMIT :limit OFFSET :offset
+        """)
+    suspend fun getEntriesAsc(scanId: Long?, limit: Int, offset: Int): List<ScanEntryEntity>
+
 
     @Delete
     suspend fun deleteEntries(entries: List<ScanEntryEntity>)
