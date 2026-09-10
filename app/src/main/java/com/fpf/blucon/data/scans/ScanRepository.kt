@@ -16,7 +16,7 @@ class ScanRepository(private val dao: ScanDao) {
     suspend fun getScans(scanIds: List<Long>? = null, startDate: Long? = null, endDate: Long? = null): List<BTScan> = dao.getScans(scanIds, startDate, endDate).map{it.toDomain()}
     suspend fun deleteScans(scans: List<BTScan>) = dao.deleteScans(scans.map{it.toEntity()})
 
-    suspend fun deleteScans(ids: List<Long>) = dao.deleteScans(ids)
+    suspend fun deleteScansById(ids: List<Long>) = dao.deleteScansById(ids)
     suspend fun countScans(): Int = dao.countScans()
     suspend fun clearScans() = dao.clearScans()
 }
