@@ -6,12 +6,25 @@
 
     <!-- Screen titles-->
     <string name="title_scan">Scan</string>
+    <string name="title_scan_history">Scan history</string>
+    <string name="title_scan_devices">Devices</string>
     <string name="title_settings">Settings</string>
     <string name="title_donate">Donate</string>
+
+    <!--Action, Buttons-->
+    <string name="delete">Delete</string>
+    <string name="export">Export</string>
+    <string name="sort">Sort</string>
 
     <!-- Notifications -->
     <string name="scan_channel_name">Scan notifications</string>
     <string name="scan_channel_description">Notifications for scan updates</string>
+
+    <!--Sort Options-->
+    <string name="sort_date_asc_option">Date (ascending)</string>
+    <string name="sort_date_desc_option">Date (descending)</string>
+    <string name="sort_similarity_asc_option">Size (ascending)</string>
+    <string name="sort_similarity_desc_option">Size (descending)</string>
 
     <!-- Donate screen -->
     <string name="label_btc">Bitcoin</string>

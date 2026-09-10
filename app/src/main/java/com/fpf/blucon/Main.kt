@@ -10,8 +10,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
+import com.fpf.blucon.bluetooth.BTScan
+import com.fpf.blucon.navigation.NavDataKeys
 import com.fpf.blucon.navigation.Routes
+import com.fpf.blucon.navigation.TopBarState
+import com.fpf.blucon.ui.screens.devices.DevicesScreen
 import com.fpf.blucon.ui.screens.donate.DonateScreen
+import com.fpf.blucon.ui.screens.history.ScanHistoryScreen
 import com.fpf.blucon.ui.screens.scan.ScanScreen
 import com.fpf.blucon.ui.screens.scan.ScanViewModel
 
@@ -20,9 +25,9 @@ import com.fpf.blucon.ui.screens.scan.ScanViewModel
 @Composable
 fun Main() {
     val navController = rememberNavController()
+    val topBarState = remember { mutableStateOf(TopBarState()) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val scanViewModel: ScanViewModel = viewModel()
 
     val headerTitle = when (currentRoute) {
         Routes.SCAN -> stringResource(R.string.title_scan)
@@ -35,17 +40,15 @@ fun Main() {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = headerTitle) },
-                navigationIcon = {
-                    if (currentRoute?.startsWith("settingsDetail") == true || currentRoute?.startsWith("test") == true || currentRoute == "donate" || currentRoute == "scanhistory" || currentRoute == "help") {
-                        IconButton(onClick = { navController.popBackStack() }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = "Back"
-                            )
-                        }
-                    }
+                title = {
+                    Text(topBarState.value.title)
                 },
+                navigationIcon = {
+                    topBarState.value.navigationIcon?.invoke()
+                },
+                actions = {
+                    topBarState.value.actions?.invoke(this)
+                }
             )
         },
     ) { paddingValues ->
@@ -55,8 +58,33 @@ fun Main() {
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(Routes.SCAN) {
-                ScanScreen(
-                    viewModel=scanViewModel,
+                ScanScreen()
+            }
+            composable(Routes.SCAN_HISTORY) {
+                ScanHistoryScreen(
+                    onBack = {navController.popBackStack()},
+                    onViewScan = { scan ->
+                        navController.currentBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(NavDataKeys.SCAN, scan)
+
+                        navController.navigate(Routes.SCAN_DEVICES)
+                    },
+                    onTopBarChange = { topBarState.value = it },
+                )
+            }
+            composable(
+                route = Routes.SCAN_DEVICES,
+            ) { _ ->
+                val scan =
+                    navController.previousBackStackEntry?.savedStateHandle?.get<BTScan>(
+                        NavDataKeys.SCAN
+                    )
+
+                DevicesScreen(
+                    onTopBarChange = { topBarState.value = it },
+                    scan = scan,
+                    onBack = { navController.popBackStack() },
                 )
             }
             composable(Routes.DONATE){
