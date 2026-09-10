@@ -15,7 +15,9 @@ val viewModelModule = module {
 
     viewModel {
         ScanHistoryViewModel(
-            application = get()
+            application = get(),
+            scanRepository = get(),
+            sharedPrefs = get()
         )
     }
 }
