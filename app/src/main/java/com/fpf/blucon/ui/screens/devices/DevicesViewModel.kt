@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -27,6 +28,7 @@ import com.fpf.blucon.ui.utils.SelectionUtils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
@@ -45,9 +47,11 @@ class DevicesViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val devices = _state
-        .map { it.sortBy }
+        .map { Pair(it.scan, it.sortBy,) }
         .distinctUntilChanged()
-        .flatMapLatest { sortBy ->
+        .flatMapLatest { (scan, sortBy) ->
+            if(scan?.id == null) return@flatMapLatest flowOf()
+
                 Pager(
                     config = PagingConfig(
                         pageSize = 50,
@@ -57,6 +61,7 @@ class DevicesViewModel(
                     ),
                     pagingSourceFactory = {
                         ScanEntriesPagingSource(
+                            scanId=scan.id,
                             sortBy=sortBy,
                             scanEntryRepository = scanEntryRepository,
                             metadataRepository = metadataRepository
@@ -86,7 +91,7 @@ class DevicesViewModel(
         }
     }
 
-    fun setScan(scan: BTScan) = _state.update { it.copy(scan=scan) }
+    fun setScan(scan: BTScan) = _state.update { it.copy(scan = scan) }
 
     private fun load() {
         _state.update { it.copy(sortBy = getSortByPref()) }

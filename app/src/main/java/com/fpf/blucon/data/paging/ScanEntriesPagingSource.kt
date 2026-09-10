@@ -6,6 +6,7 @@ import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.query.SortBy
 
 class ScanEntriesPagingSource(
+    private val scanId: Long,
     private val scanEntryRepository: ScanEntryRepository,
     private val metadataRepository: MetadataRepository,
     sortBy: SortBy = SortBy.Date(),
@@ -15,6 +16,7 @@ class ScanEntriesPagingSource(
 ) {
     override suspend fun getItems(sortBy: SortBy, pageSize: Int, offset: Int, filter: Nothing?): List<BTScanEntry> {
         val entries = scanEntryRepository.getEntries(
+            scanId=scanId,
             limit = pageSize + 1,
             offset = offset,
             descending = sortBy.descending
