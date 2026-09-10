@@ -13,6 +13,7 @@ fun ScanWithCount.toDomain(): BTScan = BTScan(
     timestamp=scan.timestamp,
     latitude = scan.latitude,
     longitude = scan.longitude,
+    size=count
 )
 
 fun BTScan.toEntity(): ScanEntity = ScanEntity(
