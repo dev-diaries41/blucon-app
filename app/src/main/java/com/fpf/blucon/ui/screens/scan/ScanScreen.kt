@@ -1,6 +1,5 @@
 package com.fpf.blucon.ui.screens.scan
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,7 +40,6 @@ fun ScanScreen(
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
-    val devices by viewModel.devices.collectAsState()
     var bluetoothGranted by remember { mutableStateOf(false) }
     val screenTitle = stringResource(R.string.title_scan)
 
@@ -88,9 +86,7 @@ fun ScanScreen(
             }
 
             DeviceList(
-                devices = devices.values.toList(),
-                onGetCompanyName = viewModel::getCompanyName,
-                onGetServiceName = viewModel::getServiceName,
+                devices = state.devices.values.toList(),
                 modifier = Modifier.weight(1f),
             )
 
@@ -109,8 +105,6 @@ fun ScanScreen(
                     onClick = {
                         if (state.isScanning) {
                             viewModel.stopScan()
-                            Toast.makeText(context, "total: ${devices.size}", Toast.LENGTH_SHORT).show()
-
                         } else {
                             viewModel.startScan()
                         }
@@ -123,7 +117,7 @@ fun ScanScreen(
 
                 Button(
                     onClick = viewModel::clearDevices,
-                    enabled = !state.isScanning && devices.isNotEmpty(),
+                    enabled = !state.isScanning && state.devices.isNotEmpty(),
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("Clear")

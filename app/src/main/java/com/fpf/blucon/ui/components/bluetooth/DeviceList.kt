@@ -11,13 +11,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.fpf.blucon.bluetooth.BTDevice
+import com.fpf.blucon.bluetooth.BTScanEntry
 
 @Composable
 fun DeviceList(
-    devices: List<BTDevice>,
-    onGetCompanyName: (manufacturerId: Int) -> String?,
-    onGetServiceName: (serviceId: Int) -> String?,
+    devices: List<BTScanEntry>,
     modifier: Modifier = Modifier,
 ) {
     if (devices.isEmpty()) {
@@ -36,14 +34,11 @@ fun DeviceList(
     ) {
         items(
             items = devices,
-            key = { it.address }
+            key = { it.deviceAddress }
         ) { device ->
-            DeviceRow(
-                device = device,
-                onGetServiceName=onGetServiceName,
-                onGetCompanyName =onGetCompanyName
+            ScanEntryCard(
+                item = device,
             )
-            HorizontalDivider()
         }
     }
 }

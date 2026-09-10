@@ -4,11 +4,9 @@ import android.annotation.SuppressLint
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.*
-import com.fpf.blucon.R
 import com.fpf.blucon.bluetooth.BTDevice
 import com.fpf.blucon.bluetooth.BTScan
 import com.fpf.blucon.bluetooth.BTScanEntry
-import com.fpf.blucon.bluetooth.BluetoothDocsYamlParser
 import com.fpf.blucon.bluetooth.BluetoothScanner
 import com.fpf.blucon.bluetooth.NewBTScan
 import com.fpf.blucon.bluetooth.toScan
@@ -34,23 +32,20 @@ class ScanViewModel(
         private const val TAG = "ScanViewModel"
     }
 
-
     private val scanner = BluetoothScanner(application)
     private val _state = MutableStateFlow(ScanState())
     val state: StateFlow<ScanState> = _state
-    val devices = scanner.devices
 
     private val _event = MutableSharedFlow<String>()
     val event = _event.asSharedFlow()
 
-    private val seenDevices: MutableSet<String> = mutableSetOf()
-
     init {
         viewModelScope.launch {
-            devices.collect{ devices ->
-                val unseenDevices = devices.filter { it.key !in seenDevices }
-                addEntriesFromDevices(unseenDevices.values.toList())
-                seenDevices.addAll(unseenDevices.keys)
+            scanner.devices.collect { devices ->
+                val unseenDevices = devices.filter { it.key !in _state.value.devices.keys }
+                val entries = toScanEntries(unseenDevices.values.toList())
+                _state.update { it.copy(devices=(it.devices.values + entries).associateBy { dev-> dev.deviceAddress }) }
+                scanEntryRepository.addEntries(entries)
             }
         }
     }
@@ -88,44 +83,39 @@ class ScanViewModel(
         }
     }
 
-
-    fun getCompanyName(manufacturerId: Int?): String? = metadataRepository.getCompanyName(manufacturerId)
-
-    fun getServiceName(serviceId: Int?): String? = metadataRepository.getServiceName(serviceId)
     private fun setScan(value: BTScan?) = _state.update { it.copy(scan=value) }
 
     private fun setIsScanning(value: Boolean) = _state.update { it.copy(isScanning = value) }
 
-    private fun setStartTime(value: Long?) = _state.update { it.copy(scanStart = value) }
+    private fun setStartTime(value: Long?) = _state.update { it.copy(startTime = value) }
 
 
     private fun reset() {
-        _state.update { it.copy(isScanning = false, scan = null, scanStart = null) }
-        seenDevices.clear()
+        _state.update { it.copy(isScanning = false, scan = null, startTime = null, devices = mapOf()) }
         clearDevices()
     }
-    fun clearDevices() = scanner.clearDevices()
+    fun clearDevices() {
+        scanner.clearDevices()
+        _state.update { it.copy(devices = mapOf()) }
+    }
 
-    private suspend fun addEntriesFromDevices(btDevices: List<BTDevice>){
+    private fun toScanEntries(btDevices: List<BTDevice>): List<BTScanEntry>{
         val currentState =  _state.value
-        val scan = currentState.scan?: return
-        val scanStart =currentState.scanStart?: return
+        val scan = currentState.scan?: return emptyList()
+        val scanStart =currentState.startTime?: return emptyList()
 
-        scanEntryRepository.addEntries(
-            btDevices.map{
-                val manufacturerId = it.manufacturerData.keys.firstOrNull()
-
-                BTScanEntry(
-                    scanId = scan.id,
-                    timestamp = scanStart,
-                    deviceAddress = it.address,
-                    rssi = it.rssi,
-                    deviceName = it.name,
-                    manufacturerId = manufacturerId,
-                    manufacturerName = metadataRepository.getCompanyName(manufacturerId)
-                )
-            }
-        )
+        return btDevices.map{
+            val manufacturerId = it.manufacturerData.keys.firstOrNull()
+            BTScanEntry(
+                scanId = scan.id,
+                timestamp = scanStart,
+                deviceAddress = it.address,
+                rssi = it.rssi,
+                deviceName = it.name,
+                manufacturerId = manufacturerId,
+                manufacturerName = metadataRepository.getCompanyName(manufacturerId)
+            )
+        }
     }
 
 }
