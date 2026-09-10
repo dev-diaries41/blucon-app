@@ -9,7 +9,7 @@ import androidx.room.PrimaryKey
 data class ScanEntity (
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0L,
-    val latitude: Float,
-    val longitude: Float,
+    val latitude: Double,
+    val longitude: Double,
     val timestamp: Long = System.currentTimeMillis(),
     )
