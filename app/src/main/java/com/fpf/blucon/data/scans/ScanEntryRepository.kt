@@ -28,5 +28,9 @@ class ScanEntryRepository(
     fun getServiceName(serviceId: Int?): String? = metadataRepository.getServiceName(serviceId)
 
     suspend fun countEntries(query: String, manufacturerIds: List<Int> = emptyList()): Int = dao.countEntries(query, manufacturerIds)
+
+    suspend fun getManufacturerCounts(scanId: Long?, limit: Int? = null): Map<String, Int> = dao.getManufacturerCounts(scanId, limit).mapNotNull { entry ->
+        getCompanyName(entry.manufacturerId)?.let{it to entry.count}?: return@mapNotNull null
+    }.toMap()
 }
 
