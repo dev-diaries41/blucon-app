@@ -18,16 +18,6 @@ fun DeviceList(
     devices: List<BTScanEntry>,
     modifier: Modifier = Modifier,
 ) {
-    if (devices.isEmpty()) {
-        Text(
-            text = "No devices found",
-            modifier = modifier.padding(16.dp),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        return
-    }
-
     LazyColumn(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(0.dp)
