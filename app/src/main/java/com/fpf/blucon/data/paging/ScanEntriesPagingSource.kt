@@ -23,7 +23,6 @@ class ScanEntriesPagingSource(
             if(query.isNullOrBlank()) return emptyList()
             scanEntryRepository.queryEntries(
                 query=query,
-                scanId=scanId,
                 limit = pageSize + 1,
                 offset = offset,
                 descending = sortBy.descending,

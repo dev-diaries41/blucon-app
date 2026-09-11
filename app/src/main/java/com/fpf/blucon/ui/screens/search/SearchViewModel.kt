@@ -14,8 +14,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.fpf.blucon.bluetooth.BTScan
-import com.fpf.blucon.bluetooth.BTScanEntry
 import com.fpf.blucon.data.MetadataRepository
 import com.fpf.blucon.data.paging.ScanEntriesPagingSource
 import com.fpf.blucon.data.scans.ScanEntryRepository
@@ -70,9 +68,6 @@ class SearchViewModel(
         }
         .cachedIn(viewModelScope)
 
-//    private val _event = MutableSharedFlow<CollectionItemEvent>()
-//    val event = _event.asSharedFlow()
-
     val sortByOptions: List<Pair<String, SortBy>>
         get() = listOf(
             getApplication<Application>().getString(R.string.sort_date_asc_option) to SortBy.Date(descending = false),
@@ -90,18 +85,11 @@ class SearchViewModel(
         }
     }
 
-//    fun setScan(scan: BTScan) = _state.update { it.copy(scan = scan) }
-
     private fun search(query: String){
         _state.update { it.copy(query=query) }
     }
     private fun load() {
         _state.update { it.copy(sortBy = getSortByPref()) }
-        setTotalItems()
-    }
-
-    private suspend fun getAllScans(): MutableSet<BTScanEntry> {
-        return scanEntryRepository.getEntries().toMutableSet()
     }
 
     private fun setSortBy(sortBy: SortBy) {
@@ -123,8 +111,8 @@ class SearchViewModel(
 
     private fun setTotalItems(){
         viewModelScope.launch {
-            val scan = _state.value.scan?: return@launch
-            _state.update { it.copy(totalResults = scan.size) }
+            val totalResult = 0  // TODO: add method to get count
+            _state.update { it.copy(totalResults = totalResult) }
         }
     }
 }

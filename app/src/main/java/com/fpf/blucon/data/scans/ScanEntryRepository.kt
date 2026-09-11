@@ -13,10 +13,10 @@ class ScanEntryRepository(private val dao: ScanEntryDao) {
             dao.getEntriesAsc(scanId, limit=limit, offset=offset)
         }.map{it.toDomain()}
 
-    suspend fun queryEntries(limit: Int, offset: Int, scanId: Long? = null, query: String, manufacturerIds: List<Int> = emptyList(), descending: Boolean = true) = if(descending){
-        dao.queryEntriesDsc(query, scanId, limit=limit, offset=offset, manufacturerIds=manufacturerIds)
+    suspend fun queryEntries(limit: Int, offset: Int, query: String, manufacturerIds: List<Int> = emptyList(), descending: Boolean = true) = if(descending){
+        dao.queryEntriesDsc(query, limit=limit, offset=offset, manufacturerIds=manufacturerIds)
     }else{
-        dao.queryEntriesAsc(query, scanId, limit=limit, offset=offset, manufacturerIds=manufacturerIds)
+        dao.queryEntriesAsc(query, limit=limit, offset=offset, manufacturerIds=manufacturerIds)
     }.map{it.toDomain()}
 }
 

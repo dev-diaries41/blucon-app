@@ -7,7 +7,6 @@ import com.fpf.blucon.ui.shared.state.SelectionState
 
 
 data class SearchScreenState(
-    val scan: BTScan? = null,
     val totalResults: Int = 0,
     val sortBy: SortBy = SortBy.Date(),
     val loading: Boolean = false,
