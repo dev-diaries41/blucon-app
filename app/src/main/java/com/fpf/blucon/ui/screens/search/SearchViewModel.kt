@@ -22,7 +22,6 @@ import com.fpf.blucon.storage.PrefsKeys
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
 class SearchViewModel(
@@ -45,8 +44,6 @@ class SearchViewModel(
         .map { Pair(it.query, it.sortBy) }
         .distinctUntilChanged()
         .flatMapLatest { (query, sortBy) ->
-            if(query == null) return@flatMapLatest flowOf()
-
                 Pager(
                     config = PagingConfig(
                         pageSize = 50,
