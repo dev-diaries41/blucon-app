@@ -6,6 +6,7 @@ import androidx.compose.ui.Modifier
 import com.fpf.blucon.bluetooth.BTScanEntry
 import com.fpf.blucon.ui.components.cards.InfoCard
 import com.fpf.blucon.ui.components.cards.InfoRow
+import com.fpf.blucon.ui.components.cards.InfoText
 
 @Composable
 fun ScanEntryCard(
@@ -26,10 +27,10 @@ fun ScanEntryCard(
         onClick = { onItemClick?.invoke(item) },
         onLongClick = { onItemLongClick?.invoke(item) },
         content = {
-            InfoRow("Device", item.deviceName ?: "Unknown device", highlight = true)
-            InfoRow("Address", item.deviceAddress)
-            InfoRow("RSSI", "${item.rssi} dBm")
-            manufacturer?.let { InfoRow("Manufacturer", it) }
+            InfoText( item.deviceName ?: "Unknown device", highlight = true)
+            InfoText(item.deviceAddress)
+            InfoText("${item.rssi} dBm")
+            manufacturer?.let { InfoText(it) }
         }
     )
 }
