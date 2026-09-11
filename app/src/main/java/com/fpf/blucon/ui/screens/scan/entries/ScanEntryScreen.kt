@@ -31,6 +31,7 @@ import com.fpf.blucon.bluetooth.BTScan
 import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.action.MenuActionConfig
 import com.fpf.blucon.ui.components.bluetooth.ScanEntryList
+import com.fpf.blucon.ui.components.bluetooth.ScanEntryStaggeredGrid
 import com.fpf.blucon.ui.components.common.DropDownMenuWrapper
 import com.fpf.smartscan.ui.components.common.SlideRevealBox
 import com.fpf.smartscan.ui.components.pickers.OptionPicker
@@ -126,7 +127,7 @@ fun ScanEntryScreen(
                     .padding(bottom = 8.dp)
             ) {
             }
-            ScanEntryList(
+            ScanEntryStaggeredGrid(
                 isVisible = devices.itemCount > 0,
                 items = devices,
                 onOffsetChange = { offset = it },
