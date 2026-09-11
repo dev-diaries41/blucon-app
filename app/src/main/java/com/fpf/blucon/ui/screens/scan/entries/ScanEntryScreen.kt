@@ -131,6 +131,8 @@ fun ScanEntryScreen(
                 items = devices,
                 onOffsetChange = { offset = it },
                 maxCollapsePx = maxCollapsablePx,
+                manufacturerCounts = state.manufacturerCounts,
+                headerLabel = "${state.totalDevices} devices"
             )
 
             EmptyItemsScreen(

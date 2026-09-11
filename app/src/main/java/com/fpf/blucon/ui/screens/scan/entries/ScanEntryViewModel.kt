@@ -19,6 +19,7 @@ import com.fpf.blucon.data.paging.ScanEntriesPagingSource
 import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.query.SortBy
 import com.fpf.blucon.storage.PrefsKeys
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -82,7 +83,12 @@ class ScanEntryViewModel(
         }
     }
 
-    fun setScan(scan: BTScan) = _state.update { it.copy(scan = scan) }
+    fun setScan(scan: BTScan) {
+        viewModelScope.launch (Dispatchers.IO){
+            val manufacturerCounts = scanEntryRepository.getManufacturerCounts(scan.id)
+            _state.update { it.copy(scan = scan, manufacturerCounts=manufacturerCounts) }
+        }
+    }
 
     private fun load() {
         _state.update { it.copy(sortBy = getSortByPref()) }

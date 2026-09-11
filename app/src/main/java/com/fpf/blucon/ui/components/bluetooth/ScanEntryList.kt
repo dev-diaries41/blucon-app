@@ -49,7 +49,8 @@ fun ScanEntryList(
     onItemClick: ((BTScanEntry) -> Unit)? = null,
     onItemLongClick: ((BTScanEntry) -> Unit)? = null,
     maxCollapsePx: Int = 0,
-    headerLabel: String? = null
+    headerLabel: String? = null,
+    manufacturerCounts: Map<String, Int>? = null
 ) {
     if (!isVisible) return
 
@@ -120,6 +121,13 @@ fun ScanEntryList(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(0.dp)
         ) {
+            item {
+                manufacturerCounts?.let { counts ->
+                    if (counts.isNotEmpty()) {
+                        ManufacturerOverview(counts)
+                    }
+                }
+            }
             item { headerLabel?.let{ResultsHeader(it)} }
             items(
                 count = items.itemCount,
@@ -171,3 +179,4 @@ fun ScanEntryList(
         }
     }
 }
+

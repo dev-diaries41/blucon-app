@@ -11,5 +11,6 @@ data class ScanEntryScreenState(
     val totalDevices: Int = 0,
     val sortBy: SortBy = SortBy.Date(),
     val loading: Boolean = false,
-    val selection: SelectionState<BTScanEntry> = SelectionState()
+    val selection: SelectionState<BTScanEntry> = SelectionState(),
+    val manufacturerCounts: Map<String, Int> = mapOf()
     )
