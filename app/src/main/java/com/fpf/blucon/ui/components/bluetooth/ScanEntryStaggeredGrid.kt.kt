@@ -35,7 +35,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.fpf.blucon.bluetooth.BTScanEntry
-import com.fpf.blucon.ui.components.search.ResultsHeader
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -50,8 +49,8 @@ fun ScanEntryStaggeredGrid(
     onItemClick: ((BTScanEntry) -> Unit)? = null,
     onItemLongClick: ((BTScanEntry) -> Unit)? = null,
     maxCollapsePx: Int = 0,
-    headerLabel: String? = null,
-    manufacturerCounts: Map<String, Int>? = null
+    headerRow: (@Composable () -> Unit)? = null,
+    overview: (@Composable () -> Unit)? = null,
 ) {
     if (!isVisible) return
 
@@ -108,13 +107,11 @@ fun ScanEntryStaggeredGrid(
             contentPadding = PaddingValues(0.dp)
         ) {
             item(span = StaggeredGridItemSpan.FullLine) {
-                manufacturerCounts?.let { counts ->
-                    if (counts.isNotEmpty()) {
-                        ScanOverviewCard(counts){}
-                    }
-                }
+                overview?.invoke()
             }
-            item(span = StaggeredGridItemSpan.FullLine) { headerLabel?.let{ResultsHeader(it)} }
+            item(span = StaggeredGridItemSpan.FullLine) {
+                headerRow?.invoke()
+            }
 
             items(
                 count = items.itemCount,

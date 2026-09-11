@@ -32,10 +32,12 @@ import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.action.MenuActionConfig
 import com.fpf.blucon.ui.components.bluetooth.ScanEntryList
 import com.fpf.blucon.ui.components.bluetooth.ScanEntryStaggeredGrid
+import com.fpf.blucon.ui.components.bluetooth.ScanOverviewCard
 import com.fpf.blucon.ui.components.common.DropDownMenuWrapper
 import com.fpf.smartscan.ui.components.common.SlideRevealBox
 import com.fpf.smartscan.ui.components.pickers.OptionPicker
 import com.fpf.blucon.ui.components.placeholders.EmptyItemsScreen
+import com.fpf.blucon.ui.components.search.ResultsHeader
 import kotlinx.coroutines.FlowPreview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -132,8 +134,12 @@ fun ScanEntryScreen(
                 items = devices,
                 onOffsetChange = { offset = it },
                 maxCollapsePx = maxCollapsablePx,
-                manufacturerCounts = state.manufacturerCounts,
-                headerLabel = "${state.totalDevices} devices"
+                headerRow = { ResultsHeader("${state.totalDevices} devices") },
+                overview = {
+                    if (state.manufacturerCounts.isNotEmpty()) {
+                        ScanOverviewCard(state.manufacturerCounts){}
+                    }
+                }
             )
 
             EmptyItemsScreen(
