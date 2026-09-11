@@ -34,6 +34,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.fpf.blucon.bluetooth.BTScanEntry
+import com.fpf.blucon.ui.components.search.ResultsHeader
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -48,6 +49,7 @@ fun ScanDevicesList(
     onItemClick: ((BTScanEntry) -> Unit)? = null,
     onItemLongClick: ((BTScanEntry) -> Unit)? = null,
     maxCollapsePx: Int = 0,
+    headerLabel: String? = null
 ) {
     if (!isVisible) return
 
@@ -118,6 +120,7 @@ fun ScanDevicesList(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(0.dp)
         ) {
+            item { headerLabel?.let{ResultsHeader(it)} }
             items(
                 count = items.itemCount,
                 key = { index ->

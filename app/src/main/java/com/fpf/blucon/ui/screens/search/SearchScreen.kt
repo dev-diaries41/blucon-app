@@ -123,6 +123,7 @@ fun SearchScreen(
             ) {
             }
             ScanDevicesList(
+                headerLabel = "${state.totalResults} Results",
                 isVisible = searchResultsVisible,
                 items = searchResults,
                 onOffsetChange = { offset = it },
