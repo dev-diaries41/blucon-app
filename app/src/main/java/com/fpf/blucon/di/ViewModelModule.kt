@@ -30,7 +30,6 @@ val viewModelModule = module {
         DevicesViewModel(
             application = get(),
             scanEntryRepository = get(),
-            metadataRepository = get(),
             sharedPrefs = get()
         )
     }

@@ -23,6 +23,7 @@ class ScanEntryRepository(
         dao.queryEntriesAsc(query, limit=limit, offset=offset, manufacturerIds=manufacturerIds)
     }.map{it.toDomain(metadataRepository.getCompanyName(it.manufacturerId))}
 
+    fun queryCompanies(query: String): List<Int> = metadataRepository.findCompanyIds(query)
     suspend fun countEntries(query: String, manufacturerIds: List<Int> = emptyList()): Int = dao.countEntries(query, manufacturerIds)
 }
 

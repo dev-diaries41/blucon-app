@@ -35,7 +35,6 @@ import kotlinx.coroutines.withContext
 class DevicesViewModel(
     application: Application,
     private val scanEntryRepository: ScanEntryRepository,
-    private val metadataRepository: MetadataRepository,
     private val sharedPrefs: SharedPreferences
 ) : AndroidViewModel(application) {
     companion object {
@@ -64,7 +63,6 @@ class DevicesViewModel(
                             scanId=scan.id,
                             sortBy=sortBy,
                             scanEntryRepository = scanEntryRepository,
-                            metadataRepository = metadataRepository
                         )
                     }
                 ).flow
