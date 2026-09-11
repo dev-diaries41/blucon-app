@@ -18,5 +18,7 @@ class ScanEntryRepository(private val dao: ScanEntryDao) {
     }else{
         dao.queryEntriesAsc(query, limit=limit, offset=offset, manufacturerIds=manufacturerIds)
     }.map{it.toDomain()}
+
+    suspend fun countEntries(query: String, manufacturerIds: List<Int> = emptyList()): Int = dao.countEntries(query, manufacturerIds)
 }
 

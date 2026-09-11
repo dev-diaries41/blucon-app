@@ -19,6 +19,7 @@ import com.fpf.blucon.data.paging.ScanEntriesPagingSource
 import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.query.SortBy
 import com.fpf.blucon.storage.PrefsKeys
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
@@ -83,7 +84,12 @@ class SearchViewModel(
     }
 
     private fun search(query: String){
-        _state.update { it.copy(query=query) }
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.update { it.copy(query=query) }
+            val count = if(query.isBlank()) 0 else scanEntryRepository.countEntries(query, metadataRepository.findCompanyIds(query))
+            _state.update { it.copy(totalResults = count) }
+
+        }
     }
     private fun load() {
         _state.update { it.copy(sortBy = getSortByPref()) }
@@ -104,12 +110,5 @@ class SearchViewModel(
     private fun getSortByPref(): SortBy {
         val sortByStr = sharedPrefs.getString(PrefsKeys.SORT_BY_DEVICES, "") ?: ""
         return sortByOptions.find { it.second.toString() == sortByStr }?.second ?: SortBy.Date()
-    }
-
-    private fun setTotalItems(){
-        viewModelScope.launch {
-            val totalResult = 0  // TODO: add method to get count
-            _state.update { it.copy(totalResults = totalResult) }
-        }
     }
 }
