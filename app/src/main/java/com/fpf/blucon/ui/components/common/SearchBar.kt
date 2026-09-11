@@ -36,6 +36,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.SpanStyle
@@ -53,6 +55,7 @@ fun SearchBar(
     placeholders: List<String>,
     onSearch: () -> Unit,
     modifier: Modifier = Modifier,
+    autoFocus: Boolean = false,
     placeholderChangeDuration: Long = 2000L,
     trailingIcon: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
@@ -73,9 +76,16 @@ fun SearchBar(
     }
 
 
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(autoFocus) {
+        if (autoFocus) focusRequester.requestFocus()
+    }
+
     LaunchedEffect(isFocused) {
         onFocusedChange?.invoke(isFocused)
     }
+
 
     LaunchedEffect(placeholders, searchFieldState.text, isFocused) {
         if (isFocused || searchFieldState.text.isNotBlank() || currentPlaceHolder !in placeholders) {
@@ -117,7 +127,8 @@ fun SearchBar(
             },
             cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .focusRequester(focusRequester),
             decorator = { innerTextField ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,

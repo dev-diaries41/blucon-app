@@ -77,9 +77,10 @@ fun SearchScreen(
                 actions = {
                     SearchBar(
                         enabled = true,
+                        autoFocus = true,
                         searchFieldState = viewModel.searchFieldState,
-                        onSearch = {viewModel.onAction(SearchAction.Search(viewModel.searchFieldState.text.toString()))},
                         placeholders = listOf("Search devices"),
+                        onSearch = {viewModel.onAction(SearchAction.Search(viewModel.searchFieldState.text.toString()))},
                         leadingIcon = {
                             IconButton(onClick = onBack) {
                                 Icon(
