@@ -11,5 +11,6 @@ data class SearchScreenState(
     val sortBy: SortBy = SortBy.Date(),
     val loading: Boolean = false,
     val selection: SelectionState<BTScanEntry> = SelectionState(),
-    val query: String? = null
+    val query: String? = null,
+    val manufacturerCounts: Map<String, Int> = mapOf()
 )

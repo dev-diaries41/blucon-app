@@ -33,6 +33,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.fpf.blucon.R
 import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.action.MenuActionConfig
+import com.fpf.blucon.ui.components.bluetooth.DeviceOverviewCard
 import com.fpf.blucon.ui.components.bluetooth.ScanEntryList
 import com.fpf.blucon.ui.components.bluetooth.ScanEntryStaggeredGrid
 import com.fpf.blucon.ui.components.common.DropDownMenuWrapper
@@ -40,6 +41,7 @@ import com.fpf.blucon.ui.components.common.SearchBar
 import com.fpf.smartscan.ui.components.common.SlideRevealBox
 import com.fpf.smartscan.ui.components.pickers.OptionPicker
 import com.fpf.blucon.ui.components.placeholders.EmptyItemsScreen
+import com.fpf.blucon.ui.components.search.ResultsHeader
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -144,26 +146,29 @@ fun SearchScreen(
             ) {
             }
             ScanEntryStaggeredGrid(
-                headerLabel = "${state.totalResults} Results",
                 isVisible = searchResultsVisible,
                 items = searchResults,
                 onOffsetChange = { offset = it },
                 maxCollapsePx = maxCollapsablePx,
+                headerRow = { ResultsHeader("${state.totalResults} Results") },
             )
-
-            EmptyItemsScreen(
-                icon = {
-                    Icon(
-                        imageVector = Icons.Filled.Search,
-                        contentDescription = "Search icon",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(96.dp)
-                    )
-                },
-                title = if(viewModel.searchFieldState.text.isEmpty()) "Find devices" else  "No results" ,
-                isVisible = !searchResultsVisible
-            )
+            if (state.manufacturerCounts.isNotEmpty()) {
+                DeviceOverviewCard(state.manufacturerCounts){}
+            }
         }
+
+        EmptyItemsScreen(
+            icon = {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = "Search icon",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(96.dp)
+                )
+            },
+            title = if(viewModel.searchFieldState.text.isEmpty()) "Find devices" else  "No results" ,
+            isVisible = !searchResultsVisible
+        )
     }
     OptionPicker(
         isVisible = showSortOptions,
