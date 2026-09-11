@@ -110,7 +110,7 @@ fun ScanEntryStaggeredGrid(
             item(span = StaggeredGridItemSpan.FullLine) {
                 manufacturerCounts?.let { counts ->
                     if (counts.isNotEmpty()) {
-                        ManufacturerOverview(counts)
+                        ScanOverviewCard(counts){}
                     }
                 }
             }

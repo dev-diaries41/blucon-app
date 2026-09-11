@@ -124,7 +124,7 @@ fun ScanEntryList(
             item {
                 manufacturerCounts?.let { counts ->
                     if (counts.isNotEmpty()) {
-                        ManufacturerOverview(counts)
+                        ScanOverviewCard(counts){}
                     }
                 }
             }
