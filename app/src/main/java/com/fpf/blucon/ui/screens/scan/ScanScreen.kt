@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,11 +31,15 @@ import com.fpf.blucon.ui.components.bluetooth.DeviceList
 import com.fpf.blucon.ui.permissions.RequestPermissions
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Devices
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.PermScanWifi
+import androidx.compose.material.icons.filled.Scanner
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.ui.Alignment
 import com.fpf.blucon.ui.components.common.LoadingIndicator
+import com.fpf.blucon.ui.components.placeholders.EmptyItemsScreen
 
 
 @Composable
@@ -48,6 +53,7 @@ fun ScanScreen(
     val state by viewModel.state.collectAsState()
     var bluetoothGranted by remember { mutableStateOf(false) }
     val screenTitle = stringResource(R.string.title_scan)
+    val devices = state.devices.values.toList()
 
     LaunchedEffect(Unit) {
         onTopBarChange(
@@ -78,29 +84,47 @@ fun ScanScreen(
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
+
+        EmptyItemsScreen(
+            icon = {
+                if(state.isScanning){
+                    LoadingIndicator(isVisible = true, size = 64.dp)
+                }else{
+                    Icon(
+                        imageVector = Icons.Filled.Scanner,
+                        contentDescription = "Scanner icon",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(96.dp)
+                    )
+                }
+            },
+            title = if(state.isScanning) "Scanning devices" else  "Scan devices" ,
+            description = if(state.isScanning) "No devices found" else  "",
+            isVisible = devices.isEmpty()
+        )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            if(state.isScanning && devices.isNotEmpty()){
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Scanning...",
+                    )
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Nearby devices",
-                    style = MaterialTheme.typography.headlineSmall
-                )
-
-                Spacer( modifier = Modifier.weight(1f))
-                LoadingIndicator(isVisible = state.isScanning, size = 24.dp)
+                    Spacer( modifier = Modifier.weight(1f))
+                    LoadingIndicator(isVisible = true, size = 24.dp)
+                }
             }
-
             DeviceList(
-                devices = state.devices.values.toList(),
+                devices = devices,
                 modifier = Modifier.weight(1f),
             )
 
