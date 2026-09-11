@@ -33,7 +33,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.fpf.blucon.R
 import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.action.MenuActionConfig
-import com.fpf.blucon.ui.components.bluetooth.ScanDevicesList
+import com.fpf.blucon.ui.components.bluetooth.ScanEntryList
 import com.fpf.blucon.ui.components.common.DropDownMenuWrapper
 import com.fpf.blucon.ui.components.common.SearchBar
 import com.fpf.smartscan.ui.components.common.SlideRevealBox
@@ -142,7 +142,7 @@ fun SearchScreen(
                     .padding(bottom = 8.dp)
             ) {
             }
-            ScanDevicesList(
+            ScanEntryList(
                 headerLabel = "${state.totalResults} Results",
                 isVisible = searchResultsVisible,
                 items = searchResults,

@@ -40,7 +40,7 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-fun ScanDevicesList(
+fun ScanEntryList(
     items: LazyPagingItems<BTScanEntry>,
     isVisible: Boolean,
     isSelecting: Boolean = false,
