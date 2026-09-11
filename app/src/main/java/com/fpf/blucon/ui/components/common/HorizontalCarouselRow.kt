@@ -21,13 +21,9 @@ import androidx.compose.ui.unit.dp
 fun HorizontalCarouselRow(
     label: String,
     topItemCounts: Map<String, Int>,
-    total: Int,
     itemLabel: String = "items",
-    onViewAll: () -> Unit
+    onViewAll: (() -> Unit)? = null
 ) {
-
-    val topK = topItemCounts.size
-    val showViewAll = total > topK
 
     Column(
         verticalArrangement = Arrangement.spacedBy(6.dp)
@@ -43,9 +39,9 @@ fun HorizontalCarouselRow(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            if(showViewAll){
+            onViewAll?.let{
                 TextButton(
-                    onClick = onViewAll,
+                    onClick = it,
                 ) {
                     Text("See all", style = MaterialTheme.typography.bodyMedium)
                 }

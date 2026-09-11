@@ -15,7 +15,7 @@ import com.fpf.blucon.ui.components.common.HorizontalCarouselRow
 fun ScanOverviewCard(
     manufacturerCounts: Map<String, Int>,
     topK: Int = 6,
-    onViewAllManufacturers: () -> Unit
+    onViewAllManufacturers: (() -> Unit)? = null
 ) {
     val sorted = manufacturerCounts.entries
         .filter { it.value > 1 }
@@ -40,8 +40,7 @@ fun ScanOverviewCard(
             HorizontalCarouselRow(
                 label = "Top manufacturers",
                 topItemCounts = topManufacturers.associate { it.key to it.value },
-                total=sorted.size,
-                onViewAll = {onViewAllManufacturers()}
+                onViewAll = onViewAllManufacturers
             )
         }
     }

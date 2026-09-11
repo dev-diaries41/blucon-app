@@ -34,7 +34,6 @@ import com.fpf.blucon.R
 import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.action.MenuActionConfig
 import com.fpf.blucon.ui.components.bluetooth.DeviceOverviewCard
-import com.fpf.blucon.ui.components.bluetooth.ScanEntryList
 import com.fpf.blucon.ui.components.bluetooth.ScanEntryStaggeredGrid
 import com.fpf.blucon.ui.components.common.DropDownMenuWrapper
 import com.fpf.blucon.ui.components.common.SearchBar
@@ -152,8 +151,13 @@ fun SearchScreen(
                 maxCollapsePx = maxCollapsablePx,
                 headerRow = { ResultsHeader("${state.totalResults} Results") },
             )
-            if (state.manufacturerCounts.isNotEmpty()) {
-                DeviceOverviewCard(state.manufacturerCounts){}
+            if (state.manufacturerCounts.isNotEmpty() && state.deviceNameCounts.isNotEmpty()) {
+                DeviceOverviewCard(
+                    topManufacturerCounts = state.manufacturerCounts,
+                    topDeviceNameCounts = state.deviceNameCounts,
+                    onViewAllManufacturers = {},
+                    onViewAllDevices = {}
+                )
             }
         }
 
