@@ -69,7 +69,7 @@ fun ScanEntryScreen(
     var offset by remember { mutableIntStateOf(0) }
     val density = LocalDensity.current
     val maxCollapsablePx = with(density) { 70.dp.toPx() }.toInt()
-    val screenTitle = stringResource(R.string.title_scan_devices)
+    val screenTitle = stringResource(R.string.title_scan)+ " #${scan.id}"
 
     LaunchedEffect(Unit) {
         onTopBarChange(
