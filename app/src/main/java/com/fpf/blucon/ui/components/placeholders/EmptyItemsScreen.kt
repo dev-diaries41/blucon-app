@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 fun EmptyItemsScreen(
     isVisible: Boolean,
     title: String? = null,
-    icon: ImageVector? = null,
+    icon: (@Composable () -> Unit)? = null,
     description: String? = null,
 ) {
     if (!isVisible) return
@@ -36,14 +36,7 @@ fun EmptyItemsScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            icon?.let {
-                Icon(
-                    imageVector = it,
-                    contentDescription = "Download icon",
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(96.dp)
-                )
-            }
+            icon?.invoke()
 
             Text(
                 text = title?: "No items",
