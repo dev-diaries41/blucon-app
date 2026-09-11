@@ -2,7 +2,9 @@ package com.fpf.blucon.data.mappers
 
 import com.fpf.blucon.bluetooth.BTScan
 import com.fpf.blucon.bluetooth.BTScanEntry
+import com.fpf.blucon.bluetooth.DeviceSummary
 import com.fpf.blucon.bluetooth.NewBTScan
+import com.fpf.blucon.data.scans.DeviceSummaryEntity
 import com.fpf.blucon.data.scans.ScanEntity
 import com.fpf.blucon.data.scans.ScanEntryEntity
 import com.fpf.blucon.data.scans.ScanWithCount
@@ -48,4 +50,23 @@ fun ScanEntryEntity.toDomain(): BTScanEntry = BTScanEntry(
     manufacturerName = null
 )
 
+
+fun DeviceSummary.toEntity() = DeviceSummaryEntity(
+    deviceAddress = deviceAddress,
+    deviceName = deviceName,
+    manufacturerId = manufacturerId,
+    rssi = rssi,
+    lastSeen = lastSeen,
+    scanCount = scanCount,
+)
+
+fun DeviceSummaryEntity.toDomain(manufacturerName: String?) = DeviceSummary(
+    deviceAddress = deviceAddress,
+    deviceName = deviceName,
+    manufacturerId = manufacturerId,
+    rssi = rssi,
+    lastSeen = lastSeen,
+    scanCount = scanCount,
+    manufacturerName = manufacturerName
+)
 
