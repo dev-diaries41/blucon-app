@@ -32,5 +32,7 @@ class ScanEntryRepository(
     suspend fun getManufacturerCounts(scanId: Long?=null, limit: Int? = null): Map<String, Int> = dao.getManufacturerCounts(scanId, limit).mapNotNull { entry ->
         getCompanyName(entry.manufacturerId)?.let{it to entry.count}?: return@mapNotNull null
     }.toMap()
+
+    suspend fun getDeviceNameCounts(scanId: Long?=null, limit: Int? = null): Map<String, Int> = dao.getDeviceNameCounts(scanId, limit).associate { it.deviceName to it.count }
 }
 

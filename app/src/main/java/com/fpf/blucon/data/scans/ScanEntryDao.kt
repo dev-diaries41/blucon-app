@@ -93,4 +93,15 @@ interface ScanEntryDao {
     LIMIT COALESCE(:limit, -1)
 """)
     suspend fun getManufacturerCounts(scanId: Long?, limit: Int?): List<ManufacturerCount>
+
+    @Query("""
+    SELECT deviceName, COUNT(*) AS count
+    FROM scan_entry
+    WHERE (:scanId IS NULL OR scanId = :scanId)
+      AND deviceName IS NOT NULL
+    GROUP BY deviceName
+    ORDER BY count DESC
+    LIMIT COALESCE(:limit, -1)
+""")
+    suspend fun getDeviceNameCounts(scanId: Long?, limit: Int?): List<DeviceNameCount>
 }
