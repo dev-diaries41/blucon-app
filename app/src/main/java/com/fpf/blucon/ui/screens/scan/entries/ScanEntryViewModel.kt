@@ -86,13 +86,12 @@ class ScanEntryViewModel(
     fun setScan(scan: BTScan) {
         viewModelScope.launch (Dispatchers.IO){
             val manufacturerCounts = scanEntryRepository.getManufacturerCounts(scan.id)
-            _state.update { it.copy(scan = scan, manufacturerCounts=manufacturerCounts) }
+            _state.update { it.copy(scan = scan, manufacturerCounts=manufacturerCounts, totalDevices = scan.size) }
         }
     }
 
     private fun load() {
         _state.update { it.copy(sortBy = getSortByPref()) }
-        setTotalItems()
     }
 
     private suspend fun getAllScans(): MutableSet<BTScanEntry> {
@@ -114,12 +113,5 @@ class ScanEntryViewModel(
     private fun getSortByPref(): SortBy {
         val sortByStr = sharedPrefs.getString(PrefsKeys.SORT_BY_DEVICES, "") ?: ""
         return sortByOptions.find { it.second.toString() == sortByStr }?.second ?: SortBy.Date()
-    }
-
-    private fun setTotalItems(){
-        viewModelScope.launch {
-            val scan = _state.value.scan?: return@launch
-            _state.update { it.copy(totalDevices = scan.size) }
-        }
     }
 }
