@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -77,14 +78,31 @@ fun SearchScreen(
                 actions = {
                     SearchBar(
                         enabled = true,
+                        autoFocus = true,
                         searchFieldState = viewModel.searchFieldState,
-                        onSearch = {viewModel.onAction(SearchAction.Search(viewModel.searchFieldState.text.toString()))},
                         placeholders = listOf("Search devices"),
+                        onSearch = {viewModel.onAction(SearchAction.Search(viewModel.searchFieldState.text.toString()))},
                         leadingIcon = {
                             IconButton(onClick = onBack) {
                                 Icon(
                                     Icons.AutoMirrored.Filled.ArrowBack,
                                     contentDescription = null
+                                )
+                            }
+                        },
+                        trailingIcon = {
+                            Box{
+                                IconButton (onClick = { showMenu = true }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.MoreVert,
+                                        contentDescription = "menu"
+                                    )
+                                }
+                                DropDownMenuWrapper(
+                                    modifier = Modifier.widthIn(min = 144.dp) ,
+                                    expanded = showMenu,
+                                    actions = menuActions,
+                                    onClose = {showMenu = false}
                                 )
                             }
                         },
@@ -123,6 +141,7 @@ fun SearchScreen(
             ) {
             }
             ScanDevicesList(
+                headerLabel = "${state.totalResults} Results",
                 isVisible = searchResultsVisible,
                 items = searchResults,
                 onOffsetChange = { offset = it },
@@ -130,6 +149,7 @@ fun SearchScreen(
             )
 
             EmptyItemsScreen(
+                icon = Icons.Filled.Search,
                 title = if(viewModel.searchFieldState.text.isEmpty()) "Find devices" else  "No results" ,
                 isVisible = !searchResultsVisible
             )

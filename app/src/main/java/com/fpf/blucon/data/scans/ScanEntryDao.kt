@@ -74,4 +74,13 @@ interface ScanEntryDao {
     @Delete
     suspend fun deleteEntries(entries: List<ScanEntryEntity>)
 
+    @Query("""
+    SELECT COUNT(*)
+    FROM scan_entry
+    WHERE :query IS NULL
+          OR deviceName LIKE '%' || :query || '%'
+          OR manufacturerId IN (:manufacturerIds)
+""")
+    suspend fun countEntries(query: String?, manufacturerIds: List<Int>): Int
+
 }
