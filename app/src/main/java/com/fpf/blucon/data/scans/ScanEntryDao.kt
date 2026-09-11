@@ -38,66 +38,37 @@ interface ScanEntryDao {
         """)
     suspend fun getEntriesAsc(scanId: Long?, limit: Int, offset: Int): List<ScanEntryEntity>
 
-
     @Query("""
-    SELECT
-        e.deviceAddress,
-        e.deviceName,
-        e.manufacturerId,
-        e.rssi,
-        e.timestamp AS lastSeen,
-        (
-            SELECT COUNT(*)
-            FROM scan_entry x
-            WHERE x.deviceAddress = e.deviceAddress
-        ) AS scanCount
-    FROM scan_entry e
-    WHERE e.timestamp = (
-        SELECT MAX(x.timestamp)
-        FROM scan_entry x
-        WHERE x.deviceAddress = e.deviceAddress
-    )
-      AND (:query IS NULL OR e.deviceName LIKE '%' || :query || '%')
-      AND (:manufacturerIds IS NULL OR e.manufacturerId IN (:manufacturerIds))
-    ORDER BY lastSeen DESC, e.deviceAddress DESC
+    SELECT *
+    FROM scan_entry
+    WHERE :query IS NULL
+        OR deviceName LIKE '%' || :query || '%'
+        OR manufacturerId IN (:manufacturerIds)
+    ORDER BY timestamp DESC, deviceAddress DESC
     LIMIT :limit OFFSET :offset
 """)
     suspend fun queryEntriesDsc(
-        query: String?,
+        query: String,
         manufacturerIds: List<Int>?,
         limit: Int,
         offset: Int
-    ): List<DeviceSummaryEntity>
+    ): List<ScanEntryEntity>
 
     @Query("""
-    SELECT
-        e.deviceAddress,
-        e.deviceName,
-        e.manufacturerId,
-        e.rssi,
-        e.timestamp AS lastSeen,
-        (
-            SELECT COUNT(*)
-            FROM scan_entry x
-            WHERE x.deviceAddress = e.deviceAddress
-        ) AS scanCount
-    FROM scan_entry e
-    WHERE e.timestamp = (
-        SELECT MAX(x.timestamp)
-        FROM scan_entry x
-        WHERE x.deviceAddress = e.deviceAddress
-    )
-      AND (:query IS NULL OR e.deviceName LIKE '%' || :query || '%')
-      AND (:manufacturerIds IS NULL OR e.manufacturerId IN (:manufacturerIds))
-    ORDER BY lastSeen ASC, e.deviceAddress ASC
+    SELECT *
+    FROM scan_entry
+    WHERE :query IS NULL
+        OR deviceName LIKE '%' || :query || '%'
+        OR manufacturerId IN (:manufacturerIds)
+    ORDER BY timestamp ASC, deviceAddress ASC
     LIMIT :limit OFFSET :offset
 """)
     suspend fun queryEntriesAsc(
-        query: String?,
-        manufacturerIds: List<Int>?,
+        query: String,
+        manufacturerIds: List<Int>,
         limit: Int,
         offset: Int
-    ): List<DeviceSummaryEntity>
+    ): List<ScanEntryEntity>
 
     @Delete
     suspend fun deleteEntries(entries: List<ScanEntryEntity>)

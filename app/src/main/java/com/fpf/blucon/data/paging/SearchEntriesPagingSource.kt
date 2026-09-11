@@ -1,18 +1,18 @@
 package com.fpf.blucon.data.paging
 
-import com.fpf.blucon.bluetooth.DeviceSummary
+import com.fpf.blucon.bluetooth.BTScanEntry
 import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.query.SortBy
 
-class DevicesPagingSource(
+class SearchEntriesPagingSource(
     private val scanEntryRepository: ScanEntryRepository,
     private val query: String? = null,
     sortBy: SortBy = SortBy.Date(),
-) : DataPagingSource<DeviceSummary, Nothing>(
+) : DataPagingSource<BTScanEntry, Nothing>(
     filter = null,
     sortBy = sortBy,
 ) {
-    override suspend fun getItems(sortBy: SortBy, pageSize: Int, offset: Int, filter: Nothing?): List<DeviceSummary> {
+    override suspend fun getItems(sortBy: SortBy, pageSize: Int, offset: Int, filter: Nothing?): List<BTScanEntry> {
         val manufacturerIds = scanEntryRepository.queryCompanies(query.orEmpty())
 
         val entries = if(query.isNullOrBlank()){

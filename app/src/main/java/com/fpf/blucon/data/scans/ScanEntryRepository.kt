@@ -15,13 +15,13 @@ class ScanEntryRepository(
             dao.getEntriesDesc(scanId, limit=limit, offset=offset)
         }else{
             dao.getEntriesAsc(scanId, limit=limit, offset=offset)
-        }.map{it.toDomain().copy(manufacturerName = metadataRepository.getCompanyName(it.manufacturerId))}
+        }.map{it.toDomain().copy(manufacturerName = getCompanyName(it.manufacturerId))}
 
     suspend fun queryEntries(limit: Int, offset: Int, query: String, manufacturerIds: List<Int> = emptyList(), descending: Boolean = true) = if(descending){
         dao.queryEntriesDsc(query, limit=limit, offset=offset, manufacturerIds=manufacturerIds)
     }else{
         dao.queryEntriesAsc(query, limit=limit, offset=offset, manufacturerIds=manufacturerIds)
-    }.map{it.toDomain(metadataRepository.getCompanyName(it.manufacturerId))}
+    }.map{it.toDomain().copy(manufacturerName = getCompanyName(it.manufacturerId))}
 
     fun queryCompanies(query: String): List<Int> = metadataRepository.findCompanyIds(query)
     fun getCompanyName(manufacturerId: Int?): String? = metadataRepository.getCompanyName(manufacturerId)

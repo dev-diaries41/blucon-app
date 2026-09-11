@@ -14,9 +14,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.fpf.blucon.data.MetadataRepository
-import com.fpf.blucon.data.paging.DevicesPagingSource
-import com.fpf.blucon.data.paging.ScanEntriesPagingSource
+import com.fpf.blucon.data.paging.SearchEntriesPagingSource
 import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.query.SortBy
 import com.fpf.blucon.storage.PrefsKeys
@@ -53,7 +51,7 @@ class SearchViewModel(
                         enablePlaceholders = false
                     ),
                     pagingSourceFactory = {
-                        DevicesPagingSource(
+                        SearchEntriesPagingSource(
                             query=query,
                             sortBy=sortBy,
                             scanEntryRepository = scanEntryRepository,
