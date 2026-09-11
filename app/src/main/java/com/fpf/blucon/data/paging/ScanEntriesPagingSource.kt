@@ -6,23 +6,28 @@ import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.query.SortBy
 
 class ScanEntriesPagingSource(
-    private val scanId: Long,
     private val scanEntryRepository: ScanEntryRepository,
     private val metadataRepository: MetadataRepository,
+    private val scanId: Long?= null,
     private val query: String? = null,
+    private val isSearching: Boolean = false,
     sortBy: SortBy = SortBy.Date(),
 ) : DataPagingSource<BTScanEntry, Nothing>(
     filter = null,
     sortBy = sortBy,
 ) {
     override suspend fun getItems(sortBy: SortBy, pageSize: Int, offset: Int, filter: Nothing?): List<BTScanEntry> {
-        val entries = if(!query.isNullOrBlank()){
+        val manufacturerIds = metadataRepository.findCompanyIds(query.orEmpty())
+
+        val entries = if(isSearching){
+            if(query.isNullOrBlank()) return emptyList()
             scanEntryRepository.queryEntries(
                 query=query,
                 scanId=scanId,
                 limit = pageSize + 1,
                 offset = offset,
-                descending = sortBy.descending
+                descending = sortBy.descending,
+                manufacturerIds = manufacturerIds
             )
         }else{
             scanEntryRepository.getEntries(

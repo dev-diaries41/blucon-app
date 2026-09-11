@@ -120,7 +120,10 @@ fun ScanDevicesList(
         ) {
             items(
                 count = items.itemCount,
-                key = { index -> items[index]?.deviceAddress ?: index }
+                key = { index ->
+                    val item = items[index]
+                    item?.let{it.deviceAddress + it.scanId} ?: index
+                }
             ) { index ->
                 val item = items[index] ?: return@items
 

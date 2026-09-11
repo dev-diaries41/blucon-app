@@ -32,7 +32,7 @@ class ScanHistoryViewModel(
     private val sharedPrefs: SharedPreferences
 ) : AndroidViewModel(application) {
     companion object {
-        private const val TAG = "DevicesViewModel"
+        private const val TAG = "SearchViewModel"
     }
 
     private val _state = MutableStateFlow(ScanHistoryState())

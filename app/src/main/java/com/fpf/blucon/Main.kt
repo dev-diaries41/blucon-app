@@ -13,6 +13,7 @@ import com.fpf.blucon.ui.screens.devices.DevicesScreen
 import com.fpf.blucon.ui.screens.donate.DonateScreen
 import com.fpf.blucon.ui.screens.history.ScanHistoryScreen
 import com.fpf.blucon.ui.screens.scan.ScanScreen
+import com.fpf.blucon.ui.screens.search.SearchScreen
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,7 +45,8 @@ fun Main() {
             composable(Routes.SCAN) {
                 ScanScreen(
                     onTopBarChange = { topBarState.value = it },
-                    onViewScanHistory = { navController.navigate(Routes.SCAN_HISTORY) }
+                    onViewScanHistory = { navController.navigate(Routes.SCAN_HISTORY) },
+                    onSearch = {navController.navigate(Routes.SEARCH)}
                 )
             }
             composable(Routes.SCAN_HISTORY) {
@@ -71,6 +73,13 @@ fun Main() {
                 DevicesScreen(
                     onTopBarChange = { topBarState.value = it },
                     scan = scan,
+                    onBack = { navController.popBackStack() },
+                )
+            }
+
+            composable(Routes.SEARCH){
+                SearchScreen(
+                    onTopBarChange = { topBarState.value = it },
                     onBack = { navController.popBackStack() },
                 )
             }
