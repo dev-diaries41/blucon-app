@@ -88,6 +88,22 @@ fun SearchScreen(
                                 )
                             }
                         },
+                        trailingIcon = {
+                            Box{
+                                IconButton (onClick = { showMenu = true }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.MoreVert,
+                                        contentDescription = "menu"
+                                    )
+                                }
+                                DropDownMenuWrapper(
+                                    modifier = Modifier.widthIn(min = 144.dp) ,
+                                    expanded = showMenu,
+                                    actions = menuActions,
+                                    onClose = {showMenu = false}
+                                )
+                            }
+                        },
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
                 }
