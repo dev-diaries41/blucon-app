@@ -13,5 +13,6 @@ data class SearchScreenState(
     val selection: SelectionState<BTScanEntry> = SelectionState(),
     val query: String? = null,
     val manufacturerCounts: Map<String, Int> = mapOf(),
-    val deviceNameCounts: Map<String, Int> = mapOf()
+    val deviceNameCounts: Map<String, Int> = mapOf(),
+    val totalEntries: Int = 0
 )

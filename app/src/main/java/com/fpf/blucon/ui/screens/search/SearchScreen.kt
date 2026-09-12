@@ -162,6 +162,7 @@ fun SearchScreen(
             )
             if (state.manufacturerCounts.isNotEmpty() && state.deviceNameCounts.isNotEmpty()) {
                 DeviceOverviewCard(
+                    totalEntries = state.totalEntries,
                     topManufacturerCounts = state.manufacturerCounts,
                     topDeviceNameCounts = state.deviceNameCounts,
                     onViewAllManufacturers = {showCompanyCounts = true},

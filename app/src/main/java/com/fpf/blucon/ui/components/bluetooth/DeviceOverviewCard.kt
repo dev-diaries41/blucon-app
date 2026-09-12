@@ -10,9 +10,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.fpf.blucon.ui.components.common.HorizontalCarouselRow
+import com.fpf.blucon.ui.components.search.ListHeader
 
 @Composable
 fun DeviceOverviewCard(
+    totalEntries: Int,
     topManufacturerCounts: Map<String, Int>,
     topDeviceNameCounts: Map<String, Int>,
     onViewAllManufacturers: (() -> Unit)? = null,
@@ -43,6 +45,7 @@ fun DeviceOverviewCard(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            ListHeader("$totalEntries entries")
             HorizontalCarouselRow(
                 label = "Top manufacturers",
                 topItemCounts = topManufacturers.associate { it.key to it.value },
