@@ -9,7 +9,7 @@ import com.fpf.blucon.bluetooth.BTScan
 import com.fpf.blucon.navigation.NavDataKeys
 import com.fpf.blucon.navigation.Routes
 import com.fpf.blucon.navigation.TopBarState
-import com.fpf.blucon.ui.screens.devices.DevicesScreen
+import com.fpf.blucon.ui.screens.scan.entries.ScanEntryScreen
 import com.fpf.blucon.ui.screens.donate.DonateScreen
 import com.fpf.blucon.ui.screens.history.ScanHistoryScreen
 import com.fpf.blucon.ui.screens.scan.ScanScreen
@@ -70,7 +70,7 @@ fun Main() {
                         NavDataKeys.SCAN
                     )
 
-                DevicesScreen(
+                ScanEntryScreen(
                     onTopBarChange = { topBarState.value = it },
                     scan = scan,
                     onBack = { navController.popBackStack() },

@@ -1,4 +1,4 @@
-package com.fpf.blucon.ui.screens.devices
+package com.fpf.blucon.ui.screens.scan.entries
 
 import com.fpf.blucon.bluetooth.BTScan
 import com.fpf.blucon.bluetooth.BTScanEntry
@@ -6,10 +6,11 @@ import com.fpf.blucon.query.SortBy
 import com.fpf.blucon.ui.shared.state.SelectionState
 
 
-data class DeviceScreenState(
+data class ScanEntryScreenState(
     val scan: BTScan? = null,
     val totalDevices: Int = 0,
     val sortBy: SortBy = SortBy.Date(),
     val loading: Boolean = false,
-    val selection: SelectionState<BTScanEntry> = SelectionState()
+    val selection: SelectionState<BTScanEntry> = SelectionState(),
+    val manufacturerCounts: Map<String, Int> = mapOf()
     )

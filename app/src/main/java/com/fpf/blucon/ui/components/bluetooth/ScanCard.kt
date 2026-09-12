@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import com.fpf.blucon.bluetooth.BTScan
 import com.fpf.blucon.ui.components.cards.InfoCard
 import com.fpf.blucon.ui.components.cards.InfoRow
+import com.fpf.blucon.ui.components.cards.InfoText
 import com.fpf.blucon.utils.formatDateTime
 
 @Composable
@@ -23,7 +24,7 @@ fun ScanCard(
         onClick = { onItemClick(item) },
         onLongClick = { onItemLongClick(item) },
         content = {
-            InfoRow("Scan", "#${item.id}", highlight = true)
+            InfoText("Scan #${item.id}", highlight = true)
             InfoRow("Location", "${item.latitude}, ${item.longitude}")
             InfoRow("Devices", "${item.size}")
             InfoRow("Date", formatDateTime(item.timestamp))

@@ -47,5 +47,3 @@ fun ScanEntryEntity.toDomain(): BTScanEntry = BTScanEntry(
     manufacturerId = manufacturerId,
     manufacturerName = null
 )
-
-

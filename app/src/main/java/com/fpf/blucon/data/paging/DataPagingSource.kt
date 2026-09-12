@@ -16,9 +16,9 @@ abstract class DataPagingSource<Output: Any, Filter>(
 
         // over-fetch by 1 item to detect end of data without using count()
         return try {
-            val mediaMetadataList = getItems( sortBy=sortBy, pageSize=pageSize, offset=offset, filter)
-            val hasMore = mediaMetadataList.size > pageSize
-            val pageItems = if (hasMore) mediaMetadataList.dropLast(1) else mediaMetadataList
+            val items = getItems( sortBy=sortBy, pageSize=pageSize, offset=offset, filter)
+            val hasMore = items.size > pageSize
+            val pageItems = if (hasMore) items.dropLast(1) else items
 
             LoadResult.Page(
                 data = pageItems,

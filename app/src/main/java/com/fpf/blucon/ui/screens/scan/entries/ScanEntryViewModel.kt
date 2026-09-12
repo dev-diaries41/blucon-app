@@ -1,14 +1,12 @@
-package com.fpf.blucon.ui.screens.devices
+package com.fpf.blucon.ui.screens.scan.entries
 
 import android.app.Application
 import com.fpf.blucon.R
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,33 +15,28 @@ import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.fpf.blucon.bluetooth.BTScan
 import com.fpf.blucon.bluetooth.BTScanEntry
-import com.fpf.blucon.data.MetadataRepository
 import com.fpf.blucon.data.paging.ScanEntriesPagingSource
-import com.fpf.blucon.data.paging.ScanHistoryPagingSource
 import com.fpf.blucon.data.scans.ScanEntryRepository
-import com.fpf.blucon.data.scans.ScanRepository
 import com.fpf.blucon.query.SortBy
 import com.fpf.blucon.storage.PrefsKeys
-import com.fpf.blucon.ui.utils.SelectionUtils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.withContext
 
-class DevicesViewModel(
+class ScanEntryViewModel(
     application: Application,
     private val scanEntryRepository: ScanEntryRepository,
-    private val metadataRepository: MetadataRepository,
     private val sharedPrefs: SharedPreferences
 ) : AndroidViewModel(application) {
     companion object {
-        private const val TAG = "DevicesViewModel"
+        private const val TAG = "ScanEntryViewModel"
     }
 
-    private val _state = MutableStateFlow(DeviceScreenState())
-    val state: StateFlow<DeviceScreenState> = _state
+    private val _state = MutableStateFlow(ScanEntryScreenState())
+    val state: StateFlow<ScanEntryScreenState> = _state
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val devices = _state
@@ -64,7 +57,6 @@ class DevicesViewModel(
                             scanId=scan.id,
                             sortBy=sortBy,
                             scanEntryRepository = scanEntryRepository,
-                            metadataRepository = metadataRepository
                         )
                     }
                 ).flow
@@ -85,17 +77,21 @@ class DevicesViewModel(
         load()
     }
 
-    fun onAction(action: DeviceAction){
+    fun onAction(action: ScanEntryAction){
         when(action){
-            is DeviceAction.SetSortBy -> setSortBy(action.sortBy)
+            is ScanEntryAction.SetSortBy -> setSortBy(action.sortBy)
         }
     }
 
-    fun setScan(scan: BTScan) = _state.update { it.copy(scan = scan) }
+    fun setScan(scan: BTScan) {
+        viewModelScope.launch (Dispatchers.IO){
+            val manufacturerCounts = scanEntryRepository.getManufacturerCounts(scan.id, limit = 6)
+            _state.update { it.copy(scan = scan, manufacturerCounts=manufacturerCounts.toMap(), totalDevices = scan.size) }
+        }
+    }
 
     private fun load() {
         _state.update { it.copy(sortBy = getSortByPref()) }
-        setTotalItems()
     }
 
     private suspend fun getAllScans(): MutableSet<BTScanEntry> {
@@ -117,12 +113,5 @@ class DevicesViewModel(
     private fun getSortByPref(): SortBy {
         val sortByStr = sharedPrefs.getString(PrefsKeys.SORT_BY_DEVICES, "") ?: ""
         return sortByOptions.find { it.second.toString() == sortByStr }?.second ?: SortBy.Date()
-    }
-
-    private fun setTotalItems(){
-        viewModelScope.launch {
-            val scan = _state.value.scan?: return@launch
-            _state.update { it.copy(totalDevices = scan.size) }
-        }
     }
 }

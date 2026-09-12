@@ -1,5 +1,6 @@
 package com.fpf.blucon.ui.components.bluetooth
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -34,22 +35,19 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.fpf.blucon.bluetooth.BTScanEntry
+import com.fpf.blucon.ui.components.cards.InfoRow
 import com.fpf.blucon.ui.components.search.ResultsHeader
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-fun ScanDevicesList(
-    items: LazyPagingItems<BTScanEntry>,
+fun CountsList(
+    items: LazyPagingItems<Pair<String, Int>>,
     isVisible: Boolean,
-    isSelecting: Boolean = false,
-    onOffsetChange: (Int) -> Unit,
-    isChecked: ((BTScanEntry) -> Boolean)? = null,
-    onItemClick: ((BTScanEntry) -> Unit)? = null,
-    onItemLongClick: ((BTScanEntry) -> Unit)? = null,
+    onOffsetChange:( (Int) -> Unit)? = null,
     maxCollapsePx: Int = 0,
-    headerLabel: String? = null
+    headerLabel: String? = null,
 ) {
     if (!isVisible) return
 
@@ -70,7 +68,7 @@ fun ScanDevicesList(
                 totalScrollPx = (totalScrollPx + deltaPx.roundToInt())
                     .coerceIn(0, maxCollapsePx)
 
-                onOffsetChange(totalScrollPx)
+                onOffsetChange?.invoke(totalScrollPx)
                 return Offset.Zero
             }
         }
@@ -88,6 +86,7 @@ fun ScanDevicesList(
         }
             .distinctUntilChanged()
             .collect { (index, offset) ->
+                Log.d("countlist", "size=${items.itemCount}")
                 val visibleItemCount = listState.layoutInfo.visibleItemsInfo.size
                 val movedDown = index > previousIndex || (index == previousIndex && offset > previousOffset)
                 val movedUp = index < previousIndex || (index == previousIndex && offset < previousOffset)
@@ -125,18 +124,11 @@ fun ScanDevicesList(
                 count = items.itemCount,
                 key = { index ->
                     val item = items[index]
-                    item?.let{it.deviceAddress + it.scanId} ?: index
+                    item?.first ?: index
                 }
             ) { index ->
-                val item = items[index] ?: return@items
-
-                ScanEntryCard(
-                    item = item,
-                    isSelecting=isSelecting,
-                    isChecked = { isChecked?.invoke(item)?: false},
-                    onItemClick = onItemClick,
-                    onItemLongClick = onItemLongClick
-                )
+                val (key, count) = items[index] ?: return@items
+                InfoRow(key, count.toString())
             }
         }
 
@@ -152,7 +144,7 @@ fun ScanDevicesList(
                 onClick = {
                     scope.launch {
                         showScrollToTop = false
-                        onOffsetChange(0)
+                        onOffsetChange?.invoke(0)
                         listState.scrollToItem(0)
                     }
                 },
@@ -171,3 +163,4 @@ fun ScanDevicesList(
         }
     }
 }
+

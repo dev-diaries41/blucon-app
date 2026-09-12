@@ -1,4 +1,4 @@
-package com.fpf.blucon.ui.screens.devices
+package com.fpf.blucon.ui.screens.scan.entries
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,31 +30,39 @@ import com.fpf.blucon.R
 import com.fpf.blucon.bluetooth.BTScan
 import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.action.MenuActionConfig
-import com.fpf.blucon.ui.components.bluetooth.ScanDevicesList
+import com.fpf.blucon.ui.components.bluetooth.CountsList
+import com.fpf.blucon.ui.components.bluetooth.ScanEntryList
+import com.fpf.blucon.ui.components.bluetooth.ScanEntryStaggeredGrid
+import com.fpf.blucon.ui.components.bluetooth.ScanOverviewCard
 import com.fpf.blucon.ui.components.common.DropDownMenuWrapper
+import com.fpf.blucon.ui.components.modals.BottomSheet
 import com.fpf.smartscan.ui.components.common.SlideRevealBox
 import com.fpf.smartscan.ui.components.pickers.OptionPicker
 import com.fpf.blucon.ui.components.placeholders.EmptyItemsScreen
+import com.fpf.blucon.ui.components.search.ResultsHeader
+import com.fpf.blucon.ui.shared.DeviceMetadataViewModel
 import kotlinx.coroutines.FlowPreview
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(FlowPreview::class)
 @Composable
-fun DevicesScreen(
+fun ScanEntryScreen(
     scan: BTScan?,
     onTopBarChange: (TopBarState) -> Unit,
     onBack: () -> Unit,
-    viewModel: DevicesViewModel = koinViewModel(),
-) {
+    viewModel: ScanEntryViewModel = koinViewModel(),
+    deviceMetadataViewModel: DeviceMetadataViewModel = koinViewModel(),
+    ) {
     if(scan == null) return
 
     val state by viewModel.state.collectAsState()
 
     val devices = viewModel.devices.collectAsLazyPagingItems()
-
+    val companyCounts = deviceMetadataViewModel.companyCounts.collectAsLazyPagingItems()
     // actions
     var showMenu by remember { mutableStateOf(false) }
     var showSortOptions by remember { mutableStateOf(false) }
+    var showCompanyCounts by remember { mutableStateOf(false) }
 
     val menuActions: List<MenuActionConfig> = listOf(
         MenuActionConfig.Button(
@@ -69,7 +77,7 @@ fun DevicesScreen(
     var offset by remember { mutableIntStateOf(0) }
     val density = LocalDensity.current
     val maxCollapsablePx = with(density) { 70.dp.toPx() }.toInt()
-    val screenTitle = stringResource(R.string.title_scan_devices)
+    val screenTitle = stringResource(R.string.title_scan)+ " #${scan.id}"
 
     LaunchedEffect(Unit) {
         onTopBarChange(
@@ -105,6 +113,7 @@ fun DevicesScreen(
 
     LaunchedEffect(scan) {
         viewModel.setScan(scan)
+        deviceMetadataViewModel.setScanId(scan.id)
     }
 
     Box(
@@ -126,11 +135,17 @@ fun DevicesScreen(
                     .padding(bottom = 8.dp)
             ) {
             }
-            ScanDevicesList(
+            ScanEntryStaggeredGrid(
                 isVisible = devices.itemCount > 0,
                 items = devices,
                 onOffsetChange = { offset = it },
                 maxCollapsePx = maxCollapsablePx,
+                headerRow = { ResultsHeader("${state.totalDevices} devices") },
+                overview = {
+                    if (state.manufacturerCounts.isNotEmpty()) {
+                        ScanOverviewCard(state.manufacturerCounts, onViewAllManufacturers = {showCompanyCounts = true})
+                    }
+                }
             )
 
             EmptyItemsScreen(
@@ -144,10 +159,20 @@ fun DevicesScreen(
         options =  viewModel.sortByOptions,
         selectedOption  = state.sortBy,
         onSelect = {
-            viewModel.onAction(DeviceAction.SetSortBy(it))
+            viewModel.onAction(ScanEntryAction.SetSortBy(it))
             showSortOptions = false
         },
         onClose = {showSortOptions = false}
     )
+
+    BottomSheet(
+        show = showCompanyCounts && state.scan != null,
+        onDismiss = {showCompanyCounts = false}
+    ) {
+        CountsList(
+            items = companyCounts,
+            isVisible = true,
+        )
+    }
 
 }

@@ -4,10 +4,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
@@ -33,12 +36,18 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.fpf.blucon.R
 import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.action.MenuActionConfig
-import com.fpf.blucon.ui.components.bluetooth.ScanDevicesList
+import com.fpf.blucon.ui.components.bluetooth.CountsList
+import com.fpf.blucon.ui.components.bluetooth.DeviceOverviewCard
+import com.fpf.blucon.ui.components.bluetooth.ScanEntryStaggeredGrid
+import com.fpf.blucon.ui.components.cards.InfoRow
 import com.fpf.blucon.ui.components.common.DropDownMenuWrapper
 import com.fpf.blucon.ui.components.common.SearchBar
+import com.fpf.blucon.ui.components.modals.BottomSheet
 import com.fpf.smartscan.ui.components.common.SlideRevealBox
 import com.fpf.smartscan.ui.components.pickers.OptionPicker
 import com.fpf.blucon.ui.components.placeholders.EmptyItemsScreen
+import com.fpf.blucon.ui.components.search.ResultsHeader
+import com.fpf.blucon.ui.shared.DeviceMetadataViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -51,14 +60,19 @@ fun SearchScreen(
     onTopBarChange: (TopBarState) -> Unit,
     onBack: () -> Unit,
     viewModel: SearchViewModel = koinViewModel(),
-) {
+    deviceMetadataViewModel: DeviceMetadataViewModel = koinViewModel(),
+    ) {
     val state by viewModel.state.collectAsState()
     val searchResults = viewModel.searchResults.collectAsLazyPagingItems()
+    val companyCounts = deviceMetadataViewModel.companyCounts.collectAsLazyPagingItems()
+    val deviceNameCounts = deviceMetadataViewModel.deviceNameCounts.collectAsLazyPagingItems()
     val searchResultsVisible = searchResults.itemCount > 0
 
     // actions
     var showMenu by remember { mutableStateOf(false) }
     var showSortOptions by remember { mutableStateOf(false) }
+    var showDevicesCounts by remember { mutableStateOf(false) }
+    var showCompanyCounts by remember { mutableStateOf(false) }
 
     val menuActions: List<MenuActionConfig> = listOf(
         MenuActionConfig.Button(
@@ -142,27 +156,35 @@ fun SearchScreen(
                     .padding(bottom = 8.dp)
             ) {
             }
-            ScanDevicesList(
-                headerLabel = "${state.totalResults} Results",
+            ScanEntryStaggeredGrid(
                 isVisible = searchResultsVisible,
                 items = searchResults,
                 onOffsetChange = { offset = it },
                 maxCollapsePx = maxCollapsablePx,
+                headerRow = { ResultsHeader("${state.totalResults} Results") },
             )
-
-            EmptyItemsScreen(
-                icon = {
-                    Icon(
-                        imageVector = Icons.Filled.Search,
-                        contentDescription = "Search icon",
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(96.dp)
-                    )
-                },
-                title = if(viewModel.searchFieldState.text.isEmpty()) "Find devices" else  "No results" ,
-                isVisible = !searchResultsVisible
-            )
+            if (state.manufacturerCounts.isNotEmpty() && state.deviceNameCounts.isNotEmpty()) {
+                DeviceOverviewCard(
+                    topManufacturerCounts = state.manufacturerCounts,
+                    topDeviceNameCounts = state.deviceNameCounts,
+                    onViewAllManufacturers = {showCompanyCounts = true},
+                    onViewAllDevices = {showDevicesCounts = true}
+                )
+            }
         }
+
+        EmptyItemsScreen(
+            icon = {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = "Search icon",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(96.dp)
+                )
+            },
+            title = if(viewModel.searchFieldState.text.isEmpty()) "Find devices" else  "No results" ,
+            isVisible = !searchResultsVisible
+        )
     }
     OptionPicker(
         isVisible = showSortOptions,
@@ -175,5 +197,25 @@ fun SearchScreen(
         },
         onClose = {showSortOptions = false}
     )
+
+    BottomSheet(
+        show = showDevicesCounts,
+        onDismiss = {showDevicesCounts = false}
+    ) {
+        CountsList(
+            items = deviceNameCounts,
+            isVisible = true,
+        )
+    }
+
+    BottomSheet(
+        show = showCompanyCounts,
+        onDismiss = {showCompanyCounts = false}
+    ) {
+        CountsList(
+            items = companyCounts,
+            isVisible = true,
+        )
+    }
 
 }

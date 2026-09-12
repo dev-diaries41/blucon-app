@@ -11,10 +11,9 @@ val dbModule = module {
     single {
         ScanDatabase.getDatabase(androidApplication())
     }
-
     single { get<ScanDatabase>().scanDao() }
     single { get<ScanDatabase>().scanEntryDao() }
     single { ScanRepository(get()) }
-    single { ScanEntryRepository(get()) }
     single{ MetadataRepository(get()) }
+    single { ScanEntryRepository(dao = get(), metadataRepository = get()) } // TODO: rename metadataRepository
 }

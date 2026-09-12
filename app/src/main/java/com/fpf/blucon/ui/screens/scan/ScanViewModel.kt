@@ -10,7 +10,6 @@ import com.fpf.blucon.bluetooth.BTScanEntry
 import com.fpf.blucon.bluetooth.BluetoothScanner
 import com.fpf.blucon.bluetooth.NewBTScan
 import com.fpf.blucon.bluetooth.toScan
-import com.fpf.blucon.data.MetadataRepository
 import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.data.scans.ScanRepository
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +24,6 @@ class ScanViewModel(
     application: Application,
     private val scanRepository: ScanRepository,
     private val scanEntryRepository: ScanEntryRepository,
-    private val metadataRepository: MetadataRepository
 ) : AndroidViewModel(application) {
 
     companion object {
@@ -113,7 +111,7 @@ class ScanViewModel(
                 rssi = it.rssi,
                 deviceName = it.name,
                 manufacturerId = manufacturerId,
-                manufacturerName = metadataRepository.getCompanyName(manufacturerId)
+                manufacturerName = scanEntryRepository.getCompanyName(manufacturerId)
             )
         }
     }

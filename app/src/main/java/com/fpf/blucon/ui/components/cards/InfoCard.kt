@@ -111,3 +111,23 @@ fun InfoRow(
         )
     }
 }
+
+@Composable
+fun InfoText(
+    value: String,
+    highlight: Boolean = false,
+) {
+    val color = if (highlight) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
+
+    Text(
+        text = value,
+        style = MaterialTheme.typography.bodyMedium,
+        color = color,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+    )
+}

@@ -14,8 +14,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.fpf.blucon.data.MetadataRepository
-import com.fpf.blucon.data.paging.ScanEntriesPagingSource
+import com.fpf.blucon.data.paging.SearchEntriesPagingSource
 import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.query.SortBy
 import com.fpf.blucon.storage.PrefsKeys
@@ -28,7 +27,6 @@ import kotlinx.coroutines.flow.map
 class SearchViewModel(
     application: Application,
     private val scanEntryRepository: ScanEntryRepository,
-    private val metadataRepository: MetadataRepository,
     private val sharedPrefs: SharedPreferences
 ) : AndroidViewModel(application) {
     companion object {
@@ -53,12 +51,10 @@ class SearchViewModel(
                         enablePlaceholders = false
                     ),
                     pagingSourceFactory = {
-                        ScanEntriesPagingSource(
+                        SearchEntriesPagingSource(
                             query=query,
                             sortBy=sortBy,
                             scanEntryRepository = scanEntryRepository,
-                            metadataRepository = metadataRepository,
-                            isSearching = true
                         )
                     }
                 ).flow
@@ -86,13 +82,18 @@ class SearchViewModel(
     private fun search(query: String){
         viewModelScope.launch(Dispatchers.IO) {
             _state.update { it.copy(query=query) }
-            val count = if(query.isBlank()) 0 else scanEntryRepository.countEntries(query, metadataRepository.findCompanyIds(query))
+            val count = if(query.isBlank()) 0 else scanEntryRepository.countEntries(query,
+                scanEntryRepository.queryCompanies(query))
             _state.update { it.copy(totalResults = count) }
 
         }
     }
     private fun load() {
-        _state.update { it.copy(sortBy = getSortByPref()) }
+        viewModelScope.launch {
+            val manufacturerCounts = scanEntryRepository.getManufacturerCounts(limit = 6)
+            val deviceNameCounts = scanEntryRepository.getDeviceNameCounts(limit = 6)
+            _state.update { it.copy(sortBy = getSortByPref(), manufacturerCounts = manufacturerCounts.toMap(), deviceNameCounts=deviceNameCounts.toMap()) }
+        }
     }
 
     private fun setSortBy(sortBy: SortBy) {
