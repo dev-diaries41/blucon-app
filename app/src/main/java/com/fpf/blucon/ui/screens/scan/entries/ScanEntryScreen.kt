@@ -30,14 +30,17 @@ import com.fpf.blucon.R
 import com.fpf.blucon.bluetooth.BTScan
 import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.action.MenuActionConfig
+import com.fpf.blucon.ui.components.bluetooth.CountsList
 import com.fpf.blucon.ui.components.bluetooth.ScanEntryList
 import com.fpf.blucon.ui.components.bluetooth.ScanEntryStaggeredGrid
 import com.fpf.blucon.ui.components.bluetooth.ScanOverviewCard
 import com.fpf.blucon.ui.components.common.DropDownMenuWrapper
+import com.fpf.blucon.ui.components.modals.BottomSheet
 import com.fpf.smartscan.ui.components.common.SlideRevealBox
 import com.fpf.smartscan.ui.components.pickers.OptionPicker
 import com.fpf.blucon.ui.components.placeholders.EmptyItemsScreen
 import com.fpf.blucon.ui.components.search.ResultsHeader
+import com.fpf.blucon.ui.shared.DeviceMetadataViewModel
 import kotlinx.coroutines.FlowPreview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -48,16 +51,18 @@ fun ScanEntryScreen(
     onTopBarChange: (TopBarState) -> Unit,
     onBack: () -> Unit,
     viewModel: ScanEntryViewModel = koinViewModel(),
-) {
+    deviceMetadataViewModel: DeviceMetadataViewModel = koinViewModel(),
+    ) {
     if(scan == null) return
 
     val state by viewModel.state.collectAsState()
 
     val devices = viewModel.devices.collectAsLazyPagingItems()
-
+    val companyCounts = deviceMetadataViewModel.companyCounts.collectAsLazyPagingItems()
     // actions
     var showMenu by remember { mutableStateOf(false) }
     var showSortOptions by remember { mutableStateOf(false) }
+    var showCompanyCounts by remember { mutableStateOf(false) }
 
     val menuActions: List<MenuActionConfig> = listOf(
         MenuActionConfig.Button(
@@ -108,6 +113,7 @@ fun ScanEntryScreen(
 
     LaunchedEffect(scan) {
         viewModel.setScan(scan)
+        deviceMetadataViewModel.setScanId(scan.id)
     }
 
     Box(
@@ -137,7 +143,7 @@ fun ScanEntryScreen(
                 headerRow = { ResultsHeader("${state.totalDevices} devices") },
                 overview = {
                     if (state.manufacturerCounts.isNotEmpty()) {
-                        ScanOverviewCard(state.manufacturerCounts){}
+                        ScanOverviewCard(state.manufacturerCounts, onViewAllManufacturers = {showCompanyCounts = true})
                     }
                 }
             )
@@ -158,5 +164,15 @@ fun ScanEntryScreen(
         },
         onClose = {showSortOptions = false}
     )
+
+    BottomSheet(
+        show = showCompanyCounts && state.scan != null,
+        onDismiss = {showCompanyCounts = false}
+    ) {
+        CountsList(
+            items = companyCounts,
+            isVisible = true,
+        )
+    }
 
 }
