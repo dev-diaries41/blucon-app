@@ -92,7 +92,8 @@ class SearchViewModel(
         viewModelScope.launch {
             val manufacturerCounts = scanEntryRepository.getManufacturerCounts(limit = 6)
             val deviceNameCounts = scanEntryRepository.getDeviceNameCounts(limit = 6)
-            _state.update { it.copy(sortBy = getSortByPref(), manufacturerCounts = manufacturerCounts.toMap(), deviceNameCounts=deviceNameCounts.toMap()) }
+            val totalEntries = scanEntryRepository.countEntries()
+            _state.update { it.copy(sortBy = getSortByPref(), manufacturerCounts = manufacturerCounts.toMap(), deviceNameCounts=deviceNameCounts.toMap(), totalEntries=totalEntries) }
         }
     }
 
