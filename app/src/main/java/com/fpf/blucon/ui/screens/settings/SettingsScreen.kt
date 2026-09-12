@@ -41,10 +41,11 @@ import com.fpf.blucon.ui.theme.ThemeManager
 import com.fpf.blucon.ui.theme.ThemeMode
 import com.fpf.blucon.ui.theme.format
 import com.fpf.blucon.utils.BackupUtils.JSON_EXPORT_ZIP
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SettingsScreen(
-    viewModel: SettingsViewModel = viewModel(),
+    viewModel: SettingsViewModel = koinViewModel(),
     onTopBarChange: (TopBarState) -> Unit,
     onRestartApp: () -> Unit,
     onBack: () -> Unit,
