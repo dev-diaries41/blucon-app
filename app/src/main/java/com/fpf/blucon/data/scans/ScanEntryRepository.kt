@@ -53,12 +53,12 @@ class ScanEntryRepository(
         dao.countEntries(query, manufacturerIds)
 
     suspend fun getManufacturerCounts(scanId: Long? = null, limit: Int, offset: Int = 0, descending: Boolean = true): List<Pair<String, Int>> = if (descending) {
-        dao.getManufacturerCountsDesc(scanId, limit = limit, offset = offset).mapNotNull { entry ->
-            getCompanyName(entry.manufacturerId)?.let { it to entry.count } ?: return@mapNotNull null
+        dao.getManufacturerCountsDesc(scanId, limit = limit, offset = offset).map { entry ->
+           ( getCompanyName(entry.manufacturerId)?: entry.manufacturerId.toString()) to entry.count
         }
     } else {
-        dao.getManufacturerCountsAsc(scanId, limit = limit, offset = offset).mapNotNull { entry ->
-            getCompanyName(entry.manufacturerId)?.let { it to entry.count } ?: return@mapNotNull null
+        dao.getManufacturerCountsAsc(scanId, limit = limit, offset = offset).map { entry ->
+            ( getCompanyName(entry.manufacturerId)?: entry.manufacturerId.toString()) to entry.count
         }
     }
 
