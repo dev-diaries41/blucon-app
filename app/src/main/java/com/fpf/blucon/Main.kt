@@ -100,7 +100,6 @@ fun Main(
                 SettingsScreen (
                     onTopBarChange = { topBarState.value = it },
                     onRestartApp = {onRestartApp()},
-                    onBack = { navController.popBackStack() },
                 )
             }
 
