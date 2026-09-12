@@ -1,10 +1,9 @@
-package com.fpf.smartscan.settings
+package com.fpf.blucon.settings
 
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.core.content.edit
-import com.fpf.blucon.settings.AppSettings
-import com.fpf.smartscan.constants.PrefsKeys
+import com.fpf.blucon.storage.PrefsKeys
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
