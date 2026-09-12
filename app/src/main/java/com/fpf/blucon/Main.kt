@@ -53,7 +53,7 @@ fun Main(
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = Routes.SCAN,
+            startDestination = Routes.SEARCH,
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(Routes.SCAN) {
