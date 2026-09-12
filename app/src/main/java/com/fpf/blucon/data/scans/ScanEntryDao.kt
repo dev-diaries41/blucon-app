@@ -90,9 +90,21 @@ interface ScanEntryDao {
       AND manufacturerId IS NOT NULL
     GROUP BY manufacturerId
     ORDER BY count DESC
-    LIMIT COALESCE(:limit, -1)
+    LIMIT :limit OFFSET :offset
 """)
-    suspend fun getManufacturerCounts(scanId: Long?, limit: Int?): List<ManufacturerCount>
+    suspend fun getManufacturerCountsDesc(scanId: Long?, limit: Int, offset: Int): List<ManufacturerCount>
+
+    @Query("""
+    SELECT manufacturerId, COUNT(*) AS count
+    FROM scan_entry
+    WHERE (:scanId IS NULL OR scanId = :scanId)
+      AND manufacturerId IS NOT NULL
+    GROUP BY manufacturerId
+    ORDER BY count ASC
+    LIMIT :limit OFFSET :offset
+""")
+    suspend fun getManufacturerCountsAsc(scanId: Long?, limit: Int, offset: Int): List<ManufacturerCount>
+
 
     @Query("""
     SELECT deviceName, COUNT(*) AS count
@@ -101,7 +113,19 @@ interface ScanEntryDao {
       AND deviceName IS NOT NULL
     GROUP BY deviceName
     ORDER BY count DESC
-    LIMIT COALESCE(:limit, -1)
+    LIMIT :limit OFFSET :offset
 """)
-    suspend fun getDeviceNameCounts(scanId: Long?, limit: Int?): List<DeviceNameCount>
+    suspend fun getDeviceNameCountsDesc(scanId: Long?, limit: Int, offset: Int): List<DeviceNameCount>
+
+    @Query("""
+    SELECT deviceName, COUNT(*) AS count
+    FROM scan_entry
+    WHERE (:scanId IS NULL OR scanId = :scanId)
+      AND deviceName IS NOT NULL
+    GROUP BY deviceName
+    ORDER BY count ASC
+    LIMIT :limit OFFSET :offset
+""")
+    suspend fun getDeviceNameCountsAsc(scanId: Long?, limit: Int, offset: Int): List<DeviceNameCount>
+
 }
