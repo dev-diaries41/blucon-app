@@ -36,5 +36,21 @@
     <string name="ltc_wallet">ltc1q2hspfea9rw5j2ymvv22hx7dmckh8c99sqk7av3</string>
 
 
-
+    <!--Settings screen-->
+    <string name="other_settings">Other</string>
+    <string name="general_settings">General</string>
+    <string name="setting_theme">Theme</string>
+    <string name="setting_color">Color</string>
+    <string name="setting_backup_restore">Backup &amp; Restore</string>
+    <string name="setting_backup">Backup</string>
+    <string name="setting_restore">Restore</string>
+    <string name="setting_export">Export as json</string>
+    <string name="setting_export_description">Export zip containing data as json files</string>
+    <string name="setting_backup_restore_description">%1$s database</string>
+    <string name="setting_issues">Issues</string>
+    <string name="setting_source_code">Source code</string>
+    <string name="setting_social_reddit">Reddit</string>
+    <string name="setting_issues_description">Send bug reports and feature requests.</string>
+    <string name="setting_reddit_description">Discuss the app and stay up-to-date with changes.</string>
+    <string name="setting_source_code_description">View the app’s source code on GitHub.</string>
 </resources>

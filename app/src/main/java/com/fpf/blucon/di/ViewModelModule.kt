@@ -4,6 +4,7 @@ import com.fpf.blucon.ui.screens.scan.entries.ScanEntryViewModel
 import com.fpf.blucon.ui.screens.history.ScanHistoryViewModel
 import com.fpf.blucon.ui.screens.scan.ScanViewModel
 import com.fpf.blucon.ui.screens.search.SearchViewModel
+import com.fpf.blucon.ui.screens.settings.SettingsViewModel
 import com.fpf.blucon.ui.shared.DeviceMetadataViewModel
 import org.koin.dsl.module
 import org.koin.core.module.dsl.viewModel
@@ -46,6 +47,15 @@ val viewModelModule = module {
         DeviceMetadataViewModel(
             application = get(),
             scanEntryRepository = get(),
+            sharedPrefs = get()
+        )
+    }
+
+    viewModel {
+        SettingsViewModel(
+            application = get(),
+            scanEntryRepository = get(),
+            scanRepository = get(),
             sharedPrefs = get()
         )
     }

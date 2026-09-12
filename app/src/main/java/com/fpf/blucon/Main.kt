@@ -14,11 +14,15 @@ import com.fpf.blucon.ui.screens.donate.DonateScreen
 import com.fpf.blucon.ui.screens.history.ScanHistoryScreen
 import com.fpf.blucon.ui.screens.scan.ScanScreen
 import com.fpf.blucon.ui.screens.search.SearchScreen
+import com.fpf.blucon.ui.screens.settings.SettingsScreen
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Main() {
+fun Main(
+    onAppReady: () -> Unit,
+    onRestartApp: () -> Unit,
+) {
     val navController = rememberNavController()
     val topBarState = remember { mutableStateOf(TopBarState()) }
 
@@ -73,6 +77,11 @@ fun Main() {
                 ScanEntryScreen(
                     onTopBarChange = { topBarState.value = it },
                     scan = scan,
+                    onBack = { navController.popBackStack() },
+                )
+                SettingsScreen (
+                    onTopBarChange = { topBarState.value = it },
+                    onRestartApp = {},
                     onBack = { navController.popBackStack() },
                 )
             }
