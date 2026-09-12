@@ -9,11 +9,13 @@ import androidx.compose.runtime.LaunchedEffect
 
 @Composable
 fun RequestPermissions(
-    onPermissionsResult: (notificationGranted: Boolean, bluetoothGranted: Boolean) -> Unit
+    onPermissionsResult: (notificationGranted: Boolean, bluetoothGranted: Boolean, locationGranted: Boolean) -> Unit
 ) {
     val permissionsToRequest = mutableListOf(
         Manifest.permission.BLUETOOTH_SCAN,
-        Manifest.permission.BLUETOOTH_CONNECT
+        Manifest.permission.BLUETOOTH_CONNECT,
+        Manifest.permission.ACCESS_FINE_LOCATION,
+        Manifest.permission.ACCESS_COARSE_LOCATION
     )
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -28,8 +30,20 @@ fun RequestPermissions(
         } else {
             true
         }
-        val bluetoothGranted = permissions[Manifest.permission.BLUETOOTH_SCAN] == true && permissions[Manifest.permission.BLUETOOTH_CONNECT] == true
-        onPermissionsResult(notificationGranted, bluetoothGranted)
+
+        val bluetoothGranted =
+            permissions[Manifest.permission.BLUETOOTH_SCAN] == true &&
+                    permissions[Manifest.permission.BLUETOOTH_CONNECT] == true
+
+        val locationGranted =
+            permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                    permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+
+        onPermissionsResult(
+            notificationGranted,
+            bluetoothGranted,
+            locationGranted
+        )
     }
 
     LaunchedEffect(Unit) {
