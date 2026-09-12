@@ -18,7 +18,6 @@ fun ScanOverviewCard(
     onViewAllManufacturers: (() -> Unit)? = null
 ) {
     val sorted = manufacturerCounts.entries
-        .filter { it.value > 1 }
         .sortedByDescending { it.value }
 
     if (sorted.isEmpty()) return

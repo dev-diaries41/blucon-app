@@ -21,11 +21,9 @@ fun DeviceOverviewCard(
     val topK = maxOf(topManufacturerCounts.size, topDeviceNameCounts.size)
 
     val sortedManufacturers = topManufacturerCounts.entries
-        .filter { it.value > 1 }
         .sortedByDescending { it.value }
 
     val sortedDevices = topDeviceNameCounts.entries
-        .filter { it.value > 1 }
         .sortedByDescending { it.value }
 
     if (sortedManufacturers.isEmpty()) return
