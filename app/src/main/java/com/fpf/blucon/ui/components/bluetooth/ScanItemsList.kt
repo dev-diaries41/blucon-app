@@ -48,6 +48,7 @@ fun ScanItemsList(
     onLongItemClick: (BTScan) -> Unit,
     onOffsetChange: (Int) -> Unit,
     maxCollapsePx: Int = 0,
+    headerContent:( @Composable () -> Unit)?= null
 ) {
     if (!isVisible) return
 
@@ -118,6 +119,7 @@ fun ScanItemsList(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(0.dp)
         ) {
+            item { headerContent?.invoke() }
             items(
                 count = items.itemCount,
                 key = { index -> items[index]?.id ?: index }
