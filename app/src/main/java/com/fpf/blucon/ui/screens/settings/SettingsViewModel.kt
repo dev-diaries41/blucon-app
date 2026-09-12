@@ -15,8 +15,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import com.fpf.blucon.settings.AppSettings
-import com.fpf.smartscan.settings.loadSettings
-import com.fpf.smartscan.settings.saveSettings
+import com.fpf.blucon.settings.loadSettings
+import com.fpf.blucon.settings.saveSettings
 import com.fpf.blucon.ui.theme.ColorSchemeType
 import com.fpf.blucon.ui.theme.ThemeManager
 import com.fpf.blucon.ui.theme.ThemeMode

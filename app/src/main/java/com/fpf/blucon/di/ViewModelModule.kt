@@ -1,5 +1,6 @@
 package com.fpf.blucon.di
 
+import com.fpf.blucon.MainViewModel
 import com.fpf.blucon.ui.screens.scan.entries.ScanEntryViewModel
 import com.fpf.blucon.ui.screens.history.ScanHistoryViewModel
 import com.fpf.blucon.ui.screens.scan.ScanViewModel
@@ -56,6 +57,13 @@ val viewModelModule = module {
             application = get(),
             scanEntryRepository = get(),
             scanRepository = get(),
+            sharedPrefs = get()
+        )
+    }
+
+    viewModel {
+        MainViewModel(
+            application = get(),
             sharedPrefs = get()
         )
     }

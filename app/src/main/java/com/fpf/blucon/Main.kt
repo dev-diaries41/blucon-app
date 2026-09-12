@@ -15,6 +15,7 @@ import com.fpf.blucon.ui.screens.history.ScanHistoryScreen
 import com.fpf.blucon.ui.screens.scan.ScanScreen
 import com.fpf.blucon.ui.screens.search.SearchScreen
 import com.fpf.blucon.ui.screens.settings.SettingsScreen
+import org.koin.compose.viewmodel.koinViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,6 +26,11 @@ fun Main(
 ) {
     val navController = rememberNavController()
     val topBarState = remember { mutableStateOf(TopBarState()) }
+    val mainViewModel: MainViewModel = koinViewModel()
+
+    LaunchedEffect(Unit) {
+        mainViewModel.prepareApp { onAppReady() }
+    }
 
     Scaffold(
         topBar = {
@@ -81,7 +87,7 @@ fun Main(
                 )
                 SettingsScreen (
                     onTopBarChange = { topBarState.value = it },
-                    onRestartApp = {},
+                    onRestartApp = {onRestartApp()},
                     onBack = { navController.popBackStack() },
                 )
             }
@@ -95,7 +101,6 @@ fun Main(
             composable(Routes.DONATE){
                 DonateScreen()
             }
-
         }
     }
 }
