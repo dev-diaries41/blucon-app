@@ -118,6 +118,19 @@ fun SettingsScreen(
         }
     }
 
+
+    val exportJsonLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.CreateDocument("application/zip")
+    ) { uri: Uri? ->
+        uri?.let { fileUri ->
+            context.contentResolver.takePersistableUriPermission(
+                fileUri,
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+            )
+            viewModel.exportAsJson(fileUri)
+        }
+    }
+
     val backupSettingActions: List<SettingActionConfig> = listOf(
         SettingActionConfig.Button(
             enabled = !isBackupLoading && !isRestoreLoading,
@@ -129,7 +142,7 @@ fun SettingsScreen(
             enabled = !isBackupLoading && !isRestoreLoading,
             label = stringResource(id = R.string.setting_export),
             description = stringResource(R.string.setting_export_description),
-            onClick = { backupLauncher.launch(JSON_EXPORT_ZIP) },
+            onClick = { exportJsonLauncher.launch(JSON_EXPORT_ZIP) },
         ),
         SettingActionConfig.Button(
             enabled = !isBackupLoading && !isRestoreLoading,
