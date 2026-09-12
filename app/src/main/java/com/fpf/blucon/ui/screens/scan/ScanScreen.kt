@@ -1,6 +1,6 @@
 package com.fpf.blucon.ui.screens.scan
 
-import android.widget.Space
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,9 +31,7 @@ import com.fpf.blucon.ui.components.bluetooth.DeviceList
 import com.fpf.blucon.ui.permissions.RequestPermissions
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Devices
 import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.PermScanWifi
 import androidx.compose.material.icons.filled.Scanner
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -52,6 +50,7 @@ fun ScanScreen(
     val context = LocalContext.current
     val state by viewModel.state.collectAsState()
     var bluetoothGranted by remember { mutableStateOf(false) }
+    var locationGranted by remember { mutableStateOf(false) }
     val screenTitle = stringResource(R.string.title_scan)
     val devices = state.devices.values.toList()
 
@@ -77,8 +76,15 @@ fun ScanScreen(
         )
     }
 
-    RequestPermissions { _, bluetoothOk ->
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT ).show()
+        }
+    }
+
+    RequestPermissions { _, bluetoothOk, locationOk ->
         bluetoothGranted = bluetoothOk
+        locationGranted =  locationOk
     }
 
     Box(
@@ -131,6 +137,12 @@ fun ScanScreen(
             if (!bluetoothGranted) {
                 Text(
                     text = "Bluetooth permission is required",
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+            if (!locationGranted) {
+                Text(
+                    text = "Location permission is required",
                     color = MaterialTheme.colorScheme.error
                 )
             }
