@@ -9,114 +9,47 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Looper
 import androidx.core.app.ActivityCompat
-import kotlinx.coroutines.CancellableContinuation
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class LocationTracker(context: Context) {
 
     private val context = context.applicationContext
-    private val locationManager =
-        context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-    private var locationContinuation: CancellableContinuation<Location>? = null
+
+    private val _connected = MutableStateFlow(false)
+    val connected: StateFlow<Boolean> = _connected.asStateFlow()
+
+    private val _location = MutableStateFlow<Location?>(null)
+    val location: StateFlow<Location?> = _location.asStateFlow()
 
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
-            locationContinuation?.let { continuation ->
-                locationContinuation = null
-                locationManager.removeUpdates(this)
-
-                if (continuation.isActive) {
-                    continuation.resume(location)
-                }
-            }
+            _location.value = location
+            _connected.value = true
         }
 
         override fun onProviderDisabled(provider: String) {
-            locationContinuation?.let { continuation ->
-                locationContinuation = null
-                locationManager.removeUpdates(this)
-
-                if (continuation.isActive) {
-                    continuation.resumeWithException(
-                        IllegalStateException("Location provider disabled")
-                    )
-                }
-            }
+            _connected.value = false
         }
     }
 
     @SuppressLint("MissingPermission")
-    suspend fun start(): Location {
+    fun start() {
         checkPermission()
 
-        getLastKnownLocation()?.let {
-            return it
-        }
-
-        if (!isLocationEnabled()) {
-            throw IllegalStateException("Location provider is disabled")
-        }
-
-        return suspendCancellableCoroutine { continuation ->
-            locationContinuation = continuation
-
-            try {
-                locationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    1000L,
-                    1f,
-                    locationListener,
-                    Looper.getMainLooper()
-                )
-                locationManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER,
-                    1000L,
-                    1f,
-                    locationListener,
-                    Looper.getMainLooper()
-                )
-
-                continuation.invokeOnCancellation {
-                    if (locationContinuation === continuation) {
-                        locationContinuation = null
-                    }
-                    locationManager.removeUpdates(locationListener)
-                }
-            } catch (e: Exception) {
-                if (locationContinuation === continuation) {
-                    locationContinuation = null
-                }
-
-                locationManager.removeUpdates(locationListener)
-                continuation.resumeWithException(e)
-            }
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun getLastKnownLocation(): Location? {
-        return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
-            ?: locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-            ?: locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER)
-    }
-
-    private fun isLocationEnabled(): Boolean {
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        locationManager.requestLocationUpdates(
+            LocationManager.GPS_PROVIDER,
+            1000L,
+            1f,
+            locationListener,
+            Looper.getMainLooper()
+        )
     }
 
     fun stop() {
-        locationContinuation?.let { continuation ->
-            locationContinuation = null
-
-            if (continuation.isActive) {
-                continuation.cancel()
-            }
-        }
-
         locationManager.removeUpdates(locationListener)
     }
 

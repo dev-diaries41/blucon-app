@@ -3,6 +3,7 @@ package com.fpf.blucon.ui.screens.scan
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
+import android.location.Location
 import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.AndroidViewModel
@@ -51,14 +52,39 @@ class ScanViewModel(
 
                 _state.update {
                     it.copy(
-                        devices = (it.devices.values + entries)
-                            .associateBy { device -> device.deviceAddress }
+                        devices = (it.devices.values + entries).associateBy { device -> device.deviceAddress }
                     )
                 }
 
                 scanEntryRepository.addEntries(entries)
             }
         }
+
+        viewModelScope.launch {
+            locationTracker.location.collect { location ->
+                location ?: return@collect
+
+                val shouldStartScan = _state.value.isScanning && _state.value.location == null
+
+                setLocation(location)
+
+                if (shouldStartScan) {
+                    startScanInternal(location)
+                }
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private suspend fun startScanInternal(location: Location){
+        val newBTScan = NewBTScan(
+            longitude = location.longitude,
+            latitude = location.latitude
+        )
+        val scanId = scanRepository.insertScan(newBTScan)
+//        Log.d(TAG, "scanId=$scanId, lat=${location.latitude}, lon=${location.longitude}")
+        setScan(newBTScan.toScan(scanId))
+        scanner.startScanBle()
     }
 
     @SuppressLint("MissingPermission")
@@ -66,21 +92,9 @@ class ScanViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 reset()
-
-                val location = locationTracker.start()
-
-                val newBTScan = NewBTScan(
-                    longitude = location.longitude,
-                    latitude = location.latitude
-                )
-
-                val scanId = scanRepository.insertScan(newBTScan)
-                Log.d(TAG, "scanId=$scanId, lat=${location.latitude}, lon=${location.longitude}")
-
-                setScan(newBTScan.toScan(scanId))
-                scanner.startScanBle()
                 setIsScanning(true)
                 setStartTime(System.currentTimeMillis())
+                locationTracker.start()
             } catch (e: Exception) {
                 Log.e(TAG, "Error starting scan", e)
                 locationTracker.stop()
@@ -100,6 +114,7 @@ class ScanViewModel(
                 scanner.stopScanBle()
                 locationTracker.stop()
                 setIsScanning(false)
+                setLocation(null)
             } catch (e: Exception) {
                 Log.e(TAG, "Error stopping scan", e)
                 _event.emit("Error stopping scan")
@@ -113,6 +128,8 @@ class ScanViewModel(
 
     private fun setStartTime(value: Long?) = _state.update { it.copy(startTime = value) }
 
+    private fun setLocation(value: Location?) = _state.update { it.copy(location = value) }
+
     private fun reset() {
         locationTracker.stop()
         _state.update {
@@ -120,7 +137,8 @@ class ScanViewModel(
                 isScanning = false,
                 scan = null,
                 startTime = null,
-                devices = mapOf()
+                devices = mapOf(),
+                location = null
             )
         }
         clearDevices()
