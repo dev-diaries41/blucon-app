@@ -49,7 +49,7 @@ class ScanEntryRepository(
 
     fun getServiceName(serviceId: Int?): String? = metadataRepository.getServiceName(serviceId)
 
-    suspend fun countEntries(query: String, manufacturerIds: List<Int> = emptyList()): Int =
+    suspend fun countEntries(query: String?= null, manufacturerIds: List<Int> = emptyList()): Int =
         dao.countEntries(query, manufacturerIds)
 
     suspend fun getManufacturerCounts(scanId: Long? = null, limit: Int, offset: Int = 0, descending: Boolean = true): List<Pair<String, Int>> = if (descending) {
