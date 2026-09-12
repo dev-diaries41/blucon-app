@@ -63,6 +63,7 @@ fun SearchScreen(
     val companyCounts = deviceMetadataViewModel.companyCounts.collectAsLazyPagingItems()
     val deviceNameCounts = deviceMetadataViewModel.deviceNameCounts.collectAsLazyPagingItems()
     val searchResultsVisible = searchResults.itemCount > 0
+    val showEmptyScreen = !searchResultsVisible && companyCounts.itemCount == 0 && deviceNameCounts.itemCount == 0
 
     // actions
     var showMenu by remember { mutableStateOf(false) }
@@ -170,6 +171,7 @@ fun SearchScreen(
         }
 
         EmptyItemsScreen(
+
             icon = {
                 Icon(
                     imageVector = Icons.Filled.Search,
@@ -179,7 +181,7 @@ fun SearchScreen(
                 )
             },
             title = if(viewModel.searchFieldState.text.isEmpty()) "Find devices" else  "No results" ,
-            isVisible = !searchResultsVisible
+            isVisible = showEmptyScreen
         )
     }
     OptionPicker(
