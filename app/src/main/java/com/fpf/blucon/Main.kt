@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.*
 import com.fpf.blucon.bluetooth.BTScan
+import com.fpf.blucon.navigation.BottomNavigationBar
 import com.fpf.blucon.navigation.NavDataKeys
 import com.fpf.blucon.navigation.Routes
 import com.fpf.blucon.navigation.TopBarState
@@ -46,6 +47,9 @@ fun Main(
                 }
             )
         },
+        bottomBar = {
+            BottomNavigationBar(navController)
+        }
     ) { paddingValues ->
         NavHost(
             navController = navController,
@@ -56,7 +60,6 @@ fun Main(
                 ScanScreen(
                     onTopBarChange = { topBarState.value = it },
                     onViewScanHistory = { navController.navigate(Routes.SCAN_HISTORY) },
-                    onSearch = {navController.navigate(Routes.SEARCH)}
                 )
             }
             composable(Routes.SCAN_HISTORY) {
@@ -85,6 +88,15 @@ fun Main(
                     scan = scan,
                     onBack = { navController.popBackStack() },
                 )
+            }
+
+            composable(Routes.SEARCH){
+                SearchScreen(
+                    onTopBarChange = { topBarState.value = it },
+                )
+            }
+
+            composable(Routes.SETTINGS){
                 SettingsScreen (
                     onTopBarChange = { topBarState.value = it },
                     onRestartApp = {onRestartApp()},
@@ -92,12 +104,6 @@ fun Main(
                 )
             }
 
-            composable(Routes.SEARCH){
-                SearchScreen(
-                    onTopBarChange = { topBarState.value = it },
-                    onBack = { navController.popBackStack() },
-                )
-            }
             composable(Routes.DONATE){
                 DonateScreen()
             }

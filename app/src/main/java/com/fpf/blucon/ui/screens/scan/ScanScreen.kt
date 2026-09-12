@@ -33,7 +33,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Scanner
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.ui.Alignment
 import com.fpf.blucon.ui.components.common.LoadingIndicator
@@ -44,7 +43,6 @@ import com.fpf.blucon.ui.components.placeholders.EmptyItemsScreen
 fun ScanScreen(
     onTopBarChange: (TopBarState) -> Unit,
     onViewScanHistory: () -> Unit,
-    onSearch: () -> Unit,
     viewModel: ScanViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
@@ -59,12 +57,6 @@ fun ScanScreen(
             TopBarState(
                 title = screenTitle,
                 actions = {
-                    IconButton (onClick = { onSearch()}) {
-                        Icon(
-                            imageVector = Icons.Filled.Search,
-                            contentDescription = "search devices"
-                        )
-                    }
                     IconButton (onClick = { onViewScanHistory()}) {
                         Icon(
                             imageVector = Icons.Filled.History,
