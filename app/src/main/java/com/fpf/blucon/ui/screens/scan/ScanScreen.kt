@@ -1,5 +1,6 @@
 package com.fpf.blucon.ui.screens.scan
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -73,6 +74,12 @@ fun ScanScreen(
                 }
             )
         )
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { message ->
+            Toast.makeText(context, message, Toast.LENGTH_SHORT ).show()
+        }
     }
 
     RequestPermissions { _, bluetoothOk, locationOk ->

@@ -47,6 +47,14 @@ class LocationTracker(context: Context) {
             locationListener,
             Looper.getMainLooper()
         )
+
+        locationManager.requestLocationUpdates(
+            LocationManager.NETWORK_PROVIDER,
+            1000L,
+            1f,
+            locationListener,
+            Looper.getMainLooper()
+        )
     }
 
     fun stop() {

@@ -97,12 +97,9 @@ class ScanViewModel(
                 locationTracker.start()
             } catch (e: Exception) {
                 Log.e(TAG, "Error starting scan", e)
-                locationTracker.stop()
+                stopScan()
                 _event.emit(e.message ?: "Error starting scan")
-
-                _state.value.scan?.let {
-                    scanRepository.deleteScans(listOf(it))
-                }
+                _state.value.scan?.let { scanRepository.deleteScans(listOf(it)) }
             }
         }
     }
@@ -131,7 +128,6 @@ class ScanViewModel(
     private fun setLocation(value: Location?) = _state.update { it.copy(location = value) }
 
     private fun reset() {
-        locationTracker.stop()
         _state.update {
             it.copy(
                 isScanning = false,
