@@ -47,7 +47,7 @@ import com.fpf.blucon.ui.components.common.SelectionHeaderRow
 import com.fpf.smartscan.ui.components.common.SlideRevealBox
 import com.fpf.smartscan.ui.components.pickers.OptionPicker
 import com.fpf.blucon.ui.components.placeholders.EmptyItemsScreen
-import com.fpf.blucon.ui.components.search.ResultsHeader
+import com.fpf.blucon.ui.components.search.ListHeader
 import kotlinx.coroutines.FlowPreview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -185,7 +185,7 @@ fun ScanHistoryScreen(
                 onOffsetChange = { offset = it },
                 maxCollapsePx = maxCollapsablePx,
             ){
-                ResultsHeader("${state.totalScans} scans")
+                ListHeader("${state.totalScans} scans")
             }
 
             EmptyItemsScreen(

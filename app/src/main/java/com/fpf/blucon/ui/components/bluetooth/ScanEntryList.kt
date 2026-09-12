@@ -34,7 +34,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.fpf.blucon.bluetooth.BTScanEntry
-import com.fpf.blucon.ui.components.search.ResultsHeader
+import com.fpf.blucon.ui.components.search.ListHeader
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -128,7 +128,7 @@ fun ScanEntryList(
                     }
                 }
             }
-            item { headerLabel?.let{ResultsHeader(it)} }
+            item { headerLabel?.let{ListHeader(it)} }
             items(
                 count = items.itemCount,
                 key = { index ->

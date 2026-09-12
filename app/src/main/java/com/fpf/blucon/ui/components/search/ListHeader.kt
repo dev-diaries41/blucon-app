@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ResultsHeader(label: String) {
+fun ListHeader(label: String) {
     Row(
         modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
