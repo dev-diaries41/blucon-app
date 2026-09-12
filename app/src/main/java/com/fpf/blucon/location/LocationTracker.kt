@@ -18,12 +18,17 @@ class LocationTracker(context: Context) {
     private val context = context.applicationContext
     private val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-
     private val _connected = MutableStateFlow(false)
     val connected: StateFlow<Boolean> = _connected.asStateFlow()
 
     private val _location = MutableStateFlow<Location?>(null)
     val location: StateFlow<Location?> = _location.asStateFlow()
+
+    private val hasGpsProvider: Boolean
+        get() = isProviderAvailable(LocationManager.GPS_PROVIDER)
+    private val hasNetworkProvider: Boolean
+        get() = isProviderAvailable(LocationManager.NETWORK_PROVIDER)
+
 
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
@@ -40,21 +45,27 @@ class LocationTracker(context: Context) {
     fun start() {
         checkPermission()
 
-        locationManager.requestLocationUpdates(
-            LocationManager.GPS_PROVIDER,
-            1000L,
-            1f,
-            locationListener,
-            Looper.getMainLooper()
-        )
+        if(!hasNetworkProvider && !hasGpsProvider) throw IllegalStateException("No valid provider")
 
-        locationManager.requestLocationUpdates(
-            LocationManager.NETWORK_PROVIDER,
-            1000L,
-            1f,
-            locationListener,
-            Looper.getMainLooper()
-        )
+        if(isProviderAvailable(LocationManager.GPS_PROVIDER)) {
+            locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                1000L,
+                1f,
+                locationListener,
+                Looper.getMainLooper()
+            )
+        }
+
+        if(isProviderAvailable(LocationManager.NETWORK_PROVIDER)) {
+            locationManager.requestLocationUpdates(
+                LocationManager.NETWORK_PROVIDER,
+                1000L,
+                1f,
+                locationListener,
+                Looper.getMainLooper()
+            )
+        }
     }
 
     fun stop() {
@@ -75,4 +86,7 @@ class LocationTracker(context: Context) {
             throw IllegalStateException("Location permission not granted")
         }
     }
+
+    private fun isProviderAvailable(provider: String): Boolean = locationManager.getProviderProperties(provider) != null
+
 }
