@@ -1,6 +1,8 @@
 package com.fpf.blucon.navigation
 
 object Routes {
+    const val HUB = "hub"
+
     const val SCAN = "scan"
     const val SCAN_HISTORY = "scan_history"
     const val SCAN_DEVICES = "devices"
