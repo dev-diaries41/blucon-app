@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import com.fpf.blucon.di.dbModule
+import com.fpf.blucon.di.embedsModule
 import com.fpf.blucon.di.modelModule
 import com.fpf.blucon.di.storageModule
 import com.fpf.blucon.di.viewModelModule
@@ -25,7 +26,8 @@ class App : Application() {
                     dbModule,
                     viewModelModule,
                     storageModule,
-                    modelModule
+                    modelModule,
+                    embedsModule
                 )
             }
         }
@@ -40,7 +42,8 @@ class App : Application() {
                 dbModule,
                 viewModelModule,
                 storageModule,
-                modelModule
+                modelModule,
+                embedsModule
             )
         }
 
