@@ -68,6 +68,10 @@ class ScanEntryViewModel(
         get() = listOf(
             getApplication<Application>().getString(R.string.sort_date_asc_option) to SortBy.Date(descending = false),
             getApplication<Application>().getString(R.string.sort_date_desc_option) to SortBy.Date(descending = true),
+            getApplication<Application>().getString(R.string.sort_name_asc_option) to SortBy.Name(descending = false),
+            getApplication<Application>().getString(R.string.sort_name_desc_option) to SortBy.Name(descending = true),
+            getApplication<Application>().getString(R.string.sort_rssi_asc_option) to SortBy.Rssi(descending = false),
+            getApplication<Application>().getString(R.string.sort_rssi_desc_option) to SortBy.Rssi(descending = true),
         )
 
     init {

@@ -21,13 +21,13 @@ class ScanEntriesPagingSource(
                 descending = sortBy.descending
             )
 
-            is SortBy.NAME -> scanEntryRepository.getEntriesByName(
+            is SortBy.Name -> scanEntryRepository.getEntriesByName(
                 scanId=scanId,
                 limit = pageSize + 1,
                 offset = offset,
                 descending = sortBy.descending
             )
-            is SortBy.RSSI -> scanEntryRepository.getEntriesByRssi(
+            is SortBy.Rssi -> scanEntryRepository.getEntriesByRssi(
                 scanId=scanId,
                 limit = pageSize + 1,
                 offset = offset,

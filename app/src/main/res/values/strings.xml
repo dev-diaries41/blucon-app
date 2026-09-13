@@ -24,8 +24,14 @@
     <!--Sort Options-->
     <string name="sort_date_asc_option">Date (ascending)</string>
     <string name="sort_date_desc_option">Date (descending)</string>
-    <string name="sort_similarity_asc_option">Size (ascending)</string>
-    <string name="sort_similarity_desc_option">Size (descending)</string>
+    <string name="sort_similarity_asc_option">Relevance (ascending)</string>
+    <string name="sort_similarity_desc_option">Relevance (descending)</string>
+    <string name="sort_rank_asc_option">Rank (ascending)</string>
+    <string name="sort_rank_desc_option">Rank (descending)</string>
+    <string name="sort_rssi_asc_option">Nearest (ascending)</string>
+    <string name="sort_rssi_desc_option">Nearest (descending)</string>
+    <string name="sort_name_asc_option">Name (ascending)</string>
+    <string name="sort_name_desc_option">Name (descending)</string>
 
     <!-- Donate screen -->
     <string name="label_btc">Bitcoin</string>

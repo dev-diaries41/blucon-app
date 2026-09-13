@@ -27,14 +27,14 @@ class SearchEntriesPagingSource(
                     manufacturerIds = manufacturerIds
                 )
 
-                is SortBy.NAME -> scanEntryRepository.queryEntriesByName(
+                is SortBy.Name -> scanEntryRepository.queryEntriesByName(
                     query=query,
                     limit = pageSize + 1,
                     offset = offset,
                     descending = sortBy.descending,
                     manufacturerIds = manufacturerIds
                 )
-                is SortBy.RSSI -> error("RSSI Not supported for search")
+                is SortBy.Rssi -> error("Rssi Not supported for search")
             }
         }
         return entries
