@@ -68,7 +68,7 @@ kotlin {
 dependencies {
 
     // ML
-    implementation("com.github.smartscanapp.smartscan-android-lib:smartscan-ml:3.1.0")
+    implementation(libs.smartscan.ml)
 
     // Yaml parser
     implementation(libs.snakeyaml)
@@ -92,6 +92,9 @@ dependencies {
 
     // SplashScreen
     implementation(libs.androidx.core.splashscreen)
+
+    // Background tasks
+    implementation (libs.androidx.work.runtime.ktx)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
