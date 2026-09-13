@@ -2,10 +2,11 @@ package com.fpf.blucon.data.scans
 
 import com.fpf.blucon.bluetooth.BTScan
 import com.fpf.blucon.bluetooth.NewBTScan
+import com.fpf.blucon.data.MetadataRepository
 import com.fpf.blucon.data.mappers.toDomain
 import com.fpf.blucon.data.mappers.toEntity
 
-class ScanRepository(private val dao: ScanDao) {
+class ScanRepository(private val dao: ScanDao, private val metadataRepository: MetadataRepository) {
     suspend fun insertScan(scan: NewBTScan): Long = dao.insertScan(scan.toEntity())
     suspend fun getScans(limit: Int, offset: Int, startDate: Long? = null, endDate: Long? = null, descending: Boolean = true): List<BTScan> =
         if(descending){
@@ -19,4 +20,6 @@ class ScanRepository(private val dao: ScanDao) {
     suspend fun deleteScansById(ids: List<Long>) = dao.deleteScansById(ids)
     suspend fun countScans(): Int = dao.countScans()
     suspend fun clearScans() = dao.clearScans()
+
+    fun getPostcode(long: Double, lat: Double): String? = metadataRepository.getPostcode(longitude = long, latitude = lat)
 }
