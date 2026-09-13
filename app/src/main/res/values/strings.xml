@@ -44,7 +44,7 @@
     <string name="setting_backup_restore">Backup &amp; Restore</string>
     <string name="setting_backup">Backup</string>
     <string name="setting_restore">Restore</string>
-    <string name="setting_export">Export as json</string>
+    <string name="setting_export">Export JSON</string>
     <string name="setting_export_description">Export zip containing data as json files</string>
     <string name="setting_backup_restore_description">%1$s database</string>
     <string name="setting_issues">Issues</string>
