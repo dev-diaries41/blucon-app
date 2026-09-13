@@ -80,9 +80,15 @@ fun InfoCard(
 fun InfoRow(
     label: String,
     value: String,
-    highlight: Boolean = false,
-) {
-    val color = if (highlight) {
+    highlightLabel: Boolean = false,
+    highlightValue: Boolean = false,
+    ) {
+    val labelColor = if (highlightLabel) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    }
+    val valueColor = if (highlightValue) {
         MaterialTheme.colorScheme.primary
     } else {
         MaterialTheme.colorScheme.onSurfaceVariant
@@ -96,14 +102,14 @@ fun InfoRow(
         Text(
             text = label,
             style = MaterialTheme.typography.labelLarge,
-            color = color,
+            color = labelColor,
             modifier = Modifier.weight(0.35f)
         )
 
         Text(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
-            color = color,
+            color = valueColor,
             maxLines = 1,
             textAlign = TextAlign.End,
             overflow = TextOverflow.Ellipsis,

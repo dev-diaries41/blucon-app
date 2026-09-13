@@ -127,7 +127,11 @@ fun CountsList(
                 }
             ) { index ->
                 val (key, count) = items[index] ?: return@items
-                InfoRow(key, count.toString())
+                Box(
+                    modifier = Modifier.padding(16.dp)
+                ){
+                    InfoRow(key, count.toString(), highlightLabel = true)
+                }
             }
         }
 
