@@ -53,7 +53,7 @@ fun Main(
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = Routes.SEARCH,
+            startDestination = Routes.SCAN,
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(Routes.SCAN) {
@@ -92,6 +92,7 @@ fun Main(
 
             composable(Routes.SEARCH){
                 SearchScreen(
+                    onBack = { navController.popBackStack() },
                     onTopBarChange = { topBarState.value = it },
                 )
             }

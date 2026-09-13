@@ -9,8 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Business
-import androidx.compose.material.icons.filled.Devices
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -34,17 +33,13 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.fpf.blucon.R
 import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.action.MenuActionConfig
-import com.fpf.blucon.ui.components.bluetooth.CountsList
-import com.fpf.blucon.ui.components.bluetooth.DeviceOverviewCard
 import com.fpf.blucon.ui.components.bluetooth.ScanEntryStaggeredGrid
 import com.fpf.blucon.ui.components.common.DropDownMenuWrapper
 import com.fpf.blucon.ui.components.common.SearchBar
-import com.fpf.blucon.ui.components.modals.BottomSheet
 import com.fpf.smartscan.ui.components.common.SlideRevealBox
 import com.fpf.smartscan.ui.components.pickers.OptionPicker
 import com.fpf.blucon.ui.components.placeholders.EmptyItemsScreen
 import com.fpf.blucon.ui.components.search.Header
-import com.fpf.blucon.ui.shared.DeviceMetadataViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
@@ -55,21 +50,17 @@ import kotlin.time.Duration.Companion.milliseconds
 @Composable
 fun SearchScreen(
     onTopBarChange: (TopBarState) -> Unit,
+    onBack: () -> Unit,
     viewModel: SearchViewModel = koinViewModel(),
-    deviceMetadataViewModel: DeviceMetadataViewModel = koinViewModel(),
     ) {
     val state by viewModel.state.collectAsState()
     val searchResults = viewModel.searchResults.collectAsLazyPagingItems()
-    val companyCounts = deviceMetadataViewModel.companyCounts.collectAsLazyPagingItems()
-    val deviceNameCounts = deviceMetadataViewModel.deviceNameCounts.collectAsLazyPagingItems()
     val searchResultsVisible = searchResults.itemCount > 0
-    val showEmptyScreen = !searchResultsVisible && companyCounts.itemCount == 0 && deviceNameCounts.itemCount == 0
+    val showEmptyScreen = !searchResultsVisible
 
     // actions
     var showMenu by remember { mutableStateOf(false) }
     var showSortOptions by remember { mutableStateOf(false) }
-    var showDevicesCounts by remember { mutableStateOf(false) }
-    var showCompanyCounts by remember { mutableStateOf(false) }
 
     val menuActions: List<MenuActionConfig> = listOf(
         MenuActionConfig.Button(
@@ -96,11 +87,12 @@ fun SearchScreen(
                         placeholders = listOf("Search devices"),
                         onSearch = {viewModel.onAction(SearchAction.Search(viewModel.searchFieldState.text.toString()))},
                         leadingIcon = {
-                            Icon(
-                                Icons.Filled.Search,
-                                contentDescription = null,
-                                modifier = Modifier.padding(start = 16.dp)
-                            )
+                            IconButton (onClick = onBack) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                                    contentDescription = "back"
+                                )
+                            }
                         },
                         trailingIcon = {
                             Box{
@@ -159,19 +151,9 @@ fun SearchScreen(
                 maxCollapsePx = maxCollapsablePx,
                 headerRow = { Header("${state.totalResults} Results") },
             )
-            if (state.manufacturerCounts.isNotEmpty() && state.deviceNameCounts.isNotEmpty()) {
-                DeviceOverviewCard(
-                    totalEntries = state.totalEntries,
-                    topManufacturerCounts = state.manufacturerCounts,
-                    topDeviceNameCounts = state.deviceNameCounts,
-                    onViewAllManufacturers = {showCompanyCounts = true},
-                    onViewAllDevices = {showDevicesCounts = true}
-                )
-            }
         }
 
         EmptyItemsScreen(
-
             icon = {
                 Icon(
                     imageVector = Icons.Filled.Search,
@@ -196,30 +178,5 @@ fun SearchScreen(
         onClose = {showSortOptions = false}
     )
 
-    BottomSheet(
-        show = showDevicesCounts,
-        onDismiss = {showDevicesCounts = false}
-    ) {
-        CountsList(
-            items = deviceNameCounts,
-            isVisible = true,
-            headerContent = {
-                Header(stringResource(R.string.devices_names), Icons.Filled.Devices)
-            },
-        )
-    }
-
-    BottomSheet(
-        show = showCompanyCounts,
-        onDismiss = {showCompanyCounts = false}
-    ) {
-        CountsList(
-            items = companyCounts,
-            isVisible = true,
-            headerContent = {
-                Header(stringResource(R.string.manufacturers), Icons.Filled.Business)
-            },
-        )
-    }
 
 }

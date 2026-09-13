@@ -24,7 +24,6 @@ import com.fpf.blucon.R
 @Composable
 fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
-        BottomNavItem(Routes.SEARCH, stringResource(R.string.title_search), Icons.Filled.Explore),
         BottomNavItem(Routes.SCAN, stringResource(R.string.title_scan), Icons.Filled.Scanner),
         BottomNavItem(Routes.SETTINGS, stringResource(R.string.title_settings), Icons.Filled.Settings),
     )
