@@ -18,7 +18,6 @@ import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.data.scans.ScanRepository
 import com.fpf.blucon.errors.AppException
 import com.fpf.blucon.location.LocationTracker
-import com.fpf.smartscansdk.core.embeddings.TextEmbeddingProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,7 +30,6 @@ class ScanViewModel(
     application: Application,
     private val scanRepository: ScanRepository,
     private val scanEntryRepository: ScanEntryRepository,
-    private val textEmbedder: TextEmbeddingProvider
 ) : AndroidViewModel(application) {
 
     companion object {
@@ -59,7 +57,6 @@ class ScanViewModel(
 
     private fun observeDevices() {
         viewModelScope.launch(Dispatchers.IO) {
-            Log.d(TAG, "Model dim: ${textEmbedder.embeddingDim}")
             scanner.devices.collect { devices ->
                 val unseenDevices = devices.filter { it.key !in _state.value.devices.keys }
                 val entries = toScanEntries(unseenDevices.values.toList())
