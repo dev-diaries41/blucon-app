@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,7 +32,9 @@ import com.fpf.blucon.ui.components.bluetooth.DeviceList
 import com.fpf.blucon.ui.permissions.RequestPermissions
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BluetoothDisabled
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.LocationOff
 import androidx.compose.material.icons.filled.Scanner
 import androidx.compose.material3.Icon
 import androidx.compose.ui.Alignment
@@ -121,11 +124,6 @@ fun ScanScreen(
                     LoadingIndicator(isVisible = true, size = 24.dp)
                 }
             }
-            DeviceList(
-                devices = devices,
-                modifier = Modifier.weight(1f),
-            )
-
             if (!bluetoothGranted) {
                 Text(
                     text = "Bluetooth permission is required",
@@ -139,6 +137,34 @@ fun ScanScreen(
                 )
             }
 
+            if (!viewModel.isLocationEnabled) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Icon(
+                        imageVector = Icons.Default.LocationOff,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                    Text("Location is off", color = MaterialTheme.colorScheme.error)
+                }
+            }
+
+            if (!viewModel.isBluetoothEnabled) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Icon(
+                        imageVector = Icons.Default.BluetoothDisabled,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                    Text("Bluetooth is off", color = MaterialTheme.colorScheme.error)
+                }
+            }
+
+
+            DeviceList(
+                devices = devices,
+                modifier = Modifier.weight(1f),
+            )
+
             Row (
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -151,7 +177,7 @@ fun ScanScreen(
                             viewModel.startScan()
                         }
                     },
-                    enabled = bluetoothGranted,
+                    enabled = bluetoothGranted && locationGranted && viewModel.isScanEnabled,
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(if (state.isScanning) "Stop scan" else "Scan")

@@ -16,6 +16,7 @@ import com.fpf.blucon.bluetooth.NewBTScan
 import com.fpf.blucon.bluetooth.toScan
 import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.data.scans.ScanRepository
+import com.fpf.blucon.errors.AppException
 import com.fpf.blucon.location.LocationTracker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -43,6 +44,12 @@ class ScanViewModel(
 
     private val _event = MutableSharedFlow<String>()
     val event = _event.asSharedFlow()
+
+    val isLocationEnabled: Boolean = locationTracker.isLocationEnabled
+
+    val isBluetoothEnabled: Boolean = scanner.isBluetoothEnabled
+
+    val isScanEnabled: Boolean = isLocationEnabled && isBluetoothEnabled
 
     init {
         viewModelScope.launch {
@@ -82,9 +89,15 @@ class ScanViewModel(
             latitude = location.latitude
         )
         val scanId = scanRepository.insertScan(newBTScan)
-//        Log.d(TAG, "scanId=$scanId, lat=${location.latitude}, lon=${location.longitude}")
         setScan(newBTScan.toScan(scanId))
-        scanner.startScanBle()
+        try {
+            scanner.startScanBle()
+        } catch (e: AppException.BluetoothUnavailableException) {
+            Log.e(TAG, "Error starting bluetooth", e)
+            stopScan()
+            _event.emit(e.message)
+            _state.value.scan?.let { scanRepository.deleteScans(listOf(it)) }
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -95,11 +108,10 @@ class ScanViewModel(
                 setIsScanning(true)
                 setStartTime(System.currentTimeMillis())
                 locationTracker.start()
-            } catch (e: Exception) {
-                Log.e(TAG, "Error starting scan", e)
+            } catch (e: AppException.LocationUnavailableException) {
+                Log.e(TAG, "Error starting location tracker", e)
                 stopScan()
-                _event.emit(e.message ?: "Error starting scan")
-                _state.value.scan?.let { scanRepository.deleteScans(listOf(it)) }
+                _event.emit(e.message)
             }
         }
     }

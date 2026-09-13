@@ -8,4 +8,8 @@ sealed class AppException(message: String, cause: Throwable? = null) : Exception
 
     class SearchException(override val message: String = "An unknown search error occurred", cause: Throwable? = null) : AppException(message, cause)
 
+    class LocationUnavailableException(override val message: String = "Location unavailable", cause: Throwable? = null) : AppException(message, cause)
+
+    class BluetoothUnavailableException(override val message: String = "Bluetooth unavailable", cause: Throwable? = null) : AppException(message, cause)
+
 }
