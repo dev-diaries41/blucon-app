@@ -18,15 +18,25 @@ class SearchEntriesPagingSource(
         val entries = if(query.isNullOrBlank()){
             emptyList()
         }else{
-            scanEntryRepository.queryEntries(
-                query=query,
-                limit = pageSize + 1,
-                offset = offset,
-                descending = sortBy.descending,
-                manufacturerIds = manufacturerIds
-            )
-        }
+            when(sortBy){
+                is SortBy.Date -> scanEntryRepository.queryEntries(
+                    query=query,
+                    limit = pageSize + 1,
+                    offset = offset,
+                    descending = sortBy.descending,
+                    manufacturerIds = manufacturerIds
+                )
 
+                is SortBy.Name -> scanEntryRepository.queryEntriesByName(
+                    query=query,
+                    limit = pageSize + 1,
+                    offset = offset,
+                    descending = sortBy.descending,
+                    manufacturerIds = manufacturerIds
+                )
+                is SortBy.Rssi -> error("Rssi Not supported for search")
+            }
+        }
         return entries
     }
 

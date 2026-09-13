@@ -39,6 +39,39 @@ interface ScanEntryDao {
     suspend fun getEntriesAsc(scanId: Long?, limit: Int, offset: Int): List<ScanEntryEntity>
 
     @Query("""
+    SELECT * FROM scan_entry
+    WHERE (scanId = :scanId OR :scanId IS NULL)
+    ORDER BY rssi DESC, deviceAddress DESC
+    LIMIT :limit OFFSET :offset
+""")
+    suspend fun getEntriesByRssiDesc(scanId: Long?, limit: Int, offset: Int): List<ScanEntryEntity>
+
+    @Query("""
+    SELECT * FROM scan_entry
+    WHERE (scanId = :scanId OR :scanId IS NULL)
+    ORDER BY rssi ASC, deviceAddress ASC
+    LIMIT :limit OFFSET :offset
+""")
+    suspend fun getEntriesByRssiAsc(scanId: Long?, limit: Int, offset: Int): List<ScanEntryEntity>
+
+    @Query("""
+    SELECT * FROM scan_entry
+    WHERE (scanId = :scanId OR :scanId IS NULL)
+    ORDER BY deviceName DESC, deviceAddress DESC
+    LIMIT :limit OFFSET :offset
+""")
+    suspend fun getEntriesByNameDesc(scanId: Long?, limit: Int, offset: Int): List<ScanEntryEntity>
+
+    @Query("""
+    SELECT * FROM scan_entry
+    WHERE (scanId = :scanId OR :scanId IS NULL)
+    ORDER BY deviceName ASC, deviceAddress ASC
+    LIMIT :limit OFFSET :offset
+""")
+    suspend fun getEntriesByNameAsc(scanId: Long?, limit: Int, offset: Int): List<ScanEntryEntity>
+
+
+    @Query("""
     SELECT *
     FROM scan_entry
     WHERE :query IS NULL
@@ -66,6 +99,38 @@ interface ScanEntryDao {
     suspend fun queryEntriesAsc(
         query: String,
         manufacturerIds: List<Int>,
+        limit: Int,
+        offset: Int
+    ): List<ScanEntryEntity>
+
+    @Query("""
+    SELECT *
+    FROM scan_entry
+    WHERE :query IS NULL
+        OR deviceName LIKE '%' || :query || '%'
+        OR manufacturerId IN (:manufacturerIds)
+    ORDER BY deviceName ASC, deviceAddress ASC
+    LIMIT :limit OFFSET :offset
+""")
+    suspend fun queryEntriesNameAsc(
+        query: String?,
+        manufacturerIds: List<Int>?,
+        limit: Int,
+        offset: Int
+    ): List<ScanEntryEntity>
+
+    @Query("""
+    SELECT *
+    FROM scan_entry
+    WHERE :query IS NULL
+        OR deviceName LIKE '%' || :query || '%'
+        OR manufacturerId IN (:manufacturerIds)
+    ORDER BY deviceName DESC, deviceAddress DESC
+    LIMIT :limit OFFSET :offset
+""")
+    suspend fun queryEntriesNameDesc(
+        query: String?,
+        manufacturerIds: List<Int>?,
         limit: Int,
         offset: Int
     ): List<ScanEntryEntity>

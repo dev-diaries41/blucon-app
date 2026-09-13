@@ -13,13 +13,27 @@ class ScanEntriesPagingSource(
     sortBy = sortBy,
 ) {
     override suspend fun getItems(sortBy: SortBy, pageSize: Int, offset: Int, filter: Nothing?): List<BTScanEntry> {
-        val entries = scanEntryRepository.getEntries(
+        val entries= when(sortBy){
+            is SortBy.Date -> scanEntryRepository.getEntries(
                 scanId=scanId,
                 limit = pageSize + 1,
                 offset = offset,
                 descending = sortBy.descending
             )
 
+            is SortBy.Name -> scanEntryRepository.getEntriesByName(
+                scanId=scanId,
+                limit = pageSize + 1,
+                offset = offset,
+                descending = sortBy.descending
+            )
+            is SortBy.Rssi -> scanEntryRepository.getEntriesByRssi(
+                scanId=scanId,
+                limit = pageSize + 1,
+                offset = offset,
+                descending = sortBy.descending
+            )
+        }
         return entries
     }
 
