@@ -4,6 +4,7 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import com.fpf.blucon.di.dbModule
+import com.fpf.blucon.di.modelModule
 import com.fpf.blucon.di.storageModule
 import com.fpf.blucon.di.viewModelModule
 import com.fpf.blucon.notifications.NotificationChannels
@@ -23,7 +24,8 @@ class App : Application() {
                 modules(
                     dbModule,
                     viewModelModule,
-                    storageModule
+                    storageModule,
+                    modelModule
                 )
             }
         }
@@ -37,7 +39,8 @@ class App : Application() {
             modules(
                 dbModule,
                 viewModelModule,
-                storageModule
+                storageModule,
+                modelModule
             )
         }
 
