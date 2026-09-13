@@ -1,6 +1,7 @@
 package com.fpf.blucon.ui.screens.history
 
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -29,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
@@ -37,6 +39,7 @@ import androidx.compose.ui.zIndex
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.fpf.blucon.R
 import com.fpf.blucon.bluetooth.BTScan
+import com.fpf.blucon.events.ScanHistoryEventType
 import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.action.ActionConfig
 import com.fpf.blucon.ui.action.MenuActionConfig
@@ -59,6 +62,7 @@ fun ScanHistoryScreen(
     onBack: () -> Unit,
     viewModel: ScanHistoryViewModel = koinViewModel(),
 ) {
+    val context = LocalContext.current
     val actionBarHeight = 70
     val state by viewModel.state.collectAsState()
 
@@ -128,6 +132,19 @@ fun ScanHistoryScreen(
                 }
             )
         )
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.event.collect { event ->
+            event.message?.let{ Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+
+            }
+            when(event.type){
+                ScanHistoryEventType.DELETE -> {
+                    scanHistory.refresh()
+                }
+            }
+        }
     }
 
 

@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,10 +18,14 @@ import androidx.paging.cachedIn
 import com.fpf.blucon.bluetooth.BTScan
 import com.fpf.blucon.data.paging.ScanHistoryPagingSource
 import com.fpf.blucon.data.scans.ScanRepository
+import com.fpf.blucon.events.ScanHistoryEvent
+import com.fpf.blucon.events.ScanHistoryEventType
 import com.fpf.blucon.query.SortBy
 import com.fpf.blucon.storage.PrefsKeys
 import com.fpf.blucon.ui.utils.SelectionUtils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -61,8 +66,8 @@ class ScanHistoryViewModel(
         }
         .cachedIn(viewModelScope)
 
-//    private val _event = MutableSharedFlow<CollectionItemEvent>()
-//    val event = _event.asSharedFlow()
+    private val _event = MutableSharedFlow<ScanHistoryEvent>()
+    val event = _event.asSharedFlow()
 
     val sortByOptions: List<Pair<String, SortBy>>
         get() = listOf(
@@ -98,11 +103,20 @@ class ScanHistoryViewModel(
 
     private fun deleteScans(){
         viewModelScope.launch{
-            val items = withContext(Dispatchers.IO) {
-                getSelectedItems().toList()
+            try {
+                val items = withContext(Dispatchers.IO) {
+                    getSelectedItems().toList()
+                }
+                scanRepository.deleteScans(items)
+                _state.update { it.copy(totalScans = it.totalScans - items.size) }
+                resetSelection()
+                _event.emit(ScanHistoryEvent(ScanHistoryEventType.DELETE, success = true, message = "Deleted ${items.size} scans"))
+            }catch (e: Exception){
+                Log.d(TAG, "Error deleting scans", e)
+                _event.emit(ScanHistoryEvent(ScanHistoryEventType.DELETE, success = false,
+                    "Error deleting scans"
+                ))
             }
-            scanRepository.deleteScans(items)
-            resetSelection()
         }
     }
 
