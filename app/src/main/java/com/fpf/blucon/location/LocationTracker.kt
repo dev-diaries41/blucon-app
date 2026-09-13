@@ -8,6 +8,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,12 +25,6 @@ class LocationTracker(context: Context) {
     private val _location = MutableStateFlow<Location?>(null)
     val location: StateFlow<Location?> = _location.asStateFlow()
 
-    private val hasGpsProvider: Boolean
-        get() = isProviderAvailable(LocationManager.GPS_PROVIDER)
-    private val hasNetworkProvider: Boolean
-        get() = isProviderAvailable(LocationManager.NETWORK_PROVIDER)
-
-
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
             _location.value = location
@@ -45,9 +40,23 @@ class LocationTracker(context: Context) {
     fun start() {
         checkPermission()
 
-        if(!hasNetworkProvider && !hasGpsProvider) throw IllegalStateException("No valid provider")
+        val hasGpsProvider = isProviderAvailable(LocationManager.GPS_PROVIDER)
+        val hasNetworkProvider = isProviderAvailable(LocationManager.NETWORK_PROVIDER)
+        val hasFusedProvider = isProviderAvailable(LocationManager.FUSED_PROVIDER)
 
-        if(isProviderAvailable(LocationManager.GPS_PROVIDER)) {
+        if(listOf(hasGpsProvider, hasNetworkProvider, hasFusedProvider).all{ !it }) throw IllegalStateException("No valid provider")
+
+        if(hasFusedProvider) {
+            locationManager.requestLocationUpdates(
+                LocationManager.FUSED_PROVIDER,
+                1000L,
+                1f,
+                locationListener,
+                Looper.getMainLooper()
+            )
+        }
+
+        if(hasGpsProvider) {
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
                 1000L,
@@ -57,7 +66,7 @@ class LocationTracker(context: Context) {
             )
         }
 
-        if(isProviderAvailable(LocationManager.NETWORK_PROVIDER)) {
+        if(hasNetworkProvider) {
             locationManager.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER,
                 1000L,
@@ -66,6 +75,7 @@ class LocationTracker(context: Context) {
                 Looper.getMainLooper()
             )
         }
+
     }
 
     fun stop() {
@@ -87,6 +97,5 @@ class LocationTracker(context: Context) {
         }
     }
 
-    private fun isProviderAvailable(provider: String): Boolean = locationManager.getProviderProperties(provider) != null
-
+    private fun isProviderAvailable(provider: String): Boolean = locationManager.allProviders.contains(provider)
 }
