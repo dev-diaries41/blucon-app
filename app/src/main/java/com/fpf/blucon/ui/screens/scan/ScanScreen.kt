@@ -36,6 +36,7 @@ import androidx.compose.material.icons.filled.BluetoothDisabled
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.LocationOff
 import androidx.compose.material.icons.filled.Scanner
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.ui.Alignment
 import com.fpf.blucon.ui.components.common.LoadingIndicator
@@ -46,6 +47,7 @@ import com.fpf.blucon.ui.components.placeholders.EmptyItemsScreen
 fun ScanScreen(
     onTopBarChange: (TopBarState) -> Unit,
     onViewScanHistory: () -> Unit,
+    onViewSettings: () -> Unit,
     viewModel: ScanViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
@@ -64,6 +66,12 @@ fun ScanScreen(
                         Icon(
                             imageVector = Icons.Filled.History,
                             contentDescription = "scan history"
+                        )
+                    }
+                    IconButton(onClick = onViewSettings) {
+                        Icon(
+                            Icons.Filled.Settings,
+                            contentDescription = "Settings"
                         )
                     }
                 }

@@ -3,6 +3,7 @@ package com.fpf.blucon.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.Explore
+import androidx.compose.material.icons.filled.Hub
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.Scanner
@@ -24,9 +25,8 @@ import com.fpf.blucon.R
 @Composable
 fun BottomNavigationBar(navController: NavController) {
     val items = listOf(
-        BottomNavItem(Routes.SEARCH, stringResource(R.string.title_search), Icons.Filled.Explore),
+        BottomNavItem(Routes.HUB, stringResource(R.string.title_hub), Icons.Filled.Hub),
         BottomNavItem(Routes.SCAN, stringResource(R.string.title_scan), Icons.Filled.Scanner),
-        BottomNavItem(Routes.SETTINGS, stringResource(R.string.title_settings), Icons.Filled.Settings),
     )
 
     NavigationBar{

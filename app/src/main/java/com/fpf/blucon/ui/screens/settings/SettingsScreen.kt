@@ -48,6 +48,7 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = koinViewModel(),
     onTopBarChange: (TopBarState) -> Unit,
     onRestartApp: () -> Unit,
+    onBack: () -> Unit,
     ) {
     val appSettings by viewModel.appSettings.collectAsState()
     val isBackupLoading by viewModel.isBackupLoading.collectAsState()
@@ -69,6 +70,14 @@ fun SettingsScreen(
         onTopBarChange(
             TopBarState(
                 title = screenTitle,
+                navigationIcon = {
+                    IconButton (onClick = onBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = "ArrowBack"
+                        )
+                    }
+                }
             ),
         )
     }

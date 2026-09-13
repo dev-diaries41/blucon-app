@@ -13,6 +13,7 @@ import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.screens.scan.entries.ScanEntryScreen
 import com.fpf.blucon.ui.screens.donate.DonateScreen
 import com.fpf.blucon.ui.screens.history.ScanHistoryScreen
+import com.fpf.blucon.ui.screens.hub.HubScreen
 import com.fpf.blucon.ui.screens.scan.ScanScreen
 import com.fpf.blucon.ui.screens.search.SearchScreen
 import com.fpf.blucon.ui.screens.settings.SettingsScreen
@@ -53,12 +54,20 @@ fun Main(
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = Routes.SEARCH,
+            startDestination = Routes.HUB,
             modifier = Modifier.padding(paddingValues)
         ) {
+            composable(Routes.HUB) {
+                HubScreen(
+                    onTopBarChange = { topBarState.value = it },
+                    onViewSettings = { navController.navigate(Routes.SETTINGS) },
+                    onSearch = { navController.navigate(Routes.SEARCH) },
+                    )
+            }
             composable(Routes.SCAN) {
                 ScanScreen(
                     onTopBarChange = { topBarState.value = it },
+                    onViewSettings = { navController.navigate(Routes.SETTINGS) },
                     onViewScanHistory = { navController.navigate(Routes.SCAN_HISTORY) },
                 )
             }
@@ -92,12 +101,14 @@ fun Main(
 
             composable(Routes.SEARCH){
                 SearchScreen(
+                    onBack = { navController.popBackStack() },
                     onTopBarChange = { topBarState.value = it },
                 )
             }
 
             composable(Routes.SETTINGS){
                 SettingsScreen (
+                    onBack = { navController.popBackStack() },
                     onTopBarChange = { topBarState.value = it },
                     onRestartApp = {onRestartApp()},
                 )

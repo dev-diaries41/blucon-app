@@ -48,7 +48,6 @@ val viewModelModule = module {
         DeviceMetadataViewModel(
             application = get(),
             scanEntryRepository = get(),
-            sharedPrefs = get()
         )
     }
 
