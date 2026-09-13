@@ -12,6 +12,12 @@
     <string name="title_settings">Settings</string>
     <string name="title_donate">Donate</string>
 
+    <!--Labels-->
+    <string name="manufacturers">Manufacturers</string>
+    <string name="devices_names">Device names</string>
+    <string name="groups">Groups</string>
+    <string name="tags">Tags</string>
+
     <!--Action, Buttons-->
     <string name="delete">Delete</string>
     <string name="export">Export</string>

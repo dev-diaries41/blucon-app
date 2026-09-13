@@ -202,6 +202,7 @@ fun SearchScreen(
         CountsList(
             items = deviceNameCounts,
             isVisible = true,
+            headerLabel = stringResource(R.string.devices_names)
         )
     }
 
@@ -212,6 +213,7 @@ fun SearchScreen(
         CountsList(
             items = companyCounts,
             isVisible = true,
+            headerLabel = stringResource(R.string.manufacturers)
         )
     }
 

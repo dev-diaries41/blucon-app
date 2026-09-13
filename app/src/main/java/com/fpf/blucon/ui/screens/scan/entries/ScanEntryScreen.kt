@@ -179,6 +179,7 @@ fun ScanEntryScreen(
         CountsList(
             items = companyCounts,
             isVisible = true,
+            headerLabel = stringResource(R.string.manufacturers)
         )
     }
 
@@ -189,6 +190,7 @@ fun ScanEntryScreen(
         CountsList(
             items = deviceNameCounts,
             isVisible = true,
+            headerLabel = stringResource(R.string.devices_names)
         )
     }
 
