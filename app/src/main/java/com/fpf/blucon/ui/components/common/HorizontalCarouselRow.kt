@@ -60,7 +60,7 @@ fun HorizontalCarouselRow(
                     modifier = Modifier
                         .widthIn(min = 100.dp)
                         .clip(MaterialTheme.shapes.large)
-                        .background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
                         .padding(16.dp)
                 ) {
                     Text(
