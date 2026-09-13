@@ -1,7 +1,9 @@
 package com.fpf.blucon.bluetooth
 
+import kotlinx.coroutines.flow.StateFlow
+
 interface IBluetoothScanner {
-    val isBluetoothEnabled: Boolean
+    val isBluetoothEnabled: StateFlow<Boolean>
 
     fun startScanBle()
     fun stopScanBle()

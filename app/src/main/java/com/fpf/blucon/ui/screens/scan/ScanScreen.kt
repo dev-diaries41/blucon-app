@@ -39,6 +39,7 @@ import androidx.compose.material.icons.filled.Scanner
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.ui.Alignment
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.fpf.blucon.ui.components.common.LoadingIndicator
 import com.fpf.blucon.ui.components.placeholders.EmptyItemsScreen
 
@@ -56,6 +57,7 @@ fun ScanScreen(
     var locationGranted by remember { mutableStateOf(false) }
     val screenTitle = stringResource(R.string.title_scan)
     val devices = state.devices.values.toList()
+    val isBluetoothEnabled by viewModel.isBluetoothEnabled.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         onTopBarChange(
@@ -156,7 +158,7 @@ fun ScanScreen(
                 }
             }
 
-            if (!viewModel.isBluetoothEnabled) {
+            if (!isBluetoothEnabled) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Icon(
                         imageVector = Icons.Default.BluetoothDisabled,

@@ -1,6 +1,7 @@
 package com.fpf.blucon.bluetooth
 
 import android.Manifest
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.ScanCallback
@@ -33,13 +34,39 @@ class BluetoothScanner(
     private val _devices = MutableStateFlow<Map<String, BTDevice>>(emptyMap())
     val devices: StateFlow<Map<String, BTDevice>> = _devices
 
-    override val isBluetoothEnabled: Boolean
-        get() = bluetoothAdapter?.isEnabled == true
+
+    private val _isBluetoothEnabled = MutableStateFlow(
+        bluetoothAdapter?.isEnabled == true
+    )
+    override val isBluetoothEnabled: StateFlow<Boolean> = _isBluetoothEnabled
+
+    private val bluetoothStateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action != BluetoothAdapter.ACTION_STATE_CHANGED) return
+
+            when (intent.getIntExtra(
+                BluetoothAdapter.EXTRA_STATE,
+                BluetoothAdapter.ERROR
+            )) {
+                BluetoothAdapter.STATE_ON -> _isBluetoothEnabled.value = true
+                BluetoothAdapter.STATE_OFF -> _isBluetoothEnabled.value = false
+            }
+        }
+    }
+
+    init{
+        ContextCompat.registerReceiver(
+            context,
+            bluetoothStateReceiver,
+            IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+    }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
     override fun startScanBle() {
         if (!hasPermission(Manifest.permission.BLUETOOTH_SCAN)) return
-        if(!isBluetoothEnabled) throw AppException.BluetoothUnavailableException()
+        if(!_isBluetoothEnabled.value) throw AppException.BluetoothUnavailableException()
 
         val scanner = bluetoothAdapter.bluetoothLeScanner ?: return
 
@@ -95,7 +122,7 @@ class BluetoothScanner(
         if (!hasPermission(Manifest.permission.BLUETOOTH_SCAN) ||
             !hasPermission(Manifest.permission.BLUETOOTH_CONNECT)
         ) return
-        if(!isBluetoothEnabled) throw AppException.BluetoothUnavailableException()
+        if(!_isBluetoothEnabled.value) throw AppException.BluetoothUnavailableException()
 
         if (classicReceiver != null) return
 

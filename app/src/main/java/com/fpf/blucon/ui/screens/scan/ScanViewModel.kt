@@ -47,9 +47,9 @@ class ScanViewModel(
 
     val isLocationEnabled: Boolean = locationTracker.isLocationEnabled
 
-    val isBluetoothEnabled: Boolean = scanner.isBluetoothEnabled
+    val isBluetoothEnabled: StateFlow<Boolean> = scanner.isBluetoothEnabled
 
-    val isScanEnabled: Boolean = isLocationEnabled && isBluetoothEnabled
+    val isScanEnabled: Boolean = isLocationEnabled && isBluetoothEnabled.value
 
     init {
         viewModelScope.launch {
