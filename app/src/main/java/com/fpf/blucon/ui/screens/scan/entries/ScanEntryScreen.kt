@@ -117,7 +117,7 @@ fun ScanEntryScreen(
 
     LaunchedEffect(scan) {
         viewModel.setScan(scan)
-        deviceMetadataViewModel.setScanId(scan.id)
+        deviceMetadataViewModel.setOverviewInfo(scan)
     }
 
     Box(
