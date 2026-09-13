@@ -2,12 +2,12 @@ package com.fpf.blucon.data
 
 import android.content.Context
 import com.fpf.blucon.R
-import com.fpf.blucon.bluetooth.BluetoothDocsYamlParser
+import com.fpf.blucon.bluetooth.BluetoothDocsYamlLoader
 import com.fpf.blucon.bluetooth.PostcodeCsvLoader
 
 class MetadataRepository(context: Context) {
-    private val companyIdMap: Map<Int, String> = BluetoothDocsYamlParser.parseCompanyIdentifiers(context, R.raw.bluetooth_company_id)
-    private val serviceUuidMap: Map<Int, String> = BluetoothDocsYamlParser.parseServiceUuids(context, R.raw.bluetooth_service_uuids)
+    private val companyIdMap: Map<Int, String> = BluetoothDocsYamlLoader.loadCompanies(context, R.raw.bluetooth_company_id)
+    private val serviceUuidMap: Map<Int, String> = BluetoothDocsYamlLoader.loadServices(context, R.raw.bluetooth_service_uuids)
     private val postcodeMap: Map<String, Pair<Double, Double>> = PostcodeCsvLoader.load(context.resources, R.raw.se_postcodes)
 
     val companyNames: Set<String>
