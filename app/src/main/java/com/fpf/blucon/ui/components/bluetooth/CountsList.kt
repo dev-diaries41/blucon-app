@@ -23,7 +23,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -37,7 +36,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.fpf.blucon.ui.components.cards.InfoRow
-import com.fpf.blucon.ui.components.search.ListHeader
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
@@ -48,7 +46,7 @@ fun CountsList(
     isVisible: Boolean,
     onOffsetChange:( (Int) -> Unit)? = null,
     maxCollapsePx: Int = 0,
-    headerLabel: String? = null,
+    headerContent: (@Composable () -> Unit)? = null
 ) {
     if (!isVisible) return
 
@@ -120,7 +118,7 @@ fun CountsList(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(0.dp)
         ) {
-            item { headerLabel?.let{ListHeader(it)} }
+            item { headerContent?.invoke() }
             items(
                 count = items.itemCount,
                 key = { index ->

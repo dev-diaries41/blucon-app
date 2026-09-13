@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Business
+import androidx.compose.material.icons.filled.Devices
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,7 +40,7 @@ import com.fpf.blucon.ui.components.modals.BottomSheet
 import com.fpf.smartscan.ui.components.common.SlideRevealBox
 import com.fpf.smartscan.ui.components.pickers.OptionPicker
 import com.fpf.blucon.ui.components.placeholders.EmptyItemsScreen
-import com.fpf.blucon.ui.components.search.ListHeader
+import com.fpf.blucon.ui.components.search.Header
 import com.fpf.blucon.ui.shared.DeviceMetadataViewModel
 import kotlinx.coroutines.FlowPreview
 import org.koin.compose.viewmodel.koinViewModel
@@ -142,7 +144,7 @@ fun ScanEntryScreen(
                 items = devices,
                 onOffsetChange = { offset = it },
                 maxCollapsePx = maxCollapsablePx,
-                headerRow = { ListHeader("${state.totalDevices} devices") },
+                headerRow = { Header("${state.totalDevices} devices") },
                 overview = {
                     if (state.manufacturerCounts.isNotEmpty() && state.deviceCounts.isNotEmpty()) {
                         ScanOverviewCard(
@@ -179,7 +181,9 @@ fun ScanEntryScreen(
         CountsList(
             items = companyCounts,
             isVisible = true,
-            headerLabel = stringResource(R.string.manufacturers)
+            headerContent = {
+                Header(stringResource(R.string.manufacturers), Icons.Filled.Business)
+            }
         )
     }
 
@@ -190,7 +194,9 @@ fun ScanEntryScreen(
         CountsList(
             items = deviceNameCounts,
             isVisible = true,
-            headerLabel = stringResource(R.string.devices_names)
+            headerContent = {
+                Header(stringResource(R.string.devices_names), Icons.Filled.Devices)
+            }
         )
     }
 
