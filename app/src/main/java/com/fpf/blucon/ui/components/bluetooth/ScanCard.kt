@@ -7,6 +7,7 @@ import com.fpf.blucon.ui.components.cards.InfoCard
 import com.fpf.blucon.ui.components.cards.InfoRow
 import com.fpf.blucon.ui.components.cards.InfoText
 import com.fpf.blucon.utils.formatDateTime
+import java.util.Locale
 
 @Composable
 fun ScanCard(
@@ -25,7 +26,7 @@ fun ScanCard(
         onLongClick = { onItemLongClick(item) },
         content = {
             InfoText("Scan #${item.id}", highlight = true)
-            InfoRow("Location", "${item.latitude}, ${item.longitude}")
+            InfoRow("Location", "${String.format(Locale.UK, "%.3f", item.latitude).toDouble()}, ${String.format(Locale.UK, "%.3f", item.longitude).toDouble()}")
             InfoRow("Devices", "${item.size}")
             InfoRow("Date", formatDateTime(item.timestamp))
         }
