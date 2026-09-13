@@ -13,7 +13,7 @@ val dbModule = module {
     }
     single { get<ScanDatabase>().scanDao() }
     single { get<ScanDatabase>().scanEntryDao() }
-    single { ScanRepository(get()) }
+    single { ScanRepository(get(), get()) }
     single{ MetadataRepository(get()) }
     single { ScanEntryRepository(dao = get(), metadataRepository = get()) } // TODO: rename metadataRepository
 }

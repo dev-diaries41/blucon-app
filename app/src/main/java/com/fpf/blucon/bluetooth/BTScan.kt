@@ -12,7 +12,8 @@ data class BTScan(
     val longitude: Double,
     val size: Int,
     val timestamp: Long = System.currentTimeMillis(),
-) : Parcelable
+    val postcode: String? = null,
+    ) : Parcelable
 
 data class NewBTScan(
     val latitude: Double,

@@ -13,5 +13,5 @@ class ScanHistoryPagingSource(
         limit = pageSize + 1,
         offset = offset,
         descending = sortBy.descending,
-    )
+    ).map{it.copy(postcode = scanRepository.getPostcode(it.longitude, it.latitude))}
 }
