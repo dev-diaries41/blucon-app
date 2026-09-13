@@ -144,7 +144,7 @@ fun ScanEntryScreen(
                 maxCollapsePx = maxCollapsablePx,
                 headerRow = { ListHeader("${state.totalDevices} devices") },
                 overview = {
-                    if (state.manufacturerCounts.isNotEmpty()) {
+                    if (state.manufacturerCounts.isNotEmpty() && state.deviceCounts.isNotEmpty()) {
                         ScanOverviewCard(
                             topManufacturerCounts = state.manufacturerCounts,
                             topDeviceNameCounts = state.deviceCounts,
