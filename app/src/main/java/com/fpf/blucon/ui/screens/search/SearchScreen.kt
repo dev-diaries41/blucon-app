@@ -54,7 +54,6 @@ import kotlin.time.Duration.Companion.milliseconds
 @Composable
 fun SearchScreen(
     onTopBarChange: (TopBarState) -> Unit,
-    onBack: () -> Unit,
     viewModel: SearchViewModel = koinViewModel(),
     deviceMetadataViewModel: DeviceMetadataViewModel = koinViewModel(),
     ) {
@@ -96,12 +95,11 @@ fun SearchScreen(
                         placeholders = listOf("Search devices"),
                         onSearch = {viewModel.onAction(SearchAction.Search(viewModel.searchFieldState.text.toString()))},
                         leadingIcon = {
-                            IconButton(onClick = onBack) {
-                                Icon(
-                                    Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = null
-                                )
-                            }
+                            Icon(
+                                Icons.Filled.Search,
+                                contentDescription = null,
+                                modifier = Modifier.padding(start = 16.dp)
+                            )
                         },
                         trailingIcon = {
                             Box{

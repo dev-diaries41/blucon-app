@@ -1,5 +1,8 @@
 package com.fpf.blucon.bluetooth
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class BTScanEntry(
     val scanId: Long,
     val deviceAddress: String,

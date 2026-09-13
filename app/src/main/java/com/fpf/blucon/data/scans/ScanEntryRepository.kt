@@ -52,7 +52,7 @@ class ScanEntryRepository(
     suspend fun countEntries(query: String?= null, manufacturerIds: List<Int> = emptyList()): Int =
         dao.countEntries(query, manufacturerIds)
 
-    suspend fun getManufacturerCounts(scanId: Long? = null, limit: Int, offset: Int = 0, descending: Boolean = true): List<Pair<String, Int>> = if (descending) {
+    suspend fun getManufacturerCounts(scanId: Long? = null, limit: Int = -1, offset: Int = 0, descending: Boolean = true): List<Pair<String, Int>> = if (descending) {
         dao.getManufacturerCountsDesc(scanId, limit = limit, offset = offset).map { entry ->
            ( getCompanyName(entry.manufacturerId)?: entry.manufacturerId.toString()) to entry.count
         }
@@ -62,7 +62,7 @@ class ScanEntryRepository(
         }
     }
 
-    suspend fun getDeviceNameCounts(scanId: Long? = null, limit: Int, offset: Int = 0, descending: Boolean = true): List<Pair<String, Int>> = if (descending) {
+    suspend fun getDeviceNameCounts(scanId: Long? = null, limit: Int = -1, offset: Int = 0, descending: Boolean = true): List<Pair<String, Int>> = if (descending) {
         dao.getDeviceNameCountsDesc(scanId, limit = limit, offset = offset).map { entry -> entry.deviceName to entry.count }
     } else {
         dao.getDeviceNameCountsAsc(scanId, limit = limit, offset = offset).map { entry -> entry.deviceName to entry.count }

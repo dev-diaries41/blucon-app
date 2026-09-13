@@ -2,7 +2,9 @@ package com.fpf.blucon.bluetooth
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
+@Serializable
 @Parcelize
 data class BTScan(
     val id: Long,

@@ -1,44 +1,66 @@
 package com.fpf.blucon.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
+import android.content.res.Configuration
+import android.content.res.Resources
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-// Color scheme for light mode
-private val LightColorPalette = lightColorScheme(
-    primary = Blue500,
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+
+enum class ColorSchemeType { DEFAULT, SMARTSCAN }
+enum class ThemeMode { LIGHT, DARK, SYSTEM }
+
+fun ColorSchemeType.format(): String = name.lowercase().replaceFirstChar {it.uppercase() }
+fun ThemeMode.format(): String = name.lowercase().replaceFirstChar {it.uppercase() }
+
+val LightColorPalette = lightColorScheme(
+    primary = Blue200,
     onPrimary = Color.White,
-    secondary = Teal200,
-    onSecondary = Color.Black,
-    background = Color.White,  // Use your custom background color
-    surface = Color.White,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
+    primaryContainer = Blue200.copy(alpha = 0.5f),
+    onPrimaryContainer = Color.Black
 )
 
-// Color scheme for dark mode
-private val DarkColorPalette = darkColorScheme(
+val DarkColorPalette = darkColorScheme(
     primary = Blue200,
     onPrimary = Color.Black,
-    secondary = Teal200,
-    onSecondary = Color.Black,
-    background = Color.Black,  // Define background for dark mode
-    surface = Color.Black,
-    onBackground = Color.White,
-    onSurface = Color.White,
+    primaryContainer = Blue200.copy(alpha = 0.5f),
+    onPrimaryContainer = Color.White
 )
 
-@Composable
-fun MyAppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
-    val colors = if (darkTheme) DarkColorPalette else LightColorPalette
+object ThemeManager {
+    private val _themeMode = MutableStateFlow(ThemeMode.SYSTEM)
+    val themeMode = _themeMode.asStateFlow()
 
-    MaterialTheme(
-        colorScheme = colors,
-        typography = MaterialTheme.typography,
-        shapes = MaterialTheme.shapes,
-        content = content
+    private val _colorScheme = MutableStateFlow(ColorSchemeType.SMARTSCAN)
+    val colorScheme = _colorScheme.asStateFlow()
+
+    val colorSchemeDisplayNames = mapOf(
+        ColorSchemeType.DEFAULT to "Default",
+        ColorSchemeType.SMARTSCAN to "Blucon"
     )
+
+    val themeModeDisplayNames = mapOf(
+        ThemeMode.LIGHT to "Light",
+        ThemeMode.DARK to "Dark",
+        ThemeMode.SYSTEM to "System"
+    )
+
+    fun updateThemeMode(mode: ThemeMode) {
+        _themeMode.value = mode
+    }
+
+    fun updateColorScheme(scheme: ColorSchemeType) {
+        _colorScheme.value = scheme
+    }
+
+    fun isDarkTheme(resources: Resources): Boolean {
+        return when (_themeMode.value) {
+            ThemeMode.DARK -> true
+            ThemeMode.LIGHT -> false
+            ThemeMode.SYSTEM -> resources.configuration.uiMode and
+                    Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        }
+    }
 }
+
+

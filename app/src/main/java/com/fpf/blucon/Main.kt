@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.*
 import com.fpf.blucon.bluetooth.BTScan
+import com.fpf.blucon.navigation.BottomNavigationBar
 import com.fpf.blucon.navigation.NavDataKeys
 import com.fpf.blucon.navigation.Routes
 import com.fpf.blucon.navigation.TopBarState
@@ -14,13 +15,23 @@ import com.fpf.blucon.ui.screens.donate.DonateScreen
 import com.fpf.blucon.ui.screens.history.ScanHistoryScreen
 import com.fpf.blucon.ui.screens.scan.ScanScreen
 import com.fpf.blucon.ui.screens.search.SearchScreen
+import com.fpf.blucon.ui.screens.settings.SettingsScreen
+import org.koin.compose.viewmodel.koinViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Main() {
+fun Main(
+    onAppReady: () -> Unit,
+    onRestartApp: () -> Unit,
+) {
     val navController = rememberNavController()
     val topBarState = remember { mutableStateOf(TopBarState()) }
+    val mainViewModel: MainViewModel = koinViewModel()
+
+    LaunchedEffect(Unit) {
+        mainViewModel.prepareApp { onAppReady() }
+    }
 
     Scaffold(
         topBar = {
@@ -36,17 +47,19 @@ fun Main() {
                 }
             )
         },
+        bottomBar = {
+            BottomNavigationBar(navController)
+        }
     ) { paddingValues ->
         NavHost(
             navController = navController,
-            startDestination = Routes.SCAN,
+            startDestination = Routes.SEARCH,
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(Routes.SCAN) {
                 ScanScreen(
                     onTopBarChange = { topBarState.value = it },
                     onViewScanHistory = { navController.navigate(Routes.SCAN_HISTORY) },
-                    onSearch = {navController.navigate(Routes.SEARCH)}
                 )
             }
             composable(Routes.SCAN_HISTORY) {
@@ -80,13 +93,19 @@ fun Main() {
             composable(Routes.SEARCH){
                 SearchScreen(
                     onTopBarChange = { topBarState.value = it },
-                    onBack = { navController.popBackStack() },
                 )
             }
+
+            composable(Routes.SETTINGS){
+                SettingsScreen (
+                    onTopBarChange = { topBarState.value = it },
+                    onRestartApp = {onRestartApp()},
+                )
+            }
+
             composable(Routes.DONATE){
                 DonateScreen()
             }
-
         }
     }
 }
