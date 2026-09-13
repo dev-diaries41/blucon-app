@@ -18,6 +18,7 @@ import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.data.scans.ScanRepository
 import com.fpf.blucon.errors.AppException
 import com.fpf.blucon.location.LocationTracker
+import com.fpf.smartscansdk.core.embeddings.TextEmbeddingProvider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +31,7 @@ class ScanViewModel(
     application: Application,
     private val scanRepository: ScanRepository,
     private val scanEntryRepository: ScanEntryRepository,
+    private val textEmbedder: TextEmbeddingProvider
 ) : AndroidViewModel(application) {
 
     companion object {
@@ -51,27 +53,32 @@ class ScanViewModel(
 
 
     init {
+        observeDevices()
+        observeLocation()
+    }
+
+    private fun observeDevices() {
         viewModelScope.launch(Dispatchers.IO) {
+            Log.d(TAG, "Model dim: ${textEmbedder.embeddingDim}")
             scanner.devices.collect { devices ->
                 val unseenDevices = devices.filter { it.key !in _state.value.devices.keys }
                 val entries = toScanEntries(unseenDevices.values.toList())
-                if(entries.isEmpty()) return@collect
+                if (entries.isEmpty()) return@collect
 
                 _state.update {
-                    it.copy(
-                        devices = (it.devices.values + entries).associateBy { device -> device.deviceAddress }
-                    )
+                    it.copy(devices = (it.devices.values + entries).associateBy { device -> device.deviceAddress })
                 }
                 scanEntryRepository.addEntries(entries)
             }
         }
+    }
 
+    private fun observeLocation() {
         viewModelScope.launch(Dispatchers.IO) {
             locationTracker.location.collect { location ->
                 location ?: return@collect
 
                 val shouldStartScan = _state.value.isScanning && _state.value.location == null
-
                 setLocation(location)
 
                 if (shouldStartScan) {
@@ -87,9 +94,10 @@ class ScanViewModel(
             longitude = location.longitude,
             latitude = location.latitude
         )
-        val scanId = scanRepository.insertScan(newBTScan)
-        setScan(newBTScan.toScan(scanId))
+
         try {
+            val scanId = scanRepository.insertScan(newBTScan)
+            setScan(newBTScan.toScan(scanId))
             scanner.startScanBle()
         } catch (e: AppException.BluetoothUnavailableException) {
             Log.e(TAG, "Error starting bluetooth", e)
