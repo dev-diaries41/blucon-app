@@ -60,13 +60,14 @@ fun Main(
             composable(Routes.HUB) {
                 HubScreen(
                     onTopBarChange = { topBarState.value = it },
-                    onScan = { navController.navigate(Routes.SCAN) },
+                    onViewSettings = { navController.navigate(Routes.SETTINGS) },
                     onSearch = { navController.navigate(Routes.SEARCH) },
                     )
             }
             composable(Routes.SCAN) {
                 ScanScreen(
                     onTopBarChange = { topBarState.value = it },
+                    onViewSettings = { navController.navigate(Routes.SETTINGS) },
                     onViewScanHistory = { navController.navigate(Routes.SCAN_HISTORY) },
                 )
             }
@@ -107,6 +108,7 @@ fun Main(
 
             composable(Routes.SETTINGS){
                 SettingsScreen (
+                    onBack = { navController.popBackStack() },
                     onTopBarChange = { topBarState.value = it },
                     onRestartApp = {onRestartApp()},
                 )

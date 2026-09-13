@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Devices
 import androidx.compose.material.icons.filled.Hub
 import androidx.compose.material.icons.filled.Scanner
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,7 +42,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun HubScreen(
     onTopBarChange: (TopBarState) -> Unit,
-    onScan: () -> Unit,
+    onViewSettings: () -> Unit,
     onSearch: () -> Unit,
     viewModel: DeviceMetadataViewModel = koinViewModel(),
     ) {
@@ -65,10 +66,10 @@ fun HubScreen(
                             contentDescription = "Search"
                         )
                     }
-                    IconButton(onClick = onScan) {
+                    IconButton(onClick = onViewSettings) {
                         Icon(
-                            Icons.Filled.Scanner,
-                            contentDescription = "Scan"
+                            Icons.Filled.Settings,
+                            contentDescription = "Settings"
                         )
                     }
                 }
