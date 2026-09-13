@@ -66,6 +66,10 @@ kotlin {
 }
 
 dependencies {
+
+    // ML
+    implementation("com.github.smartscanapp.smartscan-android-lib:smartscan-ml:3.1.0")
+
     // Yaml parser
     implementation(libs.snakeyaml)
 
