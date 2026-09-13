@@ -106,7 +106,6 @@ class ScanViewModel(
             try {
                 reset()
                 setIsScanning(true)
-                setStartTime(System.currentTimeMillis())
                 locationTracker.start()
             } catch (e: AppException.LocationUnavailableException) {
                 Log.e(TAG, "Error starting location tracker", e)
@@ -135,8 +134,6 @@ class ScanViewModel(
 
     private fun setIsScanning(value: Boolean) = _state.update { it.copy(isScanning = value) }
 
-    private fun setStartTime(value: Long?) = _state.update { it.copy(startTime = value) }
-
     private fun setLocation(value: Location?) = _state.update { it.copy(location = value) }
 
     private fun reset() {
@@ -144,7 +141,6 @@ class ScanViewModel(
             it.copy(
                 isScanning = false,
                 scan = null,
-                startTime = null,
                 devices = mapOf(),
                 location = null
             )
@@ -160,14 +156,12 @@ class ScanViewModel(
     private fun toScanEntries(btDevices: List<BTDevice>): List<BTScanEntry> {
         val currentState = _state.value
         val scan = currentState.scan ?: return emptyList()
-        val scanStart = currentState.startTime ?: return emptyList()
-
         return btDevices.map {
             val manufacturerId = it.manufacturerData.keys.firstOrNull()
 
             BTScanEntry(
                 scanId = scan.id,
-                timestamp = scanStart,
+                timestamp = System.currentTimeMillis(),
                 deviceAddress = it.address,
                 rssi = it.rssi,
                 deviceName = it.name,
