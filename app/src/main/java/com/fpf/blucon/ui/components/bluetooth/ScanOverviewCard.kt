@@ -13,17 +13,24 @@ import com.fpf.blucon.ui.components.common.HorizontalCarouselRow
 
 @Composable
 fun ScanOverviewCard(
-    manufacturerCounts: Map<String, Int>,
-    topK: Int = 6,
-    onViewAllManufacturers: (() -> Unit)? = null
+    topManufacturerCounts: Map<String, Int>,
+    topDeviceNameCounts: Map<String, Int>,
+    onViewAllManufacturers: (() -> Unit)? = null,
+    onViewAllDevices: (() -> Unit)? = null
 ) {
-    val sorted = manufacturerCounts.entries
+    val topK = maxOf(topManufacturerCounts.size, topDeviceNameCounts.size)
+
+    val sortedManufacturers = topManufacturerCounts.entries
         .sortedByDescending { it.value }
 
-    if (sorted.isEmpty()) return
+    val sortedDevices = topDeviceNameCounts.entries
+        .sortedByDescending { it.value }
 
-    val topManufacturers = sorted.take(topK)
+    if (sortedManufacturers.isEmpty()) return
+    if (sortedDevices.isEmpty()) return
 
+    val topDevices = sortedDevices.take(topK)
+    val topManufacturers = sortedManufacturers.take(topK)
 
     Surface(
         modifier = Modifier
@@ -40,6 +47,11 @@ fun ScanOverviewCard(
                 label = "Top manufacturers",
                 topItemCounts = topManufacturers.associate { it.key to it.value },
                 onViewAll = onViewAllManufacturers
+            )
+            HorizontalCarouselRow(
+                label = "Top device names",
+                topItemCounts = topDevices.associate { it.key to it.value },
+                onViewAll = onViewAllDevices
             )
         }
     }

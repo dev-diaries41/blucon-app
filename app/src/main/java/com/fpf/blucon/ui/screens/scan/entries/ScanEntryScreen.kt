@@ -58,10 +58,13 @@ fun ScanEntryScreen(
 
     val devices = viewModel.devices.collectAsLazyPagingItems()
     val companyCounts = deviceMetadataViewModel.companyCounts.collectAsLazyPagingItems()
+    val deviceNameCounts = deviceMetadataViewModel.deviceNameCounts.collectAsLazyPagingItems()
+
     // actions
     var showMenu by remember { mutableStateOf(false) }
     var showSortOptions by remember { mutableStateOf(false) }
     var showCompanyCounts by remember { mutableStateOf(false) }
+    var showDeviceCounts by remember { mutableStateOf(false) }
 
     val menuActions: List<MenuActionConfig> = listOf(
         MenuActionConfig.Button(
@@ -142,7 +145,12 @@ fun ScanEntryScreen(
                 headerRow = { ListHeader("${state.totalDevices} devices") },
                 overview = {
                     if (state.manufacturerCounts.isNotEmpty()) {
-                        ScanOverviewCard(state.manufacturerCounts, onViewAllManufacturers = {showCompanyCounts = true})
+                        ScanOverviewCard(
+                            topManufacturerCounts = state.manufacturerCounts,
+                            topDeviceNameCounts = state.deviceCounts,
+                            onViewAllManufacturers = {showCompanyCounts = true},
+                            onViewAllDevices = {showDeviceCounts = true}
+                        )
                     }
                 }
             )
@@ -170,6 +178,16 @@ fun ScanEntryScreen(
     ) {
         CountsList(
             items = companyCounts,
+            isVisible = true,
+        )
+    }
+
+    BottomSheet(
+        show = showDeviceCounts && state.scan != null,
+        onDismiss = {showDeviceCounts = false}
+    ) {
+        CountsList(
+            items = deviceNameCounts,
             isVisible = true,
         )
     }

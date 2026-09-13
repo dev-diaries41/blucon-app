@@ -64,9 +64,6 @@ class ScanEntryViewModel(
         }
         .cachedIn(viewModelScope)
 
-//    private val _event = MutableSharedFlow<CollectionItemEvent>()
-//    val event = _event.asSharedFlow()
-
     val sortByOptions: List<Pair<String, SortBy>>
         get() = listOf(
             getApplication<Application>().getString(R.string.sort_date_asc_option) to SortBy.Date(descending = false),
@@ -86,7 +83,8 @@ class ScanEntryViewModel(
     fun setScan(scan: BTScan) {
         viewModelScope.launch (Dispatchers.IO){
             val manufacturerCounts = scanEntryRepository.getManufacturerCounts(scan.id, limit = 6)
-            _state.update { it.copy(scan = scan, manufacturerCounts=manufacturerCounts.toMap(), totalDevices = scan.size) }
+            val deviceCounts = scanEntryRepository.getDeviceNameCounts(scan.id, limit = 6)
+            _state.update { it.copy(scan = scan, manufacturerCounts=manufacturerCounts.toMap(), deviceCounts=deviceCounts.toMap(), totalDevices = scan.size) }
         }
     }
 
