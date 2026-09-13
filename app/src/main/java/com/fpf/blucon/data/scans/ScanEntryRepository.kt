@@ -21,6 +21,40 @@ class ScanEntryRepository(
         dao.getEntriesAsc(scanId, limit = limit, offset = offset)
     }.map { it.toDomain().copy(manufacturerName = getCompanyName(it.manufacturerId)) }
 
+    suspend fun getEntriesByRssi(
+        limit: Int,
+        offset: Int,
+        scanId: Long? = null,
+        descending: Boolean = true
+    ) = if (descending) {
+        dao.getEntriesByRssiDesc(scanId, limit, offset)
+    } else {
+        dao.getEntriesByRssiAsc(scanId, limit, offset)
+    }.map { it.toDomain().copy(manufacturerName = getCompanyName(it.manufacturerId)) }
+
+    suspend fun getEntriesByName(
+        limit: Int,
+        offset: Int,
+        scanId: Long? = null,
+        descending: Boolean = true
+    ) = if (descending) {
+        dao.getEntriesByNameDesc(scanId, limit, offset)
+    } else {
+        dao.getEntriesByNameAsc(scanId, limit, offset)
+    }.map { it.toDomain().copy(manufacturerName = getCompanyName(it.manufacturerId)) }
+
+    suspend fun queryEntriesByName(
+        limit: Int,
+        offset: Int,
+        query: String,
+        manufacturerIds: List<Int> = emptyList(),
+        descending: Boolean = true
+    ) = if (descending) {
+        dao.queryEntriesNameDesc(query, manufacturerIds=manufacturerIds, limit=limit, offset=offset)
+    } else {
+        dao.queryEntriesNameAsc(query, manufacturerIds=manufacturerIds, limit=limit, offset=offset)
+    }.map { it.toDomain().copy(manufacturerName = getCompanyName(it.manufacturerId)) }
+
     suspend fun queryEntries(
         limit: Int,
         offset: Int,
