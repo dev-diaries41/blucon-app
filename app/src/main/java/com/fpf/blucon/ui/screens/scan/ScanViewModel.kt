@@ -51,22 +51,22 @@ class ScanViewModel(
 
 
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             scanner.devices.collect { devices ->
                 val unseenDevices = devices.filter { it.key !in _state.value.devices.keys }
                 val entries = toScanEntries(unseenDevices.values.toList())
+                if(entries.isEmpty()) return@collect
 
                 _state.update {
                     it.copy(
                         devices = (it.devices.values + entries).associateBy { device -> device.deviceAddress }
                     )
                 }
-
                 scanEntryRepository.addEntries(entries)
             }
         }
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             locationTracker.location.collect { location ->
                 location ?: return@collect
 
