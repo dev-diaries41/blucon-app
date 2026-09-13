@@ -58,6 +58,8 @@ fun ScanScreen(
     val screenTitle = stringResource(R.string.title_scan)
     val devices = state.devices.values.toList()
     val isBluetoothEnabled by viewModel.isBluetoothEnabled.collectAsStateWithLifecycle()
+    val isLocationEnabled by viewModel.isLocationEnabled.collectAsStateWithLifecycle()
+    val isScanEnabled = isBluetoothEnabled && isLocationEnabled
 
     LaunchedEffect(Unit) {
         onTopBarChange(
@@ -147,7 +149,7 @@ fun ScanScreen(
                 )
             }
 
-            if (!viewModel.isLocationEnabled) {
+            if (!isLocationEnabled) {
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Icon(
                         imageVector = Icons.Default.LocationOff,
@@ -187,7 +189,7 @@ fun ScanScreen(
                             viewModel.startScan()
                         }
                     },
-                    enabled = bluetoothGranted && locationGranted && viewModel.isScanEnabled,
+                    enabled = bluetoothGranted && locationGranted && isScanEnabled,
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(if (state.isScanning) "Stop scan" else "Scan")

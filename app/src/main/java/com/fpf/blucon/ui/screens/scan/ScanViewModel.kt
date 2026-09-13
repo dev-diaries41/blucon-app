@@ -45,11 +45,10 @@ class ScanViewModel(
     private val _event = MutableSharedFlow<String>()
     val event = _event.asSharedFlow()
 
-    val isLocationEnabled: Boolean = locationTracker.isLocationEnabled
+    val isLocationEnabled: StateFlow<Boolean> = locationTracker.isLocationEnabled
 
     val isBluetoothEnabled: StateFlow<Boolean> = scanner.isBluetoothEnabled
 
-    val isScanEnabled: Boolean = isLocationEnabled && isBluetoothEnabled.value
 
     init {
         viewModelScope.launch {

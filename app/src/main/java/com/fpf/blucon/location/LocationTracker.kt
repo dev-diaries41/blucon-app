@@ -2,15 +2,17 @@ package com.fpf.blucon.location
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.os.Build
 import android.os.Looper
-import android.util.Log
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.fpf.blucon.errors.AppException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,26 +21,38 @@ import kotlinx.coroutines.flow.asStateFlow
 class LocationTracker(context: Context) {
 
     private val context = context.applicationContext
-    private val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    private val locationManager =
+        context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-    private val _connected = MutableStateFlow(false)
-    val connected: StateFlow<Boolean> = _connected.asStateFlow()
+    private val _isLocationEnabled = MutableStateFlow(locationManager.isLocationEnabled)
+    val isLocationEnabled: StateFlow<Boolean> = _isLocationEnabled.asStateFlow()
 
     private val _location = MutableStateFlow<Location?>(null)
     val location: StateFlow<Location?> = _location.asStateFlow()
 
-    val isLocationEnabled: Boolean
-        get() = locationManager.isLocationEnabled
+    private val locationStateReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            if (intent.action != LocationManager.PROVIDERS_CHANGED_ACTION) return
+
+            _isLocationEnabled.value = locationManager.isLocationEnabled
+        }
+    }
 
     private val locationListener = object : LocationListener {
         override fun onLocationChanged(location: Location) {
             _location.value = location
-            _connected.value = true
         }
 
-        override fun onProviderDisabled(provider: String) {
-            _connected.value = false
-        }
+        override fun onProviderDisabled(provider: String) {}
+    }
+
+    init {
+        ContextCompat.registerReceiver(
+            context,
+            locationStateReceiver,
+            IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
     }
 
     @SuppressLint("MissingPermission")
@@ -49,10 +63,15 @@ class LocationTracker(context: Context) {
         val hasNetworkProvider = isProviderAvailable(LocationManager.NETWORK_PROVIDER)
         val hasFusedProvider = isProviderAvailable(LocationManager.FUSED_PROVIDER)
 
-        if(listOf(hasGpsProvider, hasNetworkProvider, hasFusedProvider).all{ !it }) throw AppException.LocationUnavailableException("No valid location provider")
-        if(!isLocationEnabled) throw AppException.LocationUnavailableException()
+        if (listOf(hasGpsProvider, hasNetworkProvider, hasFusedProvider).all { !it }) {
+            throw AppException.LocationUnavailableException("No valid location provider")
+        }
 
-        if(hasFusedProvider) {
+        if (!isLocationEnabled.value) {
+            throw AppException.LocationUnavailableException()
+        }
+
+        if (hasFusedProvider) {
             locationManager.requestLocationUpdates(
                 LocationManager.FUSED_PROVIDER,
                 1000L,
@@ -62,7 +81,7 @@ class LocationTracker(context: Context) {
             )
         }
 
-        if(hasGpsProvider) {
+        if (hasGpsProvider) {
             locationManager.requestLocationUpdates(
                 LocationManager.GPS_PROVIDER,
                 1000L,
@@ -72,7 +91,7 @@ class LocationTracker(context: Context) {
             )
         }
 
-        if(hasNetworkProvider) {
+        if (hasNetworkProvider) {
             locationManager.requestLocationUpdates(
                 LocationManager.NETWORK_PROVIDER,
                 1000L,
@@ -81,13 +100,11 @@ class LocationTracker(context: Context) {
                 Looper.getMainLooper()
             )
         }
-
     }
 
     fun stop() {
         locationManager.removeUpdates(locationListener)
     }
-
 
     private fun checkPermission() {
         if (
@@ -104,5 +121,6 @@ class LocationTracker(context: Context) {
         }
     }
 
-    private fun isProviderAvailable(provider: String): Boolean = locationManager.allProviders.contains(provider)
+    private fun isProviderAvailable(provider: String): Boolean =
+        locationManager.allProviders.contains(provider)
 }
