@@ -1,6 +1,6 @@
 package com.fpf.blucon.data.mappers
 
-import com.fpf.blucon.bluetooth.DeviceCollection
+import com.fpf.blucon.bluetooth.device.DeviceCollection
 import com.fpf.blucon.cluster.ClusterCrossRef
 import com.fpf.blucon.cluster.StoredClusterMetadata
 import com.fpf.blucon.data.devices.clusters.ClusterCrossRefEntity
