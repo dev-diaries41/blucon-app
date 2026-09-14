@@ -12,7 +12,7 @@ fun DeviceEntity.toDomain(): DeviceInfo = DeviceInfo(
     name=name
 )
 
-fun DeviceInfo.toDomain(): DeviceEntity = DeviceEntity(
+fun DeviceInfo.toEntity(): DeviceEntity = DeviceEntity(
     id=id,
     name=name
 )
