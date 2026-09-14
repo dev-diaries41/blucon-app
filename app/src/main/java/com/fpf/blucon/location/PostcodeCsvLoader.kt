@@ -1,4 +1,4 @@
-package com.fpf.blucon.bluetooth
+package com.fpf.blucon.location
 
 import android.content.res.Resources
 

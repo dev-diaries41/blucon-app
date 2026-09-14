@@ -3,7 +3,7 @@ package com.fpf.blucon.data
 import android.content.Context
 import com.fpf.blucon.R
 import com.fpf.blucon.bluetooth.BluetoothDocsYamlLoader
-import com.fpf.blucon.bluetooth.PostcodeCsvLoader
+import com.fpf.blucon.location.PostcodeCsvLoader
 
 class MetadataRepository(context: Context) {
     private val companyIdMap: Map<Int, String> = BluetoothDocsYamlLoader.loadCompanies(context, R.raw.bluetooth_company_id)
