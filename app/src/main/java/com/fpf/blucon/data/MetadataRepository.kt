@@ -8,7 +8,7 @@ import com.fpf.blucon.bluetooth.PostcodeCsvLoader
 class MetadataRepository(context: Context) {
     private val companyIdMap: Map<Int, String> = BluetoothDocsYamlLoader.loadCompanies(context, R.raw.bluetooth_company_id)
     private val serviceUuidMap: Map<Int, String> = BluetoothDocsYamlLoader.loadServices(context, R.raw.bluetooth_service_uuids)
-    private val postcodeMap: Map<String, Pair<Double, Double>> = PostcodeCsvLoader.load(context.resources, R.raw.se_postcodes)
+    private val postcodeMap: Map<String, Pair<Double, Double>> = PostcodeCsvLoader.load(context.resources, R.raw.london)
 
     val companyNames: Set<String>
         get() = companyIdMap.values.toSet()
