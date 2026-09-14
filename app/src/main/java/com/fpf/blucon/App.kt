@@ -66,8 +66,27 @@ class App : Application() {
             description = getString(R.string.scan_channel_description)
         }
 
+
+        val scanServiceChannel = NotificationChannel(
+            NotificationChannels.SCAN_SERVICE,
+            getString(R.string.scan_service_channel_name),
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = getString(R.string.scan_service_channel_description)
+        }
+
+
+        val indexServiceChannel = NotificationChannel(
+            NotificationChannels.INDEX_SERVICE,
+            getString(R.string.index_service_channel_name),
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply {
+            description = getString(R.string.index_service_channel_description)
+        }
+
+
         notificationManager.createNotificationChannels(
-            listOf(scanChannel)
+            listOf(scanChannel, scanServiceChannel, indexServiceChannel)
         )
     }
 }
