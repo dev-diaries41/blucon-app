@@ -7,6 +7,7 @@ import com.fpf.blucon.di.clusterModule
 import com.fpf.blucon.di.dbModule
 import com.fpf.blucon.di.embedsModule
 import com.fpf.blucon.di.modelModule
+import com.fpf.blucon.di.scanModule
 import com.fpf.blucon.di.storageModule
 import com.fpf.blucon.di.viewModelModule
 import com.fpf.blucon.notifications.NotificationChannels
@@ -29,7 +30,8 @@ class App : Application() {
                     storageModule,
                     modelModule,
                     embedsModule,
-                    clusterModule
+                    clusterModule,
+                    scanModule
                 )
             }
         }
@@ -46,7 +48,8 @@ class App : Application() {
                 storageModule,
                 modelModule,
                 embedsModule,
-                clusterModule
+                clusterModule,
+                scanModule
             )
         }
 
