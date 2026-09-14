@@ -7,11 +7,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.fpf.blucon.bluetooth.scan.BTScanEntry
+import com.fpf.blucon.bluetooth.scan.BluetoothScanResult
 
 @Composable
-fun DeviceList(
-    devices: List<BTScanEntry>,
+fun ScanResultList(
+    devices: List<BluetoothScanResult>,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -22,7 +22,7 @@ fun DeviceList(
             items = devices,
             key = { it.deviceAddress }
         ) { device ->
-            ScanEntryCard(
+            BluetoothScanResultCard(
                 item = device,
             )
         }

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,7 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.fpf.blucon.R
 import com.fpf.blucon.navigation.TopBarState
-import com.fpf.blucon.ui.components.bluetooth.DeviceList
+import com.fpf.blucon.ui.components.bluetooth.ScanResultList
 import com.fpf.blucon.ui.permissions.RequestPermissions
 import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.material.icons.Icons
@@ -46,6 +45,8 @@ import com.fpf.blucon.ui.components.placeholders.EmptyItemsScreen
 
 @Composable
 fun ScanScreen(
+    onScan: () -> Unit,
+    onStopScan: () -> Unit,
     onTopBarChange: (TopBarState) -> Unit,
     onViewScanHistory: () -> Unit,
     onViewSettings: () -> Unit,
@@ -172,7 +173,7 @@ fun ScanScreen(
             }
 
 
-            DeviceList(
+            ScanResultList(
                 devices = devices,
                 modifier = Modifier.weight(1f),
             )
@@ -185,7 +186,9 @@ fun ScanScreen(
                     onClick = {
                         if (state.isScanning) {
                             viewModel.stopScan()
+                            onStopScan()
                         } else {
+                            onScan()
                             viewModel.startScan()
                         }
                     },
