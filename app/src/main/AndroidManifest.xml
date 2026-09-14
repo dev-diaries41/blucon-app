@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" tools:node="remove"/>
     <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
 
@@ -26,6 +28,10 @@
             android:name="com.fpf.blucon.services.IndexService"
             android:exported="false"
             android:foregroundServiceType="dataSync"/>
+        <service
+            android:name="com.fpf.blucon.services.ScanService"
+            android:exported="false"
+            android:foregroundServiceType="connectedDevice|location"/>
         <activity
             android:name="com.fpf.blucon.MainActivity"
             android:exported="true"
