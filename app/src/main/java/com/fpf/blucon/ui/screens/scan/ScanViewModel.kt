@@ -8,7 +8,7 @@ import android.util.Log
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.fpf.blucon.bluetooth.BTDevice
+import com.fpf.blucon.bluetooth.scan.BluetoothScanResult
 import com.fpf.blucon.bluetooth.scan.BTScan
 import com.fpf.blucon.bluetooth.scan.BTScanEntry
 import com.fpf.blucon.bluetooth.scan.BluetoothScanner
@@ -157,7 +157,7 @@ class ScanViewModel(
         _state.update { it.copy(devices = mapOf()) }
     }
 
-    private fun toScanEntries(btDevices: List<BTDevice>): List<BTScanEntry> {
+    private fun toScanEntries(btDevices: List<BluetoothScanResult>): List<BTScanEntry> {
         val currentState = _state.value
         val scan = currentState.scan ?: return emptyList()
         return btDevices.map {
@@ -166,9 +166,9 @@ class ScanViewModel(
             BTScanEntry(
                 scanId = scan.id,
                 timestamp = System.currentTimeMillis(),
-                deviceAddress = it.address,
+                deviceAddress = it.deviceAddress,
                 rssi = it.rssi,
-                deviceName = it.name,
+                deviceName = it.deviceName,
                 manufacturerId = manufacturerId,
                 manufacturerName = scanEntryRepository.getCompanyName(manufacturerId)
             )

@@ -21,13 +21,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.fpf.blucon.bluetooth.BTDevice
+import com.fpf.blucon.bluetooth.scan.BluetoothScanResult
 import com.fpf.blucon.bluetooth.toBluetoothSigUuid
 
 @OptIn(ExperimentalStdlibApi::class)
 @Composable
 fun DeviceRow(
-    device: BTDevice,
+    device: BluetoothScanResult,
     onGetCompanyName: (manufacturerId: Int) -> String?,
     onGetServiceName: (serviceId: Int) -> String?,
 ) {
@@ -71,11 +71,11 @@ fun DeviceRow(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = device.name ?: "Unknown device",
+                    text = device.deviceName ?: "Unknown device",
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Text(
-                    text = device.address,
+                    text = device.deviceAddress,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

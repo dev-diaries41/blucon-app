@@ -1,10 +1,10 @@
-package com.fpf.blucon.bluetooth
+package com.fpf.blucon.bluetooth.scan
 
 import java.util.UUID
 
-data class BTDevice(
-    val name: String?,
-    val address: String,
+data class BluetoothScanResult(
+    val deviceName: String?,
+    val deviceAddress: String,
     val rssi: Int,
     val serviceUuids: List<UUID> = emptyList(),
     val manufacturerData: Map<Int, ByteArray> = emptyMap(),

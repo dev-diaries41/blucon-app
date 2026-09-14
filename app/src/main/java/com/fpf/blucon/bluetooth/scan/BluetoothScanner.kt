@@ -14,7 +14,6 @@ import android.content.pm.PackageManager
 import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
 import androidx.core.util.size
-import com.fpf.blucon.bluetooth.BTDevice
 import com.fpf.blucon.errors.AppException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -32,8 +31,8 @@ class BluetoothScanner(
     private var bleScanCallback: ScanCallback? = null
     private var classicReceiver: BroadcastReceiver? = null
 
-    private val _devices = MutableStateFlow<Map<String, BTDevice>>(emptyMap())
-    val devices: StateFlow<Map<String, BTDevice>> = _devices
+    private val _devices = MutableStateFlow<Map<String, BluetoothScanResult>>(emptyMap())
+    val devices: StateFlow<Map<String, BluetoothScanResult>> = _devices
 
 
     private val _isBluetoothEnabled = MutableStateFlow(
@@ -77,9 +76,9 @@ class BluetoothScanner(
             override fun onScanResult(callbackType: Int, result: ScanResult) {
                 val record = result.scanRecord ?: return
 
-                val bluetoothDevice = BTDevice(
-                    name = record.deviceName,
-                    address = result.device.address,
+                val bluetoothDevice = BluetoothScanResult(
+                    deviceName = record.deviceName,
+                    deviceAddress = result.device.address,
                     rssi = result.rssi,
                     serviceUuids = record.serviceUuids?.map { it.uuid } ?: emptyList(),
                     manufacturerData = buildMap {
@@ -98,7 +97,7 @@ class BluetoothScanner(
                     txPower = record.txPowerLevel.takeUnless { it == Int.MIN_VALUE }
                 )
 
-                _devices.update { it + (bluetoothDevice.address to bluetoothDevice) }
+                _devices.update { it + (bluetoothDevice.deviceAddress to bluetoothDevice) }
             }
 
             override fun onScanFailed(errorCode: Int) {
@@ -134,16 +133,16 @@ class BluetoothScanner(
 
                 val device = intent.getParcelableExtra<BluetoothDevice>(BluetoothDevice.EXTRA_DEVICE) ?: return
 
-                val bluetoothDevice = BTDevice(
-                    name = device.name,
-                    address = device.address,
+                val bluetoothDevice = BluetoothScanResult(
+                    deviceName = device.name,
+                    deviceAddress = device.address,
                     rssi = intent.getShortExtra(
                         BluetoothDevice.EXTRA_RSSI,
                         Short.MIN_VALUE
                     ).toInt()
                 )
 
-                _devices.update { it + (bluetoothDevice.address to bluetoothDevice) }
+                _devices.update { it + (bluetoothDevice.deviceAddress to bluetoothDevice) }
             }
         }
 
