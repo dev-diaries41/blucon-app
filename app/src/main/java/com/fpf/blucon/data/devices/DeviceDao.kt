@@ -24,4 +24,16 @@ interface DeviceDao {
 
     @Query("SELECT * FROM device_name ORDER BY name ASC LIMIT :limit OFFSET :offset")
     suspend fun getPage(limit: Int, offset: Int): List<DeviceEntity>
+
+    @Query("""
+        SELECT id 
+        FROM device_name
+        WHERE NOT EXISTS (
+                SELECT 1
+                FROM device_cluster_crossref c
+                WHERE c.deviceId = device_name.id
+        )
+        """
+    )
+    suspend fun getUnclusteredItemIds(): List<Long>
 }

@@ -2,16 +2,22 @@ package com.fpf.blucon.data.scans
 
 import com.fpf.blucon.bluetooth.scan.BTScanEntry
 import com.fpf.blucon.data.MetadataRepository
+import com.fpf.blucon.data.devices.DeviceDao
+import com.fpf.blucon.data.devices.DeviceEntity
 import com.fpf.blucon.data.mappers.toDomain
 import com.fpf.blucon.data.mappers.toEntity
 
 class ScanEntryRepository(
     private val dao: ScanEntryDao,
+    private val deviceDao: DeviceDao,
     private val metadataRepository: MetadataRepository
 ) {
-    suspend fun addEntries(entries: List<BTScanEntry>): List<Long> =
-        dao.addEntries(entries.map { it.toEntity() })
-
+    suspend fun addEntries(entries: List<BTScanEntry>): List<Long> {
+        val ids = dao.addEntries(entries.map { it.toEntity() })
+        val names = entries.mapNotNull { it.deviceName }.distinct()
+        deviceDao.insert(names.map{ DeviceEntity(name=it) })
+        return ids
+    }
     suspend fun getEntries(scanId: Long? = null, deviceAddresses: List<String>? = null) =
         dao.getEntries(scanId, deviceAddresses).map { it.toDomain() }
 
