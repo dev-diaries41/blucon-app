@@ -34,7 +34,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
-import com.fpf.blucon.bluetooth.BTScanEntry
+import com.fpf.blucon.bluetooth.scan.BTScanEntry
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 

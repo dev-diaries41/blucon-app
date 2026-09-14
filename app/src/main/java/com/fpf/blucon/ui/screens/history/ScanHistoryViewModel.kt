@@ -15,7 +15,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.fpf.blucon.bluetooth.BTScan
+import com.fpf.blucon.bluetooth.scan.BTScan
 import com.fpf.blucon.data.paging.ScanHistoryPagingSource
 import com.fpf.blucon.data.scans.ScanRepository
 import com.fpf.blucon.events.ScanHistoryEvent

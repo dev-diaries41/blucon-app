@@ -9,11 +9,11 @@ import androidx.annotation.RequiresPermission
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.fpf.blucon.bluetooth.BTDevice
-import com.fpf.blucon.bluetooth.BTScan
-import com.fpf.blucon.bluetooth.BTScanEntry
-import com.fpf.blucon.bluetooth.BluetoothScanner
-import com.fpf.blucon.bluetooth.NewBTScan
-import com.fpf.blucon.bluetooth.toScan
+import com.fpf.blucon.bluetooth.scan.BTScan
+import com.fpf.blucon.bluetooth.scan.BTScanEntry
+import com.fpf.blucon.bluetooth.scan.BluetoothScanner
+import com.fpf.blucon.bluetooth.scan.NewBTScan
+import com.fpf.blucon.bluetooth.scan.toScan
 import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.data.scans.ScanRepository
 import com.fpf.blucon.errors.AppException

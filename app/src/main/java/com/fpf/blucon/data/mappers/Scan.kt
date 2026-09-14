@@ -1,8 +1,8 @@
 package com.fpf.blucon.data.mappers
 
-import com.fpf.blucon.bluetooth.BTScan
-import com.fpf.blucon.bluetooth.BTScanEntry
-import com.fpf.blucon.bluetooth.NewBTScan
+import com.fpf.blucon.bluetooth.scan.BTScan
+import com.fpf.blucon.bluetooth.scan.BTScanEntry
+import com.fpf.blucon.bluetooth.scan.NewBTScan
 import com.fpf.blucon.data.scans.ScanEntity
 import com.fpf.blucon.data.scans.ScanEntryEntity
 import com.fpf.blucon.data.scans.ScanWithCount

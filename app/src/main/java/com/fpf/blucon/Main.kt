@@ -5,7 +5,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.*
-import com.fpf.blucon.bluetooth.BTScan
+import com.fpf.blucon.bluetooth.scan.BTScan
 import com.fpf.blucon.navigation.BottomNavigationBar
 import com.fpf.blucon.navigation.NavDataKeys
 import com.fpf.blucon.navigation.Routes

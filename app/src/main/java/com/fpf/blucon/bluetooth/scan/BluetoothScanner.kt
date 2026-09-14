@@ -1,4 +1,4 @@
-package com.fpf.blucon.bluetooth
+package com.fpf.blucon.bluetooth.scan
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
@@ -13,11 +13,12 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
+import androidx.core.util.size
+import com.fpf.blucon.bluetooth.BTDevice
+import com.fpf.blucon.errors.AppException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import androidx.core.util.size
-import com.fpf.blucon.errors.AppException
 
 class BluetoothScanner(
     private val context: Context,

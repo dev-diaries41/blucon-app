@@ -1,6 +1,6 @@
 package com.fpf.blucon.data.paging
 
-import com.fpf.blucon.bluetooth.BTScanEntry
+import com.fpf.blucon.bluetooth.scan.BTScanEntry
 import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.query.SortBy
 

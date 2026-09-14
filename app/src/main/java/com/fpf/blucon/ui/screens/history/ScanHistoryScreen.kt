@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.fpf.blucon.R
-import com.fpf.blucon.bluetooth.BTScan
+import com.fpf.blucon.bluetooth.scan.BTScan
 import com.fpf.blucon.events.ScanHistoryEventType
 import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.action.ActionConfig

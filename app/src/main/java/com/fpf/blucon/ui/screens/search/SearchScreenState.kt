@@ -1,7 +1,6 @@
 package com.fpf.blucon.ui.screens.search
 
-import com.fpf.blucon.bluetooth.BTScan
-import com.fpf.blucon.bluetooth.BTScanEntry
+import com.fpf.blucon.bluetooth.scan.BTScanEntry
 import com.fpf.blucon.query.SortBy
 import com.fpf.blucon.ui.shared.state.SelectionState
 

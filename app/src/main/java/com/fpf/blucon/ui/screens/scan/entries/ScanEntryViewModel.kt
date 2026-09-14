@@ -13,8 +13,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
-import com.fpf.blucon.bluetooth.BTScan
-import com.fpf.blucon.bluetooth.BTScanEntry
+import com.fpf.blucon.bluetooth.scan.BTScan
+import com.fpf.blucon.bluetooth.scan.BTScanEntry
 import com.fpf.blucon.data.paging.ScanEntriesPagingSource
 import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.query.SortBy

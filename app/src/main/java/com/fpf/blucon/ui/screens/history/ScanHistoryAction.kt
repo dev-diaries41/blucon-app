@@ -1,6 +1,6 @@
 package com.fpf.blucon.ui.screens.history
 
-import com.fpf.blucon.bluetooth.BTScan
+import com.fpf.blucon.bluetooth.scan.BTScan
 import com.fpf.blucon.query.SortBy
 
 

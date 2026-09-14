@@ -1,4 +1,4 @@
-package com.fpf.blucon.bluetooth
+package com.fpf.blucon.bluetooth.scan
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

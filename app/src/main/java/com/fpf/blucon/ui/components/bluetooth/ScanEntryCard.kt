@@ -3,9 +3,8 @@ package com.fpf.blucon.ui.components.bluetooth
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.fpf.blucon.bluetooth.BTScanEntry
+import com.fpf.blucon.bluetooth.scan.BTScanEntry
 import com.fpf.blucon.ui.components.cards.InfoCard
-import com.fpf.blucon.ui.components.cards.InfoRow
 import com.fpf.blucon.ui.components.cards.InfoText
 
 @Composable

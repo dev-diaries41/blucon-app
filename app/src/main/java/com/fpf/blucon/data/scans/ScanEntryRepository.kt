@@ -1,6 +1,6 @@
 package com.fpf.blucon.data.scans
 
-import com.fpf.blucon.bluetooth.BTScanEntry
+import com.fpf.blucon.bluetooth.scan.BTScanEntry
 import com.fpf.blucon.data.MetadataRepository
 import com.fpf.blucon.data.mappers.toDomain
 import com.fpf.blucon.data.mappers.toEntity
