@@ -3,6 +3,7 @@ package com.fpf.blucon
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import com.fpf.blucon.di.clusterModule
 import com.fpf.blucon.di.dbModule
 import com.fpf.blucon.di.embedsModule
 import com.fpf.blucon.di.modelModule
@@ -27,7 +28,8 @@ class App : Application() {
                     viewModelModule,
                     storageModule,
                     modelModule,
-                    embedsModule
+                    embedsModule,
+                    clusterModule
                 )
             }
         }
@@ -43,7 +45,8 @@ class App : Application() {
                 viewModelModule,
                 storageModule,
                 modelModule,
-                embedsModule
+                embedsModule,
+                clusterModule
             )
         }
 
