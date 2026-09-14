@@ -13,6 +13,15 @@ interface ScanEntryDao {
     suspend fun addEntries(entries: List<ScanEntryEntity>): List<Long>
 
     @Query("""
+        SELECT DISTINCT deviceName
+        FROM scan_entry entry
+        WHERE (scanId =:scanId OR :scanId IS NULL)
+            AND deviceName iS NOT NULL
+        ORDER BY timestamp DESC, deviceName DESC
+    """)
+    suspend fun getUniqueDevices(scanId: Long?): List<String>
+
+    @Query("""
         SELECT entry.*
         FROM scan_entry entry
         WHERE (scanId =:scanId OR :scanId IS NULL)
@@ -20,6 +29,7 @@ interface ScanEntryDao {
         ORDER BY timestamp DESC, deviceAddress DESC
     """)
     suspend fun getEntries(scanId: Long?, deviceAddresses: List<String>?): List<ScanEntryEntity>
+
 
     @Query("""
         SELECT * from scan_entry 

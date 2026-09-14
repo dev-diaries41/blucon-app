@@ -102,5 +102,6 @@ class ScanEntryRepository(
         dao.getDeviceNameCountsAsc(scanId, limit = limit, offset = offset).map { entry -> entry.deviceName to entry.count }
     }
 
+    suspend fun getUniqueDeviceNames(scanId: Long? = null): List<String> = dao.getUniqueDevices(scanId)
 }
 
