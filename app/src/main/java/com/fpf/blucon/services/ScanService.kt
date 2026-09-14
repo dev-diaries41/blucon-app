@@ -15,7 +15,6 @@ import com.fpf.blucon.bluetooth.scan.BluetoothScanResult
 import com.fpf.blucon.bluetooth.scan.BluetoothScanner
 import com.fpf.blucon.bluetooth.scan.BTScanEntry
 import com.fpf.blucon.bluetooth.scan.NewBTScan
-import com.fpf.blucon.bluetooth.scan.toScan
 import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.data.scans.ScanRepository
 import com.fpf.blucon.errors.AppException
@@ -36,8 +35,6 @@ class ScanService : Service(), KoinComponent {
     companion object {
         private const val NOTIFICATION_ID = 301
         private const val TAG = "ScanService"
-        const val ACTION_START = "com.fpf.blucon.services.SCAN_START"
-        const val ACTION_STOP = "com.fpf.blucon.services.SCAN_STOP"
     }
 
     private val serviceJob = SupervisorJob()
@@ -81,11 +78,7 @@ class ScanService : Service(), KoinComponent {
 
     @SuppressLint("MissingPermission")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
-            ACTION_STOP -> stopScan()
-            ACTION_START, null -> startScan()
-        }
-
+        startScan()
         return START_NOT_STICKY
     }
 
