@@ -70,7 +70,7 @@ class App : Application() {
         val scanServiceChannel = NotificationChannel(
             NotificationChannels.SCAN_SERVICE,
             getString(R.string.scan_service_channel_name),
-            NotificationManager.IMPORTANCE_HIGH
+            NotificationManager.IMPORTANCE_LOW
         ).apply {
             description = getString(R.string.scan_service_channel_description)
         }
@@ -79,7 +79,7 @@ class App : Application() {
         val indexServiceChannel = NotificationChannel(
             NotificationChannels.INDEX_SERVICE,
             getString(R.string.index_service_channel_name),
-            NotificationManager.IMPORTANCE_HIGH
+            NotificationManager.IMPORTANCE_LOW
         ).apply {
             description = getString(R.string.index_service_channel_description)
         }
