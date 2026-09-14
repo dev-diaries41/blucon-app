@@ -27,7 +27,7 @@ fun ScanCard(
         content = {
             InfoText("Scan #${item.id}", highlight = true)
             InfoRow("Location", item.postcode?: "${String.format(Locale.UK, "%.3f", item.latitude).toDouble()}, ${String.format(Locale.UK, "%.3f", item.longitude).toDouble()}")
-            InfoRow("Devices", "${item.size}")
+            InfoRow("Device", "${item.size}")
             InfoRow("Date", formatDateTime(item.timestamp))
         }
     )

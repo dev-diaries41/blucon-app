@@ -931,7 +931,7 @@ company_identifiers:
     name: 'IN Phase International lTD'
 
   - value: 0x0F80
-    name: 'Hydro Electronic Devices, Inc.'
+    name: 'Hydro Electronic Device, Inc.'
 
   - value: 0x0F7F
     name: 'Badass eBikes GmbH'
@@ -997,7 +997,7 @@ company_identifiers:
     name: 'Skywalk Inc.'
 
   - value: 0x0F6A
-    name: 'Roam Devices LLC'
+    name: 'Roam Device LLC'
 
   - value: 0x0F69
     name: 'Ancoe Industry Corporation'
@@ -1369,7 +1369,7 @@ company_identifiers:
     name: 'Fujita Electric Works, Ltd'
 
   - value: 0x0EEA
-    name: 'Core Devices LLC'
+    name: 'Core Device LLC'
 
   - value: 0x0EE9
     name: 'PIXEL TI IND. E COM PROD ELETRONICOS'
@@ -1858,7 +1858,7 @@ company_identifiers:
     name: 'WKD Labs Ltd'
 
   - value: 0x0E3F
-    name: 'Wiser Devices, LLC'
+    name: 'Wiser Device, LLC'
 
   - value: 0x0E3E
     name: 'VANBOX'
@@ -1924,7 +1924,7 @@ company_identifiers:
     name: 'Huizhou Foryou General Electronics Co., Ltd.'
 
   - value: 0x0E29
-    name: 'Flipper Devices Inc.'
+    name: 'Flipper Device Inc.'
 
   - value: 0x0E28
     name: 'PatchRx, Inc.'
@@ -2641,7 +2641,7 @@ company_identifiers:
     name: 'SYNCHRON, INC.'
 
   - value: 0x0D30
-    name: 'Laxmi Therapeutic Devices, Inc.'
+    name: 'Laxmi Therapeutic Device, Inc.'
 
   - value: 0x0D2F
     name: 'Delta Development Team, Inc'
@@ -2659,7 +2659,7 @@ company_identifiers:
     name: 'Sensoryx AG'
 
   - value: 0x0D2A
-    name: 'PhysioLogic Devices, Inc.'
+    name: 'PhysioLogic Device, Inc.'
 
   - value: 0x0D29
     name: 'MIYAKAWA ELECTRIC WORKS LTD.'
@@ -5896,7 +5896,7 @@ company_identifiers:
     name: 'J-J.A.D.E. Enterprise LLC'
 
   - value: 0x089C
-    name: 'Embedded Devices Co. Company'
+    name: 'Embedded Device Co. Company'
 
   - value: 0x089B
     name: 'Saucon Technologies'
@@ -6079,7 +6079,7 @@ company_identifiers:
     name: 'ACOS CO.,LTD.'
 
   - value: 0x085B
-    name: 'Nisshinbo Micro Devices Inc.'
+    name: 'Nisshinbo Micro Device Inc.'
 
   - value: 0x085A
     name: 'DAKATECH'
@@ -6805,7 +6805,7 @@ company_identifiers:
     name: 'Antitronics Inc.'
 
   - value: 0x075B
-    name: 'Smart Sensor Devices AB'
+    name: 'Smart Sensor Device AB'
 
   - value: 0x075A
     name: 'HARMAN CO.,LTD.'
@@ -8053,7 +8053,7 @@ company_identifiers:
     name: 'Shanghai Xiaoyi Technology Co.,Ltd.'
 
   - value: 0x05A0
-    name: 'Dream Devices Technologies Oy'
+    name: 'Dream Device Technologies Oy'
 
   - value: 0x059F
     name: 'Fisher & Paykel Healthcare'
@@ -8716,7 +8716,7 @@ company_identifiers:
     name: 'Soraa Inc.'
 
   - value: 0x04B7
-    name: 'Analog Devices, Inc.'
+    name: 'Analog Device, Inc.'
 
   - value: 0x04B6
     name: 'Diagnoptics Technologies'
@@ -9316,7 +9316,7 @@ company_identifiers:
     name: 'FINSECUR'
 
   - value: 0x03D6
-    name: 'Yota Devices LTD'
+    name: 'Yota Device LTD'
 
   - value: 0x03D5
     name: 'Wyzelink Systems Inc.'
@@ -9904,7 +9904,7 @@ company_identifiers:
     name: 'IACA electronique'
 
   - value: 0x0302
-    name: 'Loop Devices, Inc'
+    name: 'Loop Device, Inc'
 
   - value: 0x0301
     name: 'Giatec Scientific Inc.'
@@ -10003,7 +10003,7 @@ company_identifiers:
     name: 'Samsung SDS Co., Ltd.'
 
   - value: 0x02DD
-    name: 'Flint Rehabilitation Devices, LLC'
+    name: 'Flint Rehabilitation Device, LLC'
 
   - value: 0x02DC
     name: 'DeWalch Technologies, Inc.'
@@ -10411,7 +10411,7 @@ company_identifiers:
     name: 'M-Way Solutions GmbH'
 
   - value: 0x024C
-    name: 'Blue Clover Devices'
+    name: 'Blue Clover Device'
 
   - value: 0x024B
     name: 'Orlan LLC'
@@ -10678,7 +10678,7 @@ company_identifiers:
     name: 'Technology Solutions (UK) Ltd'
 
   - value: 0x01E5
-    name: 'Dynamic Devices Ltd'
+    name: 'Dynamic Device Ltd'
 
   - value: 0x01E4
     name: 'Freedom Innovations'
@@ -10825,7 +10825,7 @@ company_identifiers:
     name: 'Star Micronics Co., Ltd.'
 
   - value: 0x01AF
-    name: 'Sunrise Micro Devices, Inc.'
+    name: 'Sunrise Micro Device, Inc.'
 
   - value: 0x01AD
     name: 'FlightSafety International'
@@ -11206,7 +11206,7 @@ company_identifiers:
     name: 'Changzhou Yongse Infotech  Co., Ltd.'
 
   - value: 0x0129
-    name: 'Nimble Devices Oy'
+    name: 'Nimble Device Oy'
 
   - value: 0x0128
     name: 'GPSI Group Pty Ltd'
@@ -11575,7 +11575,7 @@ company_identifiers:
     name: 'MARELLI EUROPE S.P.A.'
 
   - value: 0x00A8
-    name: 'ARP Devices Limited'
+    name: 'ARP Device Limited'
 
   - value: 0x00A7
     name: 'Visteon Corporation'
@@ -11941,7 +11941,7 @@ company_identifiers:
     name: 'Hitachi Ltd'
 
   - value: 0x0028
-    name: 'R F Micro Devices'
+    name: 'R F Micro Device'
 
   - value: 0x0027
     name: 'Open Interface'

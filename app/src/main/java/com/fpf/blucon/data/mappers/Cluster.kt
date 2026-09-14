@@ -43,9 +43,3 @@ fun StoredClusterMetadata.toIncrementalClusterMetadata(): ClusterMetadata = Clus
     stdSimilarity = stdSimilarity,
     prototypeSize = prototypeSize
 )
-
-fun DeviceCollectionData.toDomain(): DeviceCollection = DeviceCollection(
-    id = clusterId,
-    name = label,
-    size = size,
-)
