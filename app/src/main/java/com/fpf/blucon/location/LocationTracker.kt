@@ -59,47 +59,44 @@ class LocationTracker(context: Context) {
     fun start() {
         checkPermission()
 
-        val hasGpsProvider = isProviderAvailable(LocationManager.GPS_PROVIDER)
-        val hasNetworkProvider = isProviderAvailable(LocationManager.NETWORK_PROVIDER)
-        val hasFusedProvider = isProviderAvailable(LocationManager.FUSED_PROVIDER)
-
-        if (listOf(hasGpsProvider, hasNetworkProvider, hasFusedProvider).all { !it }) {
-            throw AppException.LocationUnavailableException("No valid location provider")
-        }
-
         if (!isLocationEnabled.value) {
             throw AppException.LocationUnavailableException()
         }
 
-        if (hasFusedProvider) {
-            locationManager.requestLocationUpdates(
-                LocationManager.FUSED_PROVIDER,
-                1000L,
-                1f,
-                locationListener,
-                Looper.getMainLooper()
-            )
+        val providers = listOf(
+            LocationManager.FUSED_PROVIDER,
+            LocationManager.NETWORK_PROVIDER,
+            LocationManager.GPS_PROVIDER
+        ).filter(::isProviderAvailable)
+
+        val now = System.currentTimeMillis()
+
+        providers
+            .mapNotNull { locationManager.getLastKnownLocation(it) }
+            .filter { now - it.time <= 60_000L }
+            .maxByOrNull { it.time }
+            ?.let { _location.value = it }
+
+        val activeProvider = when {
+            isProviderAvailable(LocationManager.FUSED_PROVIDER) ->
+                LocationManager.FUSED_PROVIDER
+
+            isProviderAvailable(LocationManager.NETWORK_PROVIDER) ->
+                LocationManager.NETWORK_PROVIDER
+
+            isProviderAvailable(LocationManager.GPS_PROVIDER) ->
+                LocationManager.GPS_PROVIDER
+
+            else -> throw AppException.LocationUnavailableException("No valid location provider")
         }
 
-        if (hasGpsProvider) {
-            locationManager.requestLocationUpdates(
-                LocationManager.GPS_PROVIDER,
-                1000L,
-                1f,
-                locationListener,
-                Looper.getMainLooper()
-            )
-        }
-
-        if (hasNetworkProvider) {
-            locationManager.requestLocationUpdates(
-                LocationManager.NETWORK_PROVIDER,
-                1000L,
-                1f,
-                locationListener,
-                Looper.getMainLooper()
-            )
-        }
+        locationManager.requestLocationUpdates(
+            activeProvider,
+            1000L,
+            1f,
+            locationListener,
+            Looper.getMainLooper()
+        )
     }
 
     fun stop() {
