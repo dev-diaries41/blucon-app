@@ -9,12 +9,12 @@ import java.io.File
 
 private const val MINILM_EMBEDDING_DIM = 384
 
-val DEVICE_GROUPS_EMBED_STORE = named("device_groups_embed_store")
+val DEVICE_CLUSTERS_EMBED_STORE = named("device_clusters_embed_store")
 val DEVICE_EMBED_STORE = named("device_embed_store")
 
 
 val embedsModule = module {
-    single(DEVICE_GROUPS_EMBED_STORE) {
+    single(DEVICE_CLUSTERS_EMBED_STORE) {
         val app = get<Application>()
         FileEmbeddingStore(File(app.filesDir, EmbeddingStoresFiles.DEVICE_CLUSTER), MINILM_EMBEDDING_DIM, quantize = true)
     }
