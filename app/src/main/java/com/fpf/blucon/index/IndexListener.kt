@@ -2,7 +2,6 @@ package com.fpf.blucon.index
 
 import android.util.Log
 import com.fpf.blucon.bluetooth.device.DeviceInfo
-import com.fpf.smartscan.core.index.IndexingStatus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import com.fpf.smartscansdk.core.processors.ProcessorListener

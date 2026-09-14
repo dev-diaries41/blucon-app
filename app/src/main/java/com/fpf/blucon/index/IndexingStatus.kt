@@ -1,4 +1,4 @@
-package com.fpf.smartscan.core.index
+package com.fpf.blucon.index
 
 enum class IndexingStatus {
     IDLE,
