@@ -11,5 +11,7 @@ sealed class AppException(message: String, cause: Throwable? = null) : Exception
     class LocationUnavailableException(override val message: String = "Location unavailable", cause: Throwable? = null) : AppException(message, cause)
 
     class BluetoothUnavailableException(override val message: String = "Bluetooth unavailable", cause: Throwable? = null) : AppException(message, cause)
+    class ClusterException(message: String = "Clustering failed", cause: Throwable? = null) : AppException(message, cause)
+
 
 }
