@@ -58,6 +58,7 @@ fun ScanScreen(
     var locationGranted by remember { mutableStateOf(false) }
     val screenTitle = stringResource(R.string.title_scan)
     val devices = state.devices.values.toList()
+    val isScanning by viewModel.isScanning.collectAsState()
     val isBluetoothEnabled by viewModel.isBluetoothEnabled.collectAsStateWithLifecycle()
     val isLocationEnabled by viewModel.isLocationEnabled.collectAsStateWithLifecycle()
     val isScanEnabled = isBluetoothEnabled && isLocationEnabled
@@ -101,7 +102,7 @@ fun ScanScreen(
 
         EmptyItemsScreen(
             icon = {
-                if(state.isScanning){
+                if(isScanning){
                     LoadingIndicator(isVisible = true, size = 64.dp)
                 }else{
                     Icon(
@@ -112,8 +113,8 @@ fun ScanScreen(
                     )
                 }
             },
-            title = if(state.isScanning) "Scanning devices" else  "Scan devices" ,
-            description = if(state.isScanning) "No devices found" else  "",
+            title = if(isScanning) "Scanning devices" else  "Scan devices" ,
+            description = if(isScanning) "No devices found" else  "",
             isVisible = devices.isEmpty()
         )
 
@@ -123,7 +124,7 @@ fun ScanScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            if(state.isScanning && devices.isNotEmpty()){
+            if(isScanning && devices.isNotEmpty()){
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -184,8 +185,7 @@ fun ScanScreen(
             ) {
                 Button(
                     onClick = {
-                        if (state.isScanning) {
-                            viewModel.stopScan()
+                        if (isScanning) {
                             onStopScan()
                         } else {
                             onScan()
@@ -195,12 +195,12 @@ fun ScanScreen(
                     enabled = bluetoothGranted && locationGranted && isScanEnabled,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text(if (state.isScanning) "Stop scan" else "Scan")
+                    Text(if (isScanning) "Stop scan" else "Scan")
                 }
 
                 Button(
                     onClick = viewModel::clearDevices,
-                    enabled = !state.isScanning && state.devices.isNotEmpty(),
+                    enabled = !isScanning && state.devices.isNotEmpty(),
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("Clear")

@@ -16,6 +16,8 @@ val viewModelModule = module {
             application = get(),
             scanRepository = get(),
             scanEntryRepository = get(),
+            locationTracker = get(),
+            bluetoothScanner = get()
         )
     }
 

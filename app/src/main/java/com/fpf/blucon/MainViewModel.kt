@@ -5,6 +5,8 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.fpf.blucon.services.startScanning
+import com.fpf.blucon.services.stopScanning
 import com.fpf.blucon.storage.PrefsKeys
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,5 +50,13 @@ class MainViewModel(
             if(storedVersion == null) setVersion()
             onAppReady()
         }
+    }
+
+    fun startScanService(){
+        startScanning(getApplication())
+    }
+
+    fun stopScanService(){
+        stopScanning(getApplication())
     }
 }

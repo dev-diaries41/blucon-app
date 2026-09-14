@@ -66,6 +66,8 @@ fun Main(
             }
             composable(Routes.SCAN) {
                 ScanScreen(
+                    onScan = {mainViewModel.startScanService()},
+                    onStopScan = {mainViewModel.stopScanService()},
                     onTopBarChange = { topBarState.value = it },
                     onViewSettings = { navController.navigate(Routes.SETTINGS) },
                     onViewScanHistory = { navController.navigate(Routes.SCAN_HISTORY) },
