@@ -6,22 +6,22 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
-interface DeviceNameDao {
+interface DeviceDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(deviceNames: List<DeviceNameEntity>): List<Long>
+    suspend fun insert(deviceNames: List<DeviceEntity>): List<Long>
 
     @Query("DELETE FROM device_name WHERE id IN (:ids)")
     suspend fun delete(ids: List<Long>)
 
     @Query("SELECT * FROM device_name WHERE id IN (:ids)")
-    suspend fun getByIds(ids: List<Long>): List<DeviceNameEntity>
+    suspend fun getByIds(ids: List<Long>): List<DeviceEntity>
 
     @Query("SELECT * FROM device_name WHERE name IN (:names)")
-    suspend fun getByNames(names: List<String>): List<DeviceNameEntity>
+    suspend fun getByNames(names: List<String>): List<DeviceEntity>
 
     @Query("SELECT * FROM device_name")
-    suspend fun get(): List<DeviceNameEntity>
+    suspend fun get(): List<DeviceEntity>
 
     @Query("SELECT * FROM device_name ORDER BY name ASC LIMIT :limit OFFSET :offset")
-    suspend fun getPage(limit: Int, offset: Int): List<DeviceNameEntity>
+    suspend fun getPage(limit: Int, offset: Int): List<DeviceEntity>
 }

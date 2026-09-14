@@ -5,8 +5,8 @@ import android.app.Application
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.fpf.blucon.data.devices.DeviceNameDao
-import com.fpf.blucon.data.devices.DeviceNameEntity
+import com.fpf.blucon.data.devices.DeviceDao
+import com.fpf.blucon.data.devices.DeviceEntity
 import com.fpf.blucon.data.devices.clusters.ClusterCrossRefDao
 import com.fpf.blucon.data.devices.clusters.ClusterCrossRefEntity
 import com.fpf.blucon.data.devices.clusters.DeviceClusterDao
@@ -20,7 +20,7 @@ import com.fpf.blucon.data.scans.ScanEntryEntity
     entities = [
         ScanEntity::class,
         ScanEntryEntity::class,
-        DeviceNameEntity::class,
+        DeviceEntity::class,
         DeviceClusterEntity::class,
         ClusterCrossRefEntity::class
     ],
@@ -32,7 +32,7 @@ abstract class ScanDatabase : RoomDatabase() {
     abstract fun scanEntryDao(): ScanEntryDao
     abstract fun scanDao(): ScanDao
 
-    abstract fun deviceNameDao(): DeviceNameDao
+    abstract fun deviceNameDao(): DeviceDao
     abstract fun deviceClusterDao(): DeviceClusterDao
     abstract fun clusterCrossRefDao(): ClusterCrossRefDao
 

@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
     tableName = "device_name",
     indices = [Index(value = ["name"], unique = true)]
 )
-data class DeviceNameEntity(
+data class DeviceEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val name: String

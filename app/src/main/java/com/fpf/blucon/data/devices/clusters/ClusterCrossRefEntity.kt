@@ -3,7 +3,7 @@ package com.fpf.blucon.data.devices.clusters
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
-import com.fpf.blucon.data.devices.DeviceNameEntity
+import com.fpf.blucon.data.devices.DeviceEntity
 
 @Entity(
     tableName = "device_cluster_crossref",
@@ -16,7 +16,7 @@ import com.fpf.blucon.data.devices.DeviceNameEntity
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
-            entity = DeviceNameEntity::class,
+            entity = DeviceEntity::class,
             parentColumns = ["id"],
             childColumns = ["deviceId"],
             onDelete = ForeignKey.CASCADE
