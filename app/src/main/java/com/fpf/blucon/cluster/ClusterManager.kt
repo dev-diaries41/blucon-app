@@ -6,7 +6,6 @@ import com.fpf.blucon.data.devices.clusters.ClusterCrossRefRepository
 import com.fpf.blucon.data.mappers.toIncrementalClusterMetadata
 import com.fpf.blucon.embeds.EmbeddingStoresFiles
 import com.fpf.blucon.data.devices.clusters.DeviceClusterRepository
-import com.fpf.blucon.utils.reservoirSample
 import com.fpf.smartscansdk.core.cluster.Cluster
 import com.fpf.smartscansdk.core.cluster.ClusterResult
 import com.fpf.smartscansdk.core.cluster.IncrementalClusterer
@@ -28,9 +27,7 @@ class ClusterManager(
     private val clusterRepository: DeviceClusterRepository,
 ) {
     companion object {
-        private const val LARGE_DATASET_SIZE: Int = 10000
-        private const val MIN_SAMPLE_SIZE: Int = 500
-        private const val MAX_SAMPLE_SIZE: Int = 5000
+        private const val THRESHOLD: Float = 0.7f
 
         const val TAG = "ClusterManager"
     }
@@ -44,13 +41,7 @@ class ClusterManager(
         if(unclusterItemEmbeds.isEmpty()) return
 
         val existingClusters: Map<Long, Cluster> = getAllClusters()
-        val defaultThreshold = if(existingClusters.isEmpty()) {
-            val sampleSize = (unclusterItemEmbeds.size * 0.01).toInt().coerceIn(MIN_SAMPLE_SIZE, MAX_SAMPLE_SIZE)
-            getDefaultThresholdFromSample(unclusterItemEmbeds, sampleSize)
-        } else {
-            getDefaultThreshold(existingClusters)
-        }
-        val clusterer = IncrementalClusterer(existingClusters = existingClusters, defaultThreshold = defaultThreshold, similarityAlpha = 0.975f)
+        val clusterer = IncrementalClusterer(existingClusters = existingClusters, defaultThreshold = THRESHOLD, similarityAlpha = 0.975f)
         val result = clusterer.cluster(unclusterItemEmbeds.associate { it.id to it.embedding})
         updateClustersAndAssign(result, existingClusters.keys)
     }
@@ -230,22 +221,8 @@ class ClusterManager(
         clusterCrossRefRepository.upsertClusterCrossRefs(crossRefs)
         return clusterEmbed.id
     }
-    private fun getDefaultThresholdFromSample(items: List<StoredEmbedding>, n: Int): Float{
-        val sample = getSample(items, n)
-        val clusterer = IncrementalClusterer(defaultThreshold = 0.6f)
-        val result = clusterer.cluster(sample.associate { it.id to it.embedding})
-        return getDefaultThreshold(result.clusters)
-    }
 
     private fun getDefaultThreshold(clusters: Map<Long, Cluster>): Float = clusters.values.map{it.metadata.meanSimilarity - it.metadata.stdSimilarity}.average().toFloat()
-
-    private fun getSample(items: List<StoredEmbedding>, n: Int): List<StoredEmbedding>{
-        return if(items.size > LARGE_DATASET_SIZE ) {
-            reservoirSample(items, n)
-        } else {
-            items.shuffled().take(n)
-        }
-    }
 
     private fun computeClusterMetrics(embeddings: List<Embedding> ): Triple<Embedding, Float, Float>{
         val prototypeEmbedding = generatePrototypeEmbedding(embeddings)
