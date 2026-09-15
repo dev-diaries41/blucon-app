@@ -22,4 +22,6 @@ class DeviceRepository(
     }.map{it.toDomain()}
 
     suspend fun getUnclusteredItems(): List<Long> = dao.getUnclusteredItemIds()
+
+    suspend fun getByCluster(clusterId: Long): List<DeviceInfo> = dao.getByCluster(clusterId).map { it.toDomain() }
 }

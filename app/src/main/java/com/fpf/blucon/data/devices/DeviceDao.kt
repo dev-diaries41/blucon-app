@@ -39,4 +39,14 @@ interface DeviceDao {
         """
     )
     suspend fun getUnclusteredItemIds(): List<Long>
+
+    @Query("""
+    SELECT d.*
+    FROM device_name d
+    INNER JOIN device_cluster_crossref c
+        ON c.deviceId = d.id
+    WHERE c.clusterId = :clusterId
+    ORDER BY d.name DESC, d.id DESC
+""")
+    suspend fun getByCluster(clusterId: Long): List<DeviceEntity>
 }
