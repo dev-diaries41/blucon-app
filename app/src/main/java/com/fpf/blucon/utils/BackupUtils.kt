@@ -85,11 +85,11 @@ object BackupUtils {
             toJson(scanEntries, scanEntriesFile)
 
             val companyCountsFile = File(context.cacheDir, COMPANY_COUNTS)
-            val companyCounts = scanEntryRepository.getManufacturerCounts().associate { it.first to it.third }
+            val companyCounts = scanEntryRepository.getManufacturerCounts()
             toJson(companyCounts, companyCountsFile)
 
             val deviceNameCountsFile = File(context.cacheDir, DEVICE_NAME_COUNTS)
-            val deviceNameCounts = scanEntryRepository.getDeviceNameCounts().associate { it.first to it.third }
+            val deviceNameCounts = scanEntryRepository.getDeviceNameCounts()
             toJson(deviceNameCounts, deviceNameCountsFile)
 
 

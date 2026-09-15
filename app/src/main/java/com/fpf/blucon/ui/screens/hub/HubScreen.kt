@@ -33,7 +33,7 @@ import com.fpf.blucon.bluetooth.device.DeviceCollection
 import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.action.MenuActionConfig
 import com.fpf.blucon.ui.components.bluetooth.CountsList
-import com.fpf.blucon.ui.components.bluetooth.DeviceOverviewCard
+import com.fpf.blucon.ui.components.bluetooth.OverviewCard
 import com.fpf.blucon.ui.components.common.DropDownMenuWrapper
 import com.fpf.blucon.ui.components.modals.BottomSheet
 import com.fpf.blucon.ui.components.placeholders.EmptyItemsScreen
@@ -123,16 +123,17 @@ fun HubScreen(
             verticalArrangement = Arrangement.Top
         ) {
             if (state.topManufacturerCounts.isNotEmpty() && state.topDeviceNameCounts.isNotEmpty()) {
-                DeviceOverviewCard(
-                    totalEntries = state.totalEntries,
+                OverviewCard(
                     topManufacturerCounts = state.topManufacturerCounts,
                     topDeviceNameCounts = state.topDeviceNameCounts,
                     topCollectionCounts = state.topCollectionCounts,
                     onViewAllManufacturers = {showCompanyCounts = true},
                     onViewAllDevices = {showDevicesCounts = true},
                     onCollectionClick = { onViewCollection(it) },
-                    onViewCollections = {showCollectionCounts = true}
-                )
+                    onViewCollections = {showCollectionCounts = true},
+                ){
+                    Header("${state.totalEntries} entries")
+                }
             }
         }
 
@@ -188,7 +189,7 @@ fun HubScreen(
                 Header(stringResource(R.string.title_collections), Icons.Filled.CollectionsBookmark)
             },
             onItemClick = {
-                onViewCollection(it.second)
+                it.value?.let { collection -> onViewCollection(collection) }
             }
         )
     }

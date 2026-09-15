@@ -35,8 +35,8 @@ import com.fpf.blucon.bluetooth.scan.BTScan
 import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.action.MenuActionConfig
 import com.fpf.blucon.ui.components.bluetooth.CountsList
+import com.fpf.blucon.ui.components.bluetooth.OverviewCard
 import com.fpf.blucon.ui.components.bluetooth.ScanEntryStaggeredGrid
-import com.fpf.blucon.ui.components.bluetooth.ScanOverviewCard
 import com.fpf.blucon.ui.components.common.DropDownMenuWrapper
 import com.fpf.blucon.ui.components.modals.BottomSheet
 import com.fpf.smartscan.ui.components.common.SlideRevealBox
@@ -54,7 +54,6 @@ fun ScanEntryScreen(
     onTopBarChange: (TopBarState) -> Unit,
     onBack: () -> Unit,
     onViewCollection: (DeviceCollection) -> Unit,
-    onViewAllCollections: () -> Unit,
     viewModel: ScanEntryViewModel = koinViewModel(),
     deviceMetadataViewModel: DeviceMetadataViewModel = koinViewModel(),
     ) {
@@ -153,7 +152,7 @@ fun ScanEntryScreen(
                 headerRow = { Header("${devicesState.totalEntries} devices") },
                 overview = {
                     if (devicesState.topManufacturerCounts.isNotEmpty() && devicesState.topDeviceNameCounts.isNotEmpty()) {
-                        ScanOverviewCard(
+                        OverviewCard(
                             topManufacturerCounts = devicesState.topManufacturerCounts,
                             topDeviceNameCounts = devicesState.topDeviceNameCounts,
                             topCollectionCounts = devicesState.topCollectionCounts,
@@ -221,7 +220,7 @@ fun ScanEntryScreen(
                 Header(stringResource(R.string.title_collections), Icons.Filled.CollectionsBookmark)
             },
             onItemClick = {
-                onViewCollection(it.second)
+                it.value?.let { collection -> onViewCollection(collection) }
             }
         )
     }

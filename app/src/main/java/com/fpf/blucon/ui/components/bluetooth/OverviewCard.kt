@@ -10,27 +10,27 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.fpf.blucon.bluetooth.device.DeviceCollection
+import com.fpf.blucon.metrics.CountMetric
+import com.fpf.blucon.ui.components.common.CountMetricCard
 import com.fpf.blucon.ui.components.common.HorizontalCarouselRow
 import com.fpf.blucon.ui.components.search.Header
 
 @Composable
-fun DeviceOverviewCard(
-    totalEntries: Int,
-    topManufacturerCounts:List<Triple<String, Nothing?,  Int>>, //name, value, count
-    topDeviceNameCounts: List<Triple<String, Nothing?,  Int>>, //name, value, count
-    topCollectionCounts: List<Triple<String, DeviceCollection,  Int>>, //name, value, count
+fun OverviewCard(
+    topManufacturerCounts: List<CountMetric<Nothing>>,
+    topDeviceNameCounts:List<CountMetric<Nothing>>,
+    topCollectionCounts: List<CountMetric<DeviceCollection>>,
     onViewAllManufacturers: (() -> Unit)? = null,
     onViewAllDevices: (() -> Unit)? = null,
     onViewCollections: (() -> Unit)? = null,
-    onCollectionClick: ((DeviceCollection) -> Unit)? = null
-
-
+    onCollectionClick: ((DeviceCollection) -> Unit)? = null,
+    headerContent: (@Composable () -> Unit)?=null
 ) {
     val topK = maxOf(topManufacturerCounts.size, topDeviceNameCounts.size)
 
-    val sortedManufacturers = topManufacturerCounts.sortedByDescending { it.third }
-    val sortedDevices = topDeviceNameCounts.sortedByDescending { it.third }
-    val sortedCollections = topCollectionCounts.sortedByDescending { it.third }
+    val sortedManufacturers = topManufacturerCounts.sortedByDescending { it.count }
+    val sortedDevices = topDeviceNameCounts.sortedByDescending { it.count }
+    val sortedCollections = topCollectionCounts.sortedByDescending { it.count }
 
     if (sortedManufacturers.isEmpty()) return
     if (sortedDevices.isEmpty()) return
@@ -50,23 +50,38 @@ fun DeviceOverviewCard(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Header("$totalEntries entries")
+            headerContent?.invoke()
             HorizontalCarouselRow(
                 label = "Top manufacturers",
                 topItemCounts = topManufacturers,
                 onViewAll = onViewAllManufacturers
-            )
+            ){
+                CountMetricCard(
+                    metric = it,
+                    onItemClick = onCollectionClick
+                )
+            }
+
             HorizontalCarouselRow(
                 label = "Top device names",
                 topItemCounts = topDevices,
                 onViewAll = onViewAllDevices
-            )
+            ){
+                CountMetricCard(
+                    metric = it,
+                    onItemClick = onCollectionClick
+                )
+            }
             HorizontalCarouselRow(
                 label = "Top collections",
                 topItemCounts = topCollections,
                 onViewAll = onViewCollections,
-                onItemClick = onCollectionClick
-            )
+            ){
+                CountMetricCard(
+                    metric = it,
+                    onItemClick = onCollectionClick
+                )
+            }
         }
     }
 }

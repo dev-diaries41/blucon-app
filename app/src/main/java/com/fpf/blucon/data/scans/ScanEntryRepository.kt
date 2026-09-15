@@ -8,6 +8,7 @@ import com.fpf.blucon.data.devices.DeviceDao
 import com.fpf.blucon.data.devices.DeviceEntity
 import com.fpf.blucon.data.mappers.toDomain
 import com.fpf.blucon.data.mappers.toEntity
+import com.fpf.blucon.metrics.CountMetric
 
 class ScanEntryRepository(
     private val dao: ScanEntryDao,
@@ -94,28 +95,34 @@ class ScanEntryRepository(
     suspend fun countEntries(query: String?= null, manufacturerIds: List<Int> = emptyList()): Int =
         dao.countEntries(query, manufacturerIds)
 
-    suspend fun getManufacturerCounts(scanId: Long? = null, limit: Int = -1, offset: Int = 0, descending: Boolean = true): List<Triple<String, Nothing?, Int>> = if (descending) {
+    suspend fun getManufacturerCounts(scanId: Long? = null, limit: Int = -1, offset: Int = 0, descending: Boolean = true): List<CountMetric<Nothing>> = if (descending) {
         dao.getManufacturerCountsDesc(scanId, limit = limit, offset = offset).map { entry ->
-           Triple(( getCompanyName(entry.manufacturerId)?: entry.manufacturerId.toString()), null,  entry.count)
+            val manufacturerName = getCompanyName(entry.manufacturerId)?: entry.manufacturerId.toString()
+            CountMetric(label=manufacturerName, count = entry.count)
         }
     } else {
         dao.getManufacturerCountsAsc(scanId, limit = limit, offset = offset).map { entry ->
-            Triple(( getCompanyName(entry.manufacturerId)?: entry.manufacturerId.toString()), null,  entry.count)
+            val manufacturerName = getCompanyName(entry.manufacturerId)?: entry.manufacturerId.toString()
+            CountMetric(label=manufacturerName, count = entry.count)
         }
     }
 
-    suspend fun getDeviceNameCounts(scanId: Long? = null, limit: Int = -1, offset: Int = 0, descending: Boolean = true): List<Triple<String, Nothing?, Int>> = if (descending) {
-        dao.getDeviceNameCountsDesc(scanId, limit = limit, offset = offset).map { entry -> Triple(entry.deviceName,  null,  entry.count) }
+    suspend fun getDeviceNameCounts(scanId: Long? = null, limit: Int = -1, offset: Int = 0, descending: Boolean = true): List<CountMetric<Nothing>>  = if (descending) {
+        dao.getDeviceNameCountsDesc(scanId, limit = limit, offset = offset).map { entry ->  CountMetric(label=entry.deviceName, count = entry.count) }
     } else {
-        dao.getDeviceNameCountsAsc(scanId, limit = limit, offset = offset).map { entry -> Triple(entry.deviceName, null,  entry.count) }
+        dao.getDeviceNameCountsAsc(scanId, limit = limit, offset = offset).map { entry ->  CountMetric(label=entry.deviceName, count = entry.count) }
     }
 
     suspend fun getUniqueDeviceNames(scanId: Long? = null): List<String> = dao.getUniqueDevices(scanId)
 
-    suspend fun getClusterCounts(scanId: Long? = null, limit: Int = -1, offset: Int = 0, descending: Boolean = true): List<Triple<String, DeviceCollection, Int>> = if (descending) {
-        dao.getClusterCountsDesc(scanId, limit = limit, offset = offset).map { entry -> (Triple(entry.collection.toDomain().name, entry.collection.toDomain(), entry.count)) }
+    suspend fun getClusterCounts(scanId: Long? = null, limit: Int = -1, offset: Int = 0, descending: Boolean = true): List<CountMetric<DeviceCollection>>  = if (descending) {
+        dao.getClusterCountsDesc(scanId, limit = limit, offset = offset).map { entry ->
+            CountMetric(label=entry.collection.toDomain().name, value = entry.collection.toDomain(), count = entry.count)
+        }
     } else {
-        dao.getClusterCountsAsc(scanId, limit = limit, offset = offset).map { entry -> (Triple(entry.collection.toDomain().name, entry.collection.toDomain(), entry.count)) }
+        dao.getClusterCountsAsc(scanId, limit = limit, offset = offset).map { entry ->
+            CountMetric(label=entry.collection.toDomain().name, value = entry.collection.toDomain(), count = entry.count)
+        }
     }
 }
 

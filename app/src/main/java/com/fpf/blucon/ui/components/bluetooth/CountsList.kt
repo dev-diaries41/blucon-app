@@ -1,6 +1,5 @@
 package com.fpf.blucon.ui.components.bluetooth
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -38,6 +37,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
+import com.fpf.blucon.metrics.CountMetric
 import com.fpf.blucon.ui.components.cards.InfoRow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -45,14 +45,14 @@ import kotlin.math.roundToInt
 
 @Composable
 fun <T>CountsList(
-    items: LazyPagingItems<Triple<String, T, Int>>,
+    items: LazyPagingItems<CountMetric<T>>,
     isVisible: Boolean,
     maxCollapsePx: Int = 0,
     onOffsetChange:( (Int) -> Unit)? = null,
-    onItemClick: ((Triple<String, T, Int>) -> Unit)? = null,
+    onItemClick: ((CountMetric<T>) -> Unit)? = null,
     headerContent: (@Composable () -> Unit)? = null,
 
-) {
+    ) {
     if (!isVisible) return
 
     val scope = rememberCoroutineScope()
@@ -127,7 +127,7 @@ fun <T>CountsList(
                 count = items.itemCount,
                 key = { index ->
                     val item = items[index]
-                    item?.first + index
+                    item?.label + index
                 }
             ) { index ->
                 val item = items[index] ?: return@items

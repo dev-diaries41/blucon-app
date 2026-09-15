@@ -19,15 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.fpf.blucon.metrics.CountMetric
 
 
 @Composable
 fun <T>HorizontalCarouselRow(
     label: String,
-    topItemCounts: List<Triple<String, T,  Int>>,
-    itemLabel: String = "items",
+    topItemCounts: List<CountMetric<T>>,
     onViewAll: (() -> Unit)? = null,
-    onItemClick: ((T) -> Unit)? = null
+    itemContent: @Composable (CountMetric<T>) -> Unit
 ) {
     val isEmpty = topItemCounts.isEmpty()
     Column(
@@ -61,35 +61,8 @@ fun <T>HorizontalCarouselRow(
                 modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                topItemCounts.forEach { (name, value,  count) ->
-                    Column(
-                        modifier = Modifier
-                            .widthIn(min = 100.dp)
-                            .clip(MaterialTheme.shapes.large)
-                            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-                            .then(
-                                if (onItemClick != null) {
-                                    Modifier.clickable { onItemClick(value) }
-                                } else {
-                                    Modifier
-                                }
-                            )
-                            .padding(16.dp)
-                    ) {
-                        Text(
-                            text = name,
-                            style = MaterialTheme.typography.bodyMedium,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-
-                        Text(
-                            text = "$count $itemLabel",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
+                topItemCounts.forEach { metric ->
+                    itemContent(metric)
                 }
             }
         }
