@@ -23,7 +23,7 @@ fun NewDeviceInfo.toEntity(): DeviceEntity = DeviceEntity(
 
 fun DeviceCollectionData.toDomain(): DeviceCollection = DeviceCollection(
     id = clusterId,
-    name = label?: "${DeviceCollection.UNLABELLED_COLLECTION} $clusterId",
+    name = label?: DeviceCollection.UNLABELLED_COLLECTION,
     size = size,
 )
 
