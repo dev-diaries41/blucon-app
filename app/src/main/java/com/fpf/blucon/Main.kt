@@ -140,6 +140,7 @@ fun Main(
 
                 composable(Routes.COLLECTIONS) {
                     CollectionsScreen(
+                        onBack = { navController.popBackStack() },
                         onTopBarChange = { topBarState.value = it },
                         onViewCollection = { collection ->
                             navController.currentBackStackEntry

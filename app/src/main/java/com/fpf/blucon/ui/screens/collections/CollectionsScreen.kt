@@ -13,11 +13,13 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DriveFileRenameOutline
 import androidx.compose.material.icons.filled.Merge
 import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -57,6 +59,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(FlowPreview::class)
 @Composable
 fun CollectionsScreen(
+    onBack: () -> Unit,
     onTopBarChange: (TopBarState) -> Unit,
     onViewCollection: (DeviceCollection) -> Unit,
     viewModel: CollectionsViewModel = koinViewModel(),
@@ -120,6 +123,14 @@ fun CollectionsScreen(
         onTopBarChange(
             TopBarState(
                 title = screenTitle,
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = null
+                        )
+                    }
+                },
             )
         )
     }
