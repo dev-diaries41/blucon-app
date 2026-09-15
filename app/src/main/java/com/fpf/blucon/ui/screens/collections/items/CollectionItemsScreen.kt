@@ -202,14 +202,14 @@ fun CollectionItemsScreen(
                 }
            CollectionItemsList(
                     isVisible = items.itemCount > 0,
-                    numGridColumns = 3,
+                    numGridColumns = 2,
                     items = items,
                     isSelecting = state.selection.isSelecting,
+                    isChecked = { it in state.selection.selectedItems || (state.selection.selectAll && it !in state.selection.excludedItems)},
                     onItemClick = {
                         if(state.selection.isSelecting){
                             viewModel.onAction(CollectionItemAction.ToggleSelectedMedia(it))
-                        }else {
-                        }
+                        }else { }
                     },
                     onItemLongClick = {
                         viewModel.onAction(CollectionItemAction.ToggleSelectionMode)
