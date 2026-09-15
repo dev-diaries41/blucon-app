@@ -9,4 +9,5 @@ object PrefsKeys {
     const val UPDATES = "UPDATES_KEY"
     const val SORT_BY_SCAN_HISTORY = "SORT_BY_SCAN_HISTORY"
     const val SORT_BY_DEVICES = "SORT_BY_DEVICES"
+    const val SORT_BY_COLLECTION_ITEMS= "SORT_BY_COLLECTION_ITEMS"
 }

@@ -5,11 +5,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.*
+import com.fpf.blucon.bluetooth.device.DeviceCollection
 import com.fpf.blucon.bluetooth.scan.BTScan
 import com.fpf.blucon.navigation.BottomNavigationBar
 import com.fpf.blucon.navigation.NavDataKeys
 import com.fpf.blucon.navigation.Routes
 import com.fpf.blucon.navigation.TopBarState
+import com.fpf.blucon.ui.screens.collections.CollectionsScreen
+import com.fpf.blucon.ui.screens.collections.items.CollectionItemsScreen
 import com.fpf.blucon.ui.screens.scan.entries.ScanEntryScreen
 import com.fpf.blucon.ui.screens.donate.DonateScreen
 import com.fpf.blucon.ui.screens.history.ScanHistoryScreen
@@ -97,6 +100,32 @@ fun Main(
                 ScanEntryScreen(
                     onTopBarChange = { topBarState.value = it },
                     scan = scan,
+                    onBack = { navController.popBackStack() },
+                )
+            }
+
+            composable(Routes.COLLECTIONS) {
+                CollectionsScreen(
+                    onTopBarChange = { topBarState.value = it },
+                    onViewCollection = { collection ->
+                        navController.currentBackStackEntry
+                            ?.savedStateHandle
+                            ?.set(NavDataKeys.COLLECTION, collection)
+
+                        navController.navigate(Routes.COLLECTION_ITEMS)
+                    },
+                )
+            }
+            composable(
+                route = Routes.COLLECTION_ITEMS,
+            ) { _ ->
+                val collection = navController.previousBackStackEntry?.savedStateHandle?.get<DeviceCollection>(
+                        NavDataKeys.COLLECTION
+                    )
+
+                CollectionItemsScreen(
+                    onTopBarChange = { topBarState.value = it },
+                    collection = collection,
                     onBack = { navController.popBackStack() },
                 )
             }

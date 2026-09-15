@@ -9,4 +9,6 @@ object Routes {
     const val SEARCH = "search"
     const val SETTINGS = "settings"
     const val DONATE = "donate"
+    const val COLLECTIONS = "collections"
+    const val COLLECTION_ITEMS = "collection_items"
 }
