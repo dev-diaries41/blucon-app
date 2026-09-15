@@ -19,13 +19,6 @@ class SearchEntriesPagingSource(
             emptyList()
         }else{
             when(sortBy){
-                is SortBy.Date -> scanEntryRepository.queryEntries(
-                    query=query,
-                    limit = pageSize + 1,
-                    offset = offset,
-                    descending = sortBy.descending,
-                    manufacturerIds = manufacturerIds
-                )
 
                 is SortBy.Name -> scanEntryRepository.queryEntriesByName(
                     query=query,
@@ -34,7 +27,14 @@ class SearchEntriesPagingSource(
                     descending = sortBy.descending,
                     manufacturerIds = manufacturerIds
                 )
-                is SortBy.Rssi -> error("Rssi Not supported for search")
+
+                else -> scanEntryRepository.queryEntries(
+                    query=query,
+                    limit = pageSize + 1,
+                    offset = offset,
+                    descending = sortBy.descending,
+                    manufacturerIds = manufacturerIds
+                )
             }
         }
         return entries

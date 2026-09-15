@@ -33,6 +33,13 @@ class ScanEntriesPagingSource(
                 offset = offset,
                 descending = sortBy.descending
             )
+
+            else -> scanEntryRepository.getEntries(
+                scanId=scanId,
+                limit = pageSize + 1,
+                offset = offset,
+                descending = sortBy.descending
+            )
         }
         return entries
     }
