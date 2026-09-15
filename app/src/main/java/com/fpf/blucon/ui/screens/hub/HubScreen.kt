@@ -6,15 +6,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Business
 import androidx.compose.material.icons.filled.CollectionsBookmark
 import androidx.compose.material.icons.filled.Devices
 import androidx.compose.material.icons.filled.Hub
-import androidx.compose.material.icons.filled.Layers
-import androidx.compose.material.icons.filled.Scanner
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -32,8 +31,10 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.fpf.blucon.R
 import com.fpf.blucon.bluetooth.device.DeviceCollection
 import com.fpf.blucon.navigation.TopBarState
+import com.fpf.blucon.ui.action.MenuActionConfig
 import com.fpf.blucon.ui.components.bluetooth.CountsList
 import com.fpf.blucon.ui.components.bluetooth.DeviceOverviewCard
+import com.fpf.blucon.ui.components.common.DropDownMenuWrapper
 import com.fpf.blucon.ui.components.modals.BottomSheet
 import com.fpf.blucon.ui.components.placeholders.EmptyItemsScreen
 import com.fpf.blucon.ui.components.search.Header
@@ -61,6 +62,21 @@ fun HubScreen(
     var showCompanyCounts by remember { mutableStateOf(false) }
     var showCollectionCounts by remember { mutableStateOf(false) }
 
+    var showMenu by remember { mutableStateOf(false) }
+
+    val menuActions: List<MenuActionConfig> = listOf(
+        MenuActionConfig.Button(
+            label = stringResource(R.string.title_collections),
+            onClick = { onViewAllCollections() },
+            enabled = !state.loading,
+        ),
+        MenuActionConfig.Button(
+            label = stringResource(R.string.title_settings),
+            onClick = { onViewSettings() },
+            enabled = !state.loading,
+        ),
+    )
+
 
     LaunchedEffect(Unit) {
         onTopBarChange(
@@ -73,10 +89,18 @@ fun HubScreen(
                             contentDescription = "Search"
                         )
                     }
-                    IconButton(onClick = onViewSettings) {
-                        Icon(
-                            Icons.Filled.Settings,
-                            contentDescription = "Settings"
+                    Box{
+                        IconButton (onClick = { showMenu = true }) {
+                            Icon(
+                                imageVector = Icons.Filled.MoreVert,
+                                contentDescription = "menu"
+                            )
+                        }
+                        DropDownMenuWrapper(
+                            expanded = showMenu,
+                            actions = menuActions,
+                            onClose = {showMenu = false},
+                            modifier = Modifier.widthIn(144.dp)
                         )
                     }
                 }
