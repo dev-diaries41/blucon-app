@@ -7,6 +7,7 @@ import com.fpf.blucon.query.SortBy
 
 class DevicePagingSource(
     private val deviceRepository: DeviceRepository,
+    private val clusterId: Long,
     sortBy: SortBy = SortBy.Name(),
 ) : DataPagingSource<DeviceInfo, Nothing>(
     filter = null,
@@ -14,6 +15,7 @@ class DevicePagingSource(
 ) {
     override suspend fun getItems(sortBy: SortBy, pageSize: Int, offset: Int, filter: Nothing?): List<DeviceInfo> {
         val entries = deviceRepository.getPage(
+            clusterId =clusterId,
             limit = pageSize + 1,
             offset = offset,
             descending = sortBy.descending

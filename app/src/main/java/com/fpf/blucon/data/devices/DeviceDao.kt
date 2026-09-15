@@ -22,11 +22,25 @@ interface DeviceDao {
     @Query("SELECT * FROM device_name")
     suspend fun get(): List<DeviceEntity>
 
-    @Query("SELECT * FROM device_name ORDER BY name ASC LIMIT :limit OFFSET :offset")
-    suspend fun getPageAsc(limit: Int, offset: Int): List<DeviceEntity>
+    @Query("""
+    SELECT d.*
+    FROM device_name d
+    INNER JOIN device_cluster_crossref c ON d.id = c.deviceId
+    WHERE c.clusterId = :clusterId
+    ORDER BY d.name ASC
+    LIMIT :limit OFFSET :offset
+""")
+    suspend fun getPageAsc(clusterId: Long, limit: Int, offset: Int): List<DeviceEntity>
 
-    @Query("SELECT * FROM device_name ORDER BY name DESC LIMIT :limit OFFSET :offset")
-    suspend fun getPageDesc(limit: Int, offset: Int): List<DeviceEntity>
+    @Query("""
+    SELECT d.*
+    FROM device_name d
+    INNER JOIN device_cluster_crossref c ON d.id = c.deviceId
+    WHERE c.clusterId = :clusterId
+    ORDER BY d.name DESC
+    LIMIT :limit OFFSET :offset
+""")
+    suspend fun getPageDesc(clusterId: Long, limit: Int, offset: Int): List<DeviceEntity>
 
     @Query("""
         SELECT id 

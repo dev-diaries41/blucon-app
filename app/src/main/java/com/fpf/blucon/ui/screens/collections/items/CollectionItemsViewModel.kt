@@ -73,6 +73,7 @@ class CollectionItemsViewModel(
                     ),
                     pagingSourceFactory = {
                         DevicePagingSource(
+                            clusterId=collection.id,
                             sortBy = sortBy,
                             deviceRepository = deviceRepository,
                         )
