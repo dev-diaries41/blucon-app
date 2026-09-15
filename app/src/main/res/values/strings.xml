@@ -23,6 +23,29 @@
     <string name="delete">Delete</string>
     <string name="export">Export</string>
     <string name="sort">Sort</string>
+    <string name="share">Share</string>
+    <string name="move">Move</string>
+    <string name="remove">Remove</string>
+    <string name="more">More</string>
+    <string name="copy">Copy</string>
+    <string name="add_tag">Add tag</string>
+    <string name="remove_tag">Remove tag</string>
+    <string name="add_collection">Add collection</string>
+    <string name="copy_to_clipboard">Copy to clipboard</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="index_devices">Index devices</string>
+    <string name="search">Search</string>
+    <string name="rename">Rename</string>
+    <string name="merge">Merge</string>
+    <string name="scan">Scan</string>
+    <string name="index">Index</string>
+    <string name="view_details">Details</string>
+    <string name="filter">Filter</string>
+    <string name="reset_filters">Reset filters</string>
+    <string name="restore">Restore</string>
+    <string name="hide">Hide</string>
+    <string name="show">Show</string>
 
     <!-- Notifications -->
     <string name="scan_channel_name">Scan notifications</string>
