@@ -7,7 +7,9 @@ import com.fpf.blucon.data.mappers.toDomain
 import com.fpf.blucon.data.mappers.toEntity
 
 class ScanRepository(private val dao: ScanDao, private val metadataRepository: MetadataRepository) {
-    suspend fun insertScan(scan: NewBTScan): Long = dao.insertScan(scan.toEntity())
+    suspend fun insertScanWithId(scans: List<BTScan>): List<Long> = dao.insertScan(scans.map{(it.toEntity())})
+
+    suspend fun insertScan(scan: NewBTScan): Long = dao.insertScan(listOf(scan.toEntity())).first()
     suspend fun getScans(limit: Int, offset: Int, startDate: Long? = null, endDate: Long? = null, descending: Boolean = true): List<BTScan> =
         if(descending){
             dao.getScansDesc(limit =limit, offset=offset, startDate=startDate, endDate=endDate).map{it.toDomain()}

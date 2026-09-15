@@ -8,8 +8,9 @@ import androidx.room.Query
 
 @Dao
 interface ScanDao {
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertScan(scan: ScanEntity): Long
+    suspend fun insertScan(scans: List<ScanEntity> ): List<Long>
 
     @Query("""
         SELECT s.*, COUNT(entry.deviceAddress) AS count
