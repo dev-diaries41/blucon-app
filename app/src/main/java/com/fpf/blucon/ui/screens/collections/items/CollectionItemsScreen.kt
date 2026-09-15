@@ -122,13 +122,13 @@ fun CollectionItemsScreen(
     var offset by remember { mutableIntStateOf(0) }
     val density = LocalDensity.current
     val maxCollapsablePx = with(density) { 70.dp.toPx() }.toInt()
-    val screenTitle = collection.name
+    val screenTitle = state.collection?.name?: collection.name
 
     LaunchedEffect(collection) {
         viewModel.setCollection(collection)
     }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(screenTitle) {
         onTopBarChange(
             TopBarState(
                 title = screenTitle,
@@ -162,19 +162,15 @@ fun CollectionItemsScreen(
 
     LaunchedEffect(Unit) {
         viewModel.event.collect { event ->
+            event.message?.let { Toast.makeText(context, it, Toast.LENGTH_SHORT).show()}
             when(event.type){
-                CollectionItemEventType.MOVE -> {
-                    event.message?.let { Toast.makeText(context, it, Toast.LENGTH_SHORT).show()}
+                CollectionItemEventType.MOVE,
+                CollectionItemEventType.REMOVE-> {
                     if(event.success){
                         items.refresh()
                     }
                 }
-                CollectionItemEventType.REMOVE -> {
-                    event.message?.let { Toast.makeText(context, it, Toast.LENGTH_SHORT).show()}
-                    if(event.success){
-                        items.refresh()
-                    }
-                }
+
                 else -> {}
             }
         }
