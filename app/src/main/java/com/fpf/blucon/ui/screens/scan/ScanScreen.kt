@@ -58,10 +58,20 @@ fun ScanScreen(
     var locationGranted by remember { mutableStateOf(false) }
     val screenTitle = stringResource(R.string.title_scan)
     val devices = state.devices.values.toList()
-    val isScanning by viewModel.isScanning.collectAsState()
+    val isBluetoothScanning by viewModel.isBluetoothScanning.collectAsState()
+    val isTracking by viewModel.isTracking.collectAsState()
+    val location by viewModel.location.collectAsState()
+    val isScanning = isBluetoothScanning && isTracking
     val isBluetoothEnabled by viewModel.isBluetoothEnabled.collectAsStateWithLifecycle()
     val isLocationEnabled by viewModel.isLocationEnabled.collectAsStateWithLifecycle()
     val isScanEnabled = isBluetoothEnabled && isLocationEnabled
+    val isFindingLocation = location == null && isTracking && !isBluetoothScanning
+
+    val emptyScreenTitle = when{
+        isFindingLocation  -> "Finding location"
+        isScanning -> "Scanning devices"
+        else  -> "Scan devices"
+    }
 
     LaunchedEffect(Unit) {
         onTopBarChange(
@@ -102,7 +112,7 @@ fun ScanScreen(
 
         EmptyItemsScreen(
             icon = {
-                if(isScanning){
+                if(isScanning || isFindingLocation){
                     LoadingIndicator(isVisible = true, size = 64.dp)
                 }else{
                     Icon(
@@ -113,7 +123,7 @@ fun ScanScreen(
                     )
                 }
             },
-            title = if(isScanning) "Scanning devices" else  "Scan devices" ,
+            title = emptyScreenTitle ,
             description = if(isScanning) "No devices found" else  "",
             isVisible = devices.isEmpty()
         )
@@ -195,7 +205,7 @@ fun ScanScreen(
                     enabled = bluetoothGranted && locationGranted && isScanEnabled,
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text(if (isScanning) "Stop scan" else "Scan")
+                    Text(if (isScanning || isFindingLocation) "Stop scan" else "Scan")
                 }
 
                 Button(

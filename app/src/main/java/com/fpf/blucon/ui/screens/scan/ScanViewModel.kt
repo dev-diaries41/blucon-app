@@ -3,6 +3,7 @@ package com.fpf.blucon.ui.screens.scan
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
+import android.location.Location
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -40,7 +41,11 @@ class ScanViewModel(
 
     val isBluetoothEnabled: StateFlow<Boolean> = bluetoothScanner.isBluetoothEnabled
 
-    val isScanning: StateFlow<Boolean> = bluetoothScanner.isScanning
+    val isBluetoothScanning: StateFlow<Boolean> = bluetoothScanner.isScanning
+
+    val isTracking: StateFlow<Boolean> = locationTracker.isTracking
+
+    val location: StateFlow<Location?> = locationTracker.location
 
     init {
         observeDevices()
