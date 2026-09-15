@@ -192,7 +192,7 @@ fun DeviceCollectionCard(
                     .widthIn(min = 100.dp)
                     .clip(MaterialTheme.shapes.large)
                     .background(MaterialTheme.colorScheme.surfaceContainer)
-                    .padding(16.dp)
+                    .padding(4.dp)
             ) {
                 Text(
                     text = collection.name,
