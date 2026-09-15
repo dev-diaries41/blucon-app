@@ -172,7 +172,7 @@ fun CollectionsScreen(
 
             DeviceCollectionsList(
                 isVisible = isCollectionVisible,
-                numGridColumns = 3,
+                numGridColumns = 2,
                 items = collections,
                 isSelecting = state.selection.isSelecting,
                 isChecked = { it in state.selection.selectedItems || (state.selection.selectAll && it !in state.selection.excludedItems)},
