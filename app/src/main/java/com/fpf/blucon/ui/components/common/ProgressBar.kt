@@ -12,10 +12,10 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ProgressBar(label: String, isVisible: Boolean, progress: Float) {
+fun ProgressBar(label: String, isVisible: Boolean, progress: Float, modifier: Modifier = Modifier) {
     if (!isVisible) return
 
-    Column(modifier = Modifier.padding(bottom = 8.dp)) {
+    Column(modifier = modifier.padding(bottom = 8.dp)) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodySmall,

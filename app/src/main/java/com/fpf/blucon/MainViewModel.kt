@@ -5,7 +5,10 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.fpf.blucon.index.DeviceIndexListener
+import com.fpf.blucon.services.startIndexing
 import com.fpf.blucon.services.startScanning
+import com.fpf.blucon.services.stopIndexing
 import com.fpf.blucon.services.stopScanning
 import com.fpf.blucon.storage.PrefsKeys
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +26,8 @@ class MainViewModel(
         private const val TAG = "MainViewModel"
     }
 
-
+    val indexProgress = DeviceIndexListener.progress
+    val indexStatus = DeviceIndexListener.indexingStatus
     val versionName: String? = try {
         val packageInfo = application.packageManager.getPackageInfo(application.packageName, 0)
         packageInfo.versionName
@@ -58,5 +62,17 @@ class MainViewModel(
 
     fun stopScanService(){
         stopScanning(getApplication())
+    }
+
+    fun startIndexService(){
+        startIndexing(getApplication())
+    }
+
+    fun stopIndexService(){
+        stopIndexing(getApplication())
+    }
+
+    fun onIndexingFinished(){
+        DeviceIndexListener.reset()
     }
 }

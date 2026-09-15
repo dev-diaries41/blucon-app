@@ -114,7 +114,7 @@ class ScanEntryRepository(
     suspend fun getClusterCounts(scanId: Long? = null, limit: Int = -1, offset: Int = 0, descending: Boolean = true): List<Pair<String, Int>> = if (descending) {
         dao.getClusterCountsDesc(scanId, limit = limit, offset = offset).map { entry -> (entry.name?: "$UNLABELLED_COLLECTION ${entry.id}") to entry.count }
     } else {
-        dao.getClusterCountsAsc(scanId, limit = limit, offset = offset).map { entry ->( entry.name?: "$UNLABELLED_COLLECTION ${entry.id}") to entry.count }
+        dao.getClusterCountsAsc(scanId, limit = limit, offset = offset).map { entry ->(entry.name?: "$UNLABELLED_COLLECTION ${entry.id}") to entry.count }
     }
 }
 

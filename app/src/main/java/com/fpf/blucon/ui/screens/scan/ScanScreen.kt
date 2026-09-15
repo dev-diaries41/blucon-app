@@ -50,6 +50,7 @@ fun ScanScreen(
     onTopBarChange: (TopBarState) -> Unit,
     onViewScanHistory: () -> Unit,
     onViewSettings: () -> Unit,
+    onIndex: () -> Unit,
     viewModel: ScanViewModel = koinViewModel()
 ) {
     val context = LocalContext.current
@@ -61,17 +62,19 @@ fun ScanScreen(
     val isBluetoothScanning by viewModel.isBluetoothScanning.collectAsState()
     val isTracking by viewModel.isTracking.collectAsState()
     val location by viewModel.location.collectAsState()
-    val isScanning = isBluetoothScanning && isTracking
     val isBluetoothEnabled by viewModel.isBluetoothEnabled.collectAsStateWithLifecycle()
     val isLocationEnabled by viewModel.isLocationEnabled.collectAsStateWithLifecycle()
     val isScanEnabled = isBluetoothEnabled && isLocationEnabled
     val isFindingLocation = location == null && isTracking && !isBluetoothScanning
+    val isScanning = isBluetoothScanning && isTracking
 
     val emptyScreenTitle = when{
         isFindingLocation  -> "Finding location"
         isScanning -> "Scanning devices"
         else  -> "Scan devices"
     }
+
+    var previousIsScanning by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         onTopBarChange(
@@ -99,6 +102,13 @@ fun ScanScreen(
         viewModel.event.collect { message ->
             Toast.makeText(context, message, Toast.LENGTH_SHORT ).show()
         }
+    }
+
+    LaunchedEffect(isScanning) {
+        if(!isScanning && previousIsScanning){
+            onIndex()
+        }
+        previousIsScanning = isScanning
     }
 
     RequestPermissions { _, bluetoothOk, locationOk ->
@@ -195,7 +205,7 @@ fun ScanScreen(
             ) {
                 Button(
                     onClick = {
-                        if (isScanning) {
+                        if (isScanning || isFindingLocation) {
                             onStopScan()
                         } else {
                             onScan()
