@@ -1,10 +1,8 @@
 package com.fpf.blucon.ui.screens.scan
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
 import android.location.Location
-import androidx.annotation.RequiresPermission
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.fpf.blucon.bluetooth.scan.BluetoothScanResult
@@ -78,12 +76,5 @@ class ScanViewModel(
                 }
             )
         }
-    }
-
-    @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
-    override fun onCleared() {
-        locationTracker.stop()
-        bluetoothScanner.stopScanBle()
-        super.onCleared()
     }
 }
