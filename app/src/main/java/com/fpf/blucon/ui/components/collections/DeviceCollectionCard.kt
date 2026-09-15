@@ -13,11 +13,13 @@ import androidx.compose.ui.unit.dp
 import com.fpf.blucon.ui.components.cards.InfoCard
 import com.fpf.blucon.bluetooth.device.DeviceCollection
 
+//TODO: add snippet of items so its visually identifiable
 
 @Composable
 fun DeviceCollectionCard(
     collection: DeviceCollection,
     isSelecting: Boolean = false,
+    itemsLabel: String = "unique names",
     isChecked: ((DeviceCollection) -> Boolean)? = null,
     onItemClick: ((DeviceCollection) -> Unit)? = null,
     onItemLongClick: ((DeviceCollection) -> Unit)? = null,
@@ -45,7 +47,7 @@ fun DeviceCollectionCard(
                 )
 
                 Text(
-                    text = "${collection.size} items",
+                    text = "${collection.size} $itemsLabel",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
