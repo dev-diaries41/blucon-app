@@ -51,6 +51,18 @@ interface DeviceClusterDao {
         label,
         prototypeSize AS size
     FROM device_cluster
+    WHERE (:names IS NULL OR label IN (:names))
+    ORDER BY prototypeSize DESC
+    LIMIT COALESCE(:limit, -1)
+""")
+    suspend fun getCollectionsByName(names: List<String>?, limit: Int?): List<DeviceCollectionData>
+
+    @Query("""
+    SELECT
+        clusterId,
+        label,
+        prototypeSize AS size
+    FROM device_cluster
     WHERE (:clusterIds IS NULL OR clusterId IN (:clusterIds))
     ORDER BY prototypeSize DESC
 """)
