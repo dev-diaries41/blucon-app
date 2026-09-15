@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.fpf.blucon.R
+import com.fpf.blucon.bluetooth.device.DeviceCollection
 import com.fpf.blucon.bluetooth.scan.BTScan
 import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.action.MenuActionConfig
@@ -51,6 +52,8 @@ fun ScanEntryScreen(
     scan: BTScan?,
     onTopBarChange: (TopBarState) -> Unit,
     onBack: () -> Unit,
+    onViewCollection: (DeviceCollection) -> Unit,
+    onViewAllCollections: () -> Unit,
     viewModel: ScanEntryViewModel = koinViewModel(),
     deviceMetadataViewModel: DeviceMetadataViewModel = koinViewModel(),
     ) {
@@ -152,7 +155,9 @@ fun ScanEntryScreen(
                             topDeviceNameCounts = devicesState.topDeviceNameCounts,
                             topCollectionCounts = devicesState.topCollectionCounts,
                             onViewAllManufacturers = {showCompanyCounts = true},
-                            onViewAllDevices = {showDeviceCounts = true}
+                            onViewAllDevices = {showDeviceCounts = true},
+                            onCollectionClick = { onViewCollection(it) },
+                            onViewCollections = {onViewAllCollections()}
                         )
                     }
                 }

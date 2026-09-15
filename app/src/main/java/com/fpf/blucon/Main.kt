@@ -135,6 +135,10 @@ fun Main(
                         onTopBarChange = { topBarState.value = it },
                         scan = scan,
                         onBack = { navController.popBackStack() },
+                        onViewAllCollections = { navController.navigate(Routes.COLLECTIONS) },
+                        onViewCollection = { collection -> navController.currentBackStackEntry?.savedStateHandle?.set(NavDataKeys.COLLECTION, collection)
+                            navController.navigate(Routes.COLLECTION_ITEMS)
+                        },
                     )
                 }
 
