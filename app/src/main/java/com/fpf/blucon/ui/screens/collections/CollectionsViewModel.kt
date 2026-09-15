@@ -5,52 +5,61 @@ import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingConfig
 import com.fpf.blucon.bluetooth.device.DeviceCollection
 import com.fpf.blucon.cluster.ClusterManager
 import com.fpf.blucon.events.CollectionEvent
 import com.fpf.blucon.events.CollectionEventType
 import com.fpf.blucon.ui.utils.SelectionUtils
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import androidx.paging.Pager
+import androidx.paging.cachedIn
+import com.fpf.blucon.data.devices.clusters.DeviceClusterRepository
+import com.fpf.blucon.data.paging.CollectionPagingSource
+import kotlinx.coroutines.flow.flatMapLatest
 
 class CollectionsViewModel(
     application: Application,
+    private val deviceClusterRepository: DeviceClusterRepository,
     private val clusterManager: ClusterManager,
     ) : AndroidViewModel(application) {
     companion object {
         private const val TAG = "CollectionsViewModel"
-        const val TOP_N = 6
     }
 
     private val _state = MutableStateFlow(CollectionsState())
     val state: StateFlow<CollectionsState> = _state
 
-    val clusterCollections: StateFlow<List<DeviceCollection>> = combine(
-        clusterManager.allCollectionsFlow,
-        _state.map {  it.showAllCollections }.distinctUntilChanged()
-    ) { collections, showAllCollections ->
-        _state.update { it.copy(totalCollections = collections.size) }
-
-        val filterCollections = if (showAllCollections) collections else collections.take(TOP_N)
-        filterCollections
-    }.flowOn(Dispatchers.IO)
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Lazily,
-            initialValue = emptyList()
-        )
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val clusterCollections = _state
+        .map {it.sortBy }
+        .distinctUntilChanged()
+        .flatMapLatest { sortBy ->
+                Pager(
+                    config = PagingConfig(
+                        pageSize = 50,
+                        initialLoadSize = 50,
+                        prefetchDistance = 25,
+                        enablePlaceholders = false
+                    ),
+                    pagingSourceFactory = {
+                        CollectionPagingSource(
+                            sortBy = sortBy,
+                            deviceClusterRepository = deviceClusterRepository,
+                        )
+                    }
+                ).flow
+            }
+        .cachedIn(viewModelScope)
 
     private val _event = MutableSharedFlow<CollectionEvent>()
     val event = _event.asSharedFlow()
@@ -142,13 +151,7 @@ class CollectionsViewModel(
     private suspend fun getSelectedCollections(): Set<DeviceCollection> = SelectionUtils.getSelectedItems(_state.value.selection){getAllCollections()}
 
     private suspend fun getAllCollections(): MutableSet<DeviceCollection> {
-        val currentState = state.value
-        val collections = if (currentState.showAllCollections) {
-            clusterCollections.value
-        } else {
-            clusterManager.allCollectionsFlow.first()
-        }
-        return collections.toMutableSet()
+        return deviceClusterRepository.getCollections().toMutableSet()
     }
 
 }

@@ -1,6 +1,7 @@
 package com.fpf.blucon.ui.screens.collections
 
 import com.fpf.blucon.bluetooth.device.DeviceCollection
+import com.fpf.blucon.query.SortBy
 import com.fpf.blucon.ui.shared.state.SelectionState
 
 data class CollectionsState(
@@ -8,5 +9,6 @@ data class CollectionsState(
     val loading: Boolean = false,
     val collectToView: DeviceCollection? = null,
     val totalCollections: Int = 0,
-    val selection: SelectionState<DeviceCollection> = SelectionState()
-)
+    val selection: SelectionState<DeviceCollection> = SelectionState(),
+    val sortBy: SortBy = SortBy.Size(),
+    )

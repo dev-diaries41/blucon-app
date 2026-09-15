@@ -75,6 +75,7 @@ val viewModelModule = module {
     viewModel {
         CollectionsViewModel(
             application = get(),
+            deviceClusterRepository = get(),
             clusterManager = get()
         )
     }

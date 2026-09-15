@@ -38,16 +38,16 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.fpf.blucon.ui.screens.collections.CollectionsViewModel.Companion.TOP_N
 import kotlinx.coroutines.FlowPreview
 import androidx.compose.ui.res.stringResource
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.fpf.blucon.R
 import com.fpf.blucon.bluetooth.device.DeviceCollection
 import com.fpf.blucon.bluetooth.device.DeviceCollection.Companion.UNLABELLED_COLLECTION
 import com.fpf.blucon.events.CollectionEventType
 import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.action.ActionConfig
-import com.fpf.blucon.ui.components.collections.DeviceCollectionsList
+import com.fpf.blucon.ui.components.collections.PaginatedDeviceCollectionsList
 import com.fpf.blucon.ui.components.common.ActionBar
 import com.fpf.blucon.ui.components.common.SelectionHeaderRow
 import com.fpf.blucon.ui.components.modals.SelectorModal
@@ -68,9 +68,9 @@ fun CollectionsScreen(
     val actionBarHeight = 70
 
     val state by viewModel.state.collectAsState()
-    val collections by viewModel.clusterCollections.collectAsState()
+    val collections = viewModel.clusterCollections.collectAsLazyPagingItems()
 
-    val isCollectionVisible = collections.isNotEmpty()
+    val isCollectionVisible = collections.itemCount > 0
 
     val context = LocalContext.current
 
@@ -165,23 +165,7 @@ fun CollectionsScreen(
                 )
             }
 
-
-            if(state.totalCollections > TOP_N) {
-                TextButton(
-                    modifier = Modifier.align(Alignment.End),
-                    onClick = {viewModel.onAction(CollectionAction.ToggleViewAllCollections)}
-                ) {
-                    Text(
-                        text = if (state.showAllCollections) "Show less" else "Show all",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }else{
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-
-            DeviceCollectionsList(
+            PaginatedDeviceCollectionsList(
                 isVisible = isCollectionVisible,
                 numGridColumns = 2,
                 items = collections,
