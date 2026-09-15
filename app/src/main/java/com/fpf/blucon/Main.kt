@@ -78,7 +78,7 @@ fun Main(
             ProgressBar(
                 label = "Indexing devices ${"%.0f".format(indexProgress * 100)}%",
                 isVisible = isIndexing,
-                progress = 0f,
+                progress = indexProgress,
                 modifier = Modifier.zIndex(10F).padding(bottom=16.dp, start = 16.dp, end=16.dp)
             )
             NavHost(
