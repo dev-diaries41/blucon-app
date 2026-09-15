@@ -10,7 +10,6 @@ sealed interface CollectionAction {
     data class SetCollectionToView(val collection: DeviceCollection?): CollectionAction
     data class SetSelectAll(val selectAll: Boolean): CollectionAction
     data object DeleteCollections : CollectionAction
-    data object ToggleViewAllCollections: CollectionAction
     data object ToggleSelectionMode: CollectionAction
     data object ClearSelection: CollectionAction
     data object ResetSelection: CollectionAction

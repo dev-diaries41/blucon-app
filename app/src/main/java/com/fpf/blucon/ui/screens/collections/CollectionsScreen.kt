@@ -52,6 +52,7 @@ import com.fpf.blucon.ui.components.common.ActionBar
 import com.fpf.blucon.ui.components.common.SelectionHeaderRow
 import com.fpf.blucon.ui.components.modals.SelectorModal
 import com.fpf.blucon.ui.components.modals.TextInputModal
+import com.fpf.blucon.ui.components.search.Header
 import com.fpf.smartscan.ui.components.common.SlideRevealBox
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -185,7 +186,8 @@ fun CollectionsScreen(
                 },
                 onOffsetChange = {  offset = it },
                 maxCollapsePx = maxCollapsablePx,
-            )
+                headerRow = { Header("${state.totalCollections} collections") },
+                )
 
             EmptyCollectionScreen(
                 isVisible = !isCollectionVisible,

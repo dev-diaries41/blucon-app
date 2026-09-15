@@ -71,7 +71,6 @@ class CollectionsViewModel(
             is CollectionAction.ToggleSelectedCollection -> toggleSelectedCollection(action.collection)
             is CollectionAction.SetCollectionToView -> setCollectionToView(action.collection)
             is CollectionAction.DeleteCollections -> {}
-            is CollectionAction.ToggleViewAllCollections -> toggleViewAllCollections()
             is CollectionAction.SetSelectAll -> setSelectAll(action.selectAll)
             is CollectionAction.ToggleSelectionMode -> toggleSelectionMode()
             is CollectionAction.ClearSelection -> clearSelection()
@@ -79,6 +78,16 @@ class CollectionsViewModel(
         }
     }
 
+    init {
+        load()
+    }
+
+    private fun load(){
+        viewModelScope.launch (Dispatchers.IO){
+            val count = deviceClusterRepository.count()
+            _state.update { it.copy(totalCollections = count) }
+        }
+    }
     private fun clearSelection() = _state.update{it.copy(selection = SelectionUtils.clearSelection(it.selection))}
     private fun resetSelection() = _state.update{it.copy(selection = SelectionUtils.resetSelection(it.selection))}
     private fun toggleSelectionMode() = _state.update { it.copy(selection = SelectionUtils.toggleSelectionMode(it.selection)) }
@@ -138,7 +147,6 @@ class CollectionsViewModel(
     }
 
 
-    private fun toggleViewAllCollections() = _state.update{ it.copy(showAllCollections = !it.showAllCollections)}
     private fun setCollectionToView(collection: DeviceCollection?) = _state.update { it.copy(collectToView = collection) }
 
     private fun toggleSelectedCollection(item: DeviceCollection){
