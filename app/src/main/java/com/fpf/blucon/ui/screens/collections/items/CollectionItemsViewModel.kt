@@ -208,8 +208,7 @@ class CollectionItemsViewModel(
 
 
     fun setCollection(collection: DeviceCollection) {
-        _state.update { it.copy(collection = collection) }
-        setTotalItems()
+        _state.update { it.copy(collection = collection, totalItems = collection.size) }
     }
 
     private fun setSortBy(sortBy: SortBy) {
@@ -227,12 +226,6 @@ class CollectionItemsViewModel(
     private fun getSortByPref(): SortBy {
         val sortByStr = sharedPrefs.getString(PrefsKeys.SORT_BY_COLLECTION_ITEMS, "") ?: ""
         return sortByOptions.find { it.second.toString() == sortByStr }?.second ?: SortBy.Date()
-    }
-
-    private fun setTotalItems(){
-        val currentState = _state.value
-        val collection = currentState.collection?: return
-        _state.update { it.copy(totalItems = collection.size) }
     }
 
     private fun renameCollection(newName: String){
