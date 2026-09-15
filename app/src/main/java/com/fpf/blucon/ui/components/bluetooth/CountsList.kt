@@ -10,6 +10,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,12 +24,14 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
@@ -44,9 +47,11 @@ import kotlin.math.roundToInt
 fun <T>CountsList(
     items: LazyPagingItems<Triple<String, T, Int>>,
     isVisible: Boolean,
-    onOffsetChange:( (Int) -> Unit)? = null,
     maxCollapsePx: Int = 0,
-    headerContent: (@Composable () -> Unit)? = null
+    onOffsetChange:( (Int) -> Unit)? = null,
+    onItemClick: ((Triple<String, T, Int>) -> Unit)? = null,
+    headerContent: (@Composable () -> Unit)? = null,
+
 ) {
     if (!isVisible) return
 
@@ -125,9 +130,20 @@ fun <T>CountsList(
                     item?.first + index
                 }
             ) { index ->
-                val (label, value, count) = items[index] ?: return@items
+                val item = items[index] ?: return@items
+                val (label, value, count) = item
                 Row(
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.medium)
+                        .then(
+                            if (onItemClick != null) {
+                                Modifier.clickable() { onItemClick(item) }
+                            } else {
+                                Modifier
+                            }
+                        )
+                        .padding(16.dp)
+
                 ){ InfoRow(label, count.toString(), highlightLabel = true)
                 }
             }

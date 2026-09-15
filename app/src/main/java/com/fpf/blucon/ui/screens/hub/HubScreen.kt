@@ -163,6 +163,9 @@ fun HubScreen(
             headerContent = {
                 Header(stringResource(R.string.title_collections), Icons.Filled.CollectionsBookmark)
             },
+            onItemClick = {
+                onViewCollection(it.second)
+            }
         )
     }
 
