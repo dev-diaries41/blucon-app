@@ -7,6 +7,8 @@ import com.fpf.blucon.bluetooth.device.DeviceInfo
 import com.fpf.blucon.query.SortBy
 
 sealed interface CollectionItemAction {
+    data class RenameCollection(val newName: String): CollectionItemAction
+
     data class Move(val destinationCollection: DeviceCollection): CollectionItemAction
     data class CreateNewCollectionAndMove(val newName: String): CollectionItemAction
     data class ToggleSelectedMedia(val item: DeviceInfo): CollectionItemAction

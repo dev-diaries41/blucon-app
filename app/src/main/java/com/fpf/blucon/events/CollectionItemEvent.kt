@@ -4,6 +4,7 @@ enum class CollectionItemEventType {
     MOVE,
     REMOVE,
     TAG,
+    RENAME_COLLECTION,
 }
 data class CollectionItemEvent (
     val type: CollectionItemEventType,

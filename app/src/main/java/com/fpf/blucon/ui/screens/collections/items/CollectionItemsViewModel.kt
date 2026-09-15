@@ -131,6 +131,7 @@ class CollectionItemsViewModel(
             is CollectionItemAction.ResetSelection -> resetSelection()
             is CollectionItemAction.ClearSelection -> clearSelection()
             is CollectionItemAction.SetSortBy -> setSortBy(action.sortBy)
+            is CollectionItemAction.RenameCollection -> renameCollection(action.newName)
         }
     }
 
@@ -232,5 +233,24 @@ class CollectionItemsViewModel(
         val currentState = _state.value
         val collection = currentState.collection?: return
         _state.update { it.copy(totalItems = collection.size) }
+    }
+
+    private fun renameCollection(newName: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            try{
+                val collection = _state.value.collection?: return@launch
+                clusterManager.updateLabel(collection.id, newName)
+                _state.update { it.copy(collection = it.collection?.copy(name = newName)) }
+                resetSelection()
+                _event.emit(CollectionItemEvent(CollectionItemEventType.RENAME_COLLECTION, success = true))
+            } catch (_: SQLiteConstraintException){
+                _event.emit(CollectionItemEvent(CollectionItemEventType.RENAME_COLLECTION, success = false, message = "Collection already exists"))
+            }
+            catch (e: Exception){
+                Log.e(TAG, "Error renaming collection: ${e.message}")
+                _event.emit(CollectionItemEvent(CollectionItemEventType.RENAME_COLLECTION, success = false, message = "Error renaming collection"))
+
+            }
+        }
     }
 }

@@ -85,6 +85,7 @@ fun CollectionItemsScreen(
     var showSortOptions by remember { mutableStateOf(false) }
     var isMoving by remember { mutableStateOf(false) }
     var isCreatingCollectionAndMoving by remember { mutableStateOf(false) }
+    var isRenamingCollection by remember { mutableStateOf(false) }
     var isAddingTag by remember { mutableStateOf(false) }
     var showMoreActions by remember { mutableStateOf(false) }
     val spaceNotAllowedMessage = stringResource(R.string.msg_space_not_allowed)
@@ -93,6 +94,11 @@ fun CollectionItemsScreen(
         MenuActionConfig.Button(
             label = stringResource(R.string.sort),
             onClick = { showSortOptions = true },
+            enabled = !state.loading,
+        ),
+        MenuActionConfig.Button(
+            label = stringResource(R.string.rename),
+            onClick = { isRenamingCollection = true },
             enabled = !state.loading,
         ),
     )
@@ -305,6 +311,26 @@ fun CollectionItemsScreen(
         onConfirm =  {
             viewModel.onAction(CollectionItemAction.CreateNewCollectionAndMove(it))
             isCreatingCollectionAndMoving = false
+        },
+        leadingIcon = { Icon(Icons.Filled.Tag, contentDescription = "Tag", tint = MaterialTheme.colorScheme.primary) },
+        onValueChange = {
+            if (!it.text.contains(" ")) {
+                true
+            } else {
+                Toast.makeText(context, spaceNotAllowedMessage, Toast.LENGTH_SHORT).show()
+                false
+            }
+        }
+    )
+
+    TextInputModal(
+        isVisible = isRenamingCollection,
+        title=stringResource(R.string.rename),
+        placeholder = stringResource(R.string.placeholders_collection_name),
+        onClose = { isRenamingCollection = false },
+        onConfirm = {
+                newName -> viewModel.onAction(CollectionItemAction.RenameCollection(newName))
+            isRenamingCollection = false
         },
         leadingIcon = { Icon(Icons.Filled.Tag, contentDescription = "Tag", tint = MaterialTheme.colorScheme.primary) },
         onValueChange = {
