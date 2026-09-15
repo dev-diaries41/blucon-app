@@ -94,16 +94,7 @@ class DeviceMetadataViewModel(
             val deviceNameCounts = scanEntryRepository.getDeviceNameCounts(limit = 6, scanId = scan?.id)
             val topCollectionCounts = scanEntryRepository.getClusterCounts(limit = 6)
             val totalEntries = scan?.size ?: scanEntryRepository.countEntries()
-            _state.update { it.copy( scanId = scan?.id, topManufacturerCounts = manufacturerCounts.toMap(), topDeviceNameCounts=deviceNameCounts.toMap(), totalEntries=totalEntries, topCollectionCounts=topCollectionCounts.toMap()) }
-        }
-    }
-
-    fun viewDeviceCollection(collectionName: String, onNavigate: (DeviceCollection) -> Unit){
-        viewModelScope.launch(Dispatchers.IO) {
-            val collection = deviceClusterRepository.getCollectionsByName(listOf(collectionName)).firstOrNull()
-            withContext(Dispatchers.Main){
-                collection?.let{onNavigate(collection)}
-            }
+            _state.update { it.copy( scanId = scan?.id, topManufacturerCounts = manufacturerCounts, topDeviceNameCounts=deviceNameCounts, totalEntries=totalEntries, topCollectionCounts=topCollectionCounts) }
         }
     }
 }

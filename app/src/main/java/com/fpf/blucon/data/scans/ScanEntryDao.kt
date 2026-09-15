@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.fpf.blucon.data.CountData
+import com.fpf.blucon.data.devices.clusters.DeviceCollectionCount
 
 @Dao
 interface ScanEntryDao {
@@ -205,13 +206,17 @@ interface ScanEntryDao {
     suspend fun getDeviceNameCountsAsc(scanId: Long?, limit: Int, offset: Int): List<DeviceNameCount>
 
     @Query("""
-    SELECT c.clusterId AS id, c.label AS name, COUNT(*) AS count
+    SELECT
+        c.clusterId AS clusterId,
+        c.label AS label,
+        c.prototypeSize AS size,
+        COUNT(*) AS count
     FROM scan_entry se
     INNER JOIN device_name d ON d.name = se.deviceName
     INNER JOIN device_cluster_crossref cc ON cc.deviceId = d.id
     INNER JOIN device_cluster c ON c.clusterId = cc.clusterId
     WHERE (:scanId IS NULL OR se.scanId = :scanId)
-    GROUP BY c.clusterId, c.label
+    GROUP BY c.clusterId, c.label, c.prototypeSize
     ORDER BY count ASC
     LIMIT :limit OFFSET :offset
 """)
@@ -219,16 +224,20 @@ interface ScanEntryDao {
         scanId: Long?,
         limit: Int,
         offset: Int
-    ): List<CountData>
+    ): List<DeviceCollectionCount>
 
     @Query("""
-    SELECT c.clusterId AS id, c.label AS name, COUNT(*) AS count
+    SELECT
+        c.clusterId AS clusterId,
+        c.label AS label,
+        c.prototypeSize AS size,
+        COUNT(*) AS count
     FROM scan_entry se
     INNER JOIN device_name d ON d.name = se.deviceName
     INNER JOIN device_cluster_crossref cc ON cc.deviceId = d.id
     INNER JOIN device_cluster c ON c.clusterId = cc.clusterId
     WHERE (:scanId IS NULL OR se.scanId = :scanId)
-    GROUP BY c.clusterId, c.label
+    GROUP BY c.clusterId, c.label, c.prototypeSize
     ORDER BY count DESC
     LIMIT :limit OFFSET :offset
 """)
@@ -236,6 +245,5 @@ interface ScanEntryDao {
         scanId: Long?,
         limit: Int,
         offset: Int
-    ): List<CountData>
-
+    ): List<DeviceCollectionCount>
 }

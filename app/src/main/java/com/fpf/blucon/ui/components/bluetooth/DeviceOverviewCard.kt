@@ -16,21 +16,21 @@ import com.fpf.blucon.ui.components.search.Header
 @Composable
 fun DeviceOverviewCard(
     totalEntries: Int,
-    topManufacturerCounts: Map<String, Int>,
-    topDeviceNameCounts: Map<String, Int>,
-    topCollectionCounts: Map<String, Int>,
+    topManufacturerCounts:List<Triple<String, Nothing?,  Int>>, //name, value, count
+    topDeviceNameCounts: List<Triple<String, Nothing?,  Int>>, //name, value, count
+    topCollectionCounts: List<Triple<String, DeviceCollection,  Int>>, //name, value, count
     onViewAllManufacturers: (() -> Unit)? = null,
     onViewAllDevices: (() -> Unit)? = null,
     onViewCollections: (() -> Unit)? = null,
-    onCollectionClick: ((String) -> Unit)? = null
+    onCollectionClick: ((DeviceCollection) -> Unit)? = null
 
 
 ) {
     val topK = maxOf(topManufacturerCounts.size, topDeviceNameCounts.size)
 
-    val sortedManufacturers = topManufacturerCounts.entries.sortedByDescending { it.value }
-    val sortedDevices = topDeviceNameCounts.entries.sortedByDescending { it.value }
-    val sortedCollections = topCollectionCounts.entries.sortedByDescending { it.value }
+    val sortedManufacturers = topManufacturerCounts.sortedByDescending { it.third }
+    val sortedDevices = topDeviceNameCounts.sortedByDescending { it.third }
+    val sortedCollections = topCollectionCounts.sortedByDescending { it.third }
 
     if (sortedManufacturers.isEmpty()) return
     if (sortedDevices.isEmpty()) return
@@ -53,17 +53,17 @@ fun DeviceOverviewCard(
             Header("$totalEntries entries")
             HorizontalCarouselRow(
                 label = "Top manufacturers",
-                topItemCounts = topManufacturers.associate { it.key to it.value },
+                topItemCounts = topManufacturers,
                 onViewAll = onViewAllManufacturers
             )
             HorizontalCarouselRow(
                 label = "Top device names",
-                topItemCounts = topDevices.associate { it.key to it.value },
+                topItemCounts = topDevices,
                 onViewAll = onViewAllDevices
             )
             HorizontalCarouselRow(
                 label = "Top collections",
-                topItemCounts = topCollections.associate { it.key to it.value },
+                topItemCounts = topCollections,
                 onViewAll = onViewCollections,
                 onItemClick = onCollectionClick
             )

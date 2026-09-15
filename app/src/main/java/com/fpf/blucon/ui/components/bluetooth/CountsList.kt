@@ -42,7 +42,7 @@ import kotlin.math.roundToInt
 
 @Composable
 fun CountsList(
-    items: LazyPagingItems<Pair<String, Int>>,
+    items: LazyPagingItems<Triple<String, Nothing?, Int>>,
     isVisible: Boolean,
     onOffsetChange:( (Int) -> Unit)? = null,
     maxCollapsePx: Int = 0,
@@ -126,10 +126,10 @@ fun CountsList(
                     item?.first ?: index
                 }
             ) { index ->
-                val (key, count) = items[index] ?: return@items
+                val (value, label, count) = items[index] ?: return@items
                 Row(
                     modifier = Modifier.padding(16.dp)
-                ){ InfoRow(key, count.toString(), highlightLabel = true)
+                ){ InfoRow(label?: value, count.toString(), highlightLabel = true)
                 }
             }
         }

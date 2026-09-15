@@ -22,12 +22,12 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun HorizontalCarouselRow(
+fun <T>HorizontalCarouselRow(
     label: String,
-    topItemCounts: Map<String, Int>,
+    topItemCounts: List<Triple<String, T,  Int>>,
     itemLabel: String = "items",
     onViewAll: (() -> Unit)? = null,
-    onItemClick: ((String) -> Unit)? = null
+    onItemClick: ((T) -> Unit)? = null
 ) {
     val isEmpty = topItemCounts.isEmpty()
     Column(
@@ -61,7 +61,7 @@ fun HorizontalCarouselRow(
                 modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                topItemCounts.forEach { (key, count) ->
+                topItemCounts.forEach { (name, value,  count) ->
                     Column(
                         modifier = Modifier
                             .widthIn(min = 100.dp)
@@ -69,7 +69,7 @@ fun HorizontalCarouselRow(
                             .background(MaterialTheme.colorScheme.surfaceContainerHighest)
                             .then(
                                 if (onItemClick != null) {
-                                    Modifier.clickable { onItemClick(key) }
+                                    Modifier.clickable { onItemClick(value) }
                                 } else {
                                     Modifier
                                 }
@@ -77,7 +77,7 @@ fun HorizontalCarouselRow(
                             .padding(16.dp)
                     ) {
                         Text(
-                            text = key,
+                            text = name,
                             style = MaterialTheme.typography.bodyMedium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,

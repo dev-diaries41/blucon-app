@@ -87,8 +87,9 @@ class ScanEntryViewModel(
     fun setScan(scan: BTScan) {
         viewModelScope.launch (Dispatchers.IO){
             val manufacturerCounts = scanEntryRepository.getManufacturerCounts(scan.id, limit = 6)
-            val deviceCounts = scanEntryRepository.getDeviceNameCounts(scan.id, limit = 6)
-            _state.update { it.copy(scan = scan, manufacturerCounts=manufacturerCounts.toMap(), deviceCounts=deviceCounts.toMap(), totalDevices = scan.size) }
+            val deviceNameCounts = scanEntryRepository.getDeviceNameCounts(scan.id, limit = 6)
+            val topCollectionCounts = scanEntryRepository.getClusterCounts(scan.id, limit = 6)
+            _state.update { it.copy( scan = scan, topManufacturerCounts = manufacturerCounts, topDeviceNameCounts=deviceNameCounts, topCollectionCounts=topCollectionCounts) }
         }
     }
 

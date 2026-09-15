@@ -102,9 +102,7 @@ fun HubScreen(
                     topCollectionCounts = state.topCollectionCounts,
                     onViewAllManufacturers = {showCompanyCounts = true},
                     onViewAllDevices = {showDevicesCounts = true},
-                    onCollectionClick = {viewModel.viewDeviceCollection(it){
-                        collection -> onViewCollection(collection)
-                    } },
+                    onCollectionClick = { onViewCollection(it) },
                     onViewCollections = {onViewAllCollections()}
                 )
             }

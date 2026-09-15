@@ -1,5 +1,6 @@
 package com.fpf.blucon.data.scans
 
+import com.fpf.blucon.bluetooth.device.DeviceCollection
 import com.fpf.blucon.bluetooth.device.DeviceCollection.Companion.UNLABELLED_COLLECTION
 import com.fpf.blucon.bluetooth.scan.BTScanEntry
 import com.fpf.blucon.data.MetadataRepository
@@ -93,28 +94,28 @@ class ScanEntryRepository(
     suspend fun countEntries(query: String?= null, manufacturerIds: List<Int> = emptyList()): Int =
         dao.countEntries(query, manufacturerIds)
 
-    suspend fun getManufacturerCounts(scanId: Long? = null, limit: Int = -1, offset: Int = 0, descending: Boolean = true): List<Pair<String, Int>> = if (descending) {
+    suspend fun getManufacturerCounts(scanId: Long? = null, limit: Int = -1, offset: Int = 0, descending: Boolean = true): List<Triple<String, Nothing?, Int>> = if (descending) {
         dao.getManufacturerCountsDesc(scanId, limit = limit, offset = offset).map { entry ->
-           ( getCompanyName(entry.manufacturerId)?: entry.manufacturerId.toString()) to entry.count
+           Triple(( getCompanyName(entry.manufacturerId)?: entry.manufacturerId.toString()), null,  entry.count)
         }
     } else {
         dao.getManufacturerCountsAsc(scanId, limit = limit, offset = offset).map { entry ->
-            ( getCompanyName(entry.manufacturerId)?: entry.manufacturerId.toString()) to entry.count
+            Triple(( getCompanyName(entry.manufacturerId)?: entry.manufacturerId.toString()), null,  entry.count)
         }
     }
 
-    suspend fun getDeviceNameCounts(scanId: Long? = null, limit: Int = -1, offset: Int = 0, descending: Boolean = true): List<Pair<String, Int>> = if (descending) {
-        dao.getDeviceNameCountsDesc(scanId, limit = limit, offset = offset).map { entry -> entry.deviceName to entry.count }
+    suspend fun getDeviceNameCounts(scanId: Long? = null, limit: Int = -1, offset: Int = 0, descending: Boolean = true): List<Triple<String, Nothing?, Int>> = if (descending) {
+        dao.getDeviceNameCountsDesc(scanId, limit = limit, offset = offset).map { entry -> Triple(entry.deviceName,  null,  entry.count) }
     } else {
-        dao.getDeviceNameCountsAsc(scanId, limit = limit, offset = offset).map { entry -> entry.deviceName to entry.count }
+        dao.getDeviceNameCountsAsc(scanId, limit = limit, offset = offset).map { entry -> Triple(entry.deviceName, null,  entry.count) }
     }
 
     suspend fun getUniqueDeviceNames(scanId: Long? = null): List<String> = dao.getUniqueDevices(scanId)
 
-    suspend fun getClusterCounts(scanId: Long? = null, limit: Int = -1, offset: Int = 0, descending: Boolean = true): List<Pair<String, Int>> = if (descending) {
-        dao.getClusterCountsDesc(scanId, limit = limit, offset = offset).map { entry -> (entry.name?: "$UNLABELLED_COLLECTION ${entry.id}") to entry.count }
+    suspend fun getClusterCounts(scanId: Long? = null, limit: Int = -1, offset: Int = 0, descending: Boolean = true): List<Triple<String, DeviceCollection, Int>> = if (descending) {
+        dao.getClusterCountsDesc(scanId, limit = limit, offset = offset).map { entry -> (Triple(entry.collection.toDomain().name, entry.collection.toDomain(), entry.count)) }
     } else {
-        dao.getClusterCountsAsc(scanId, limit = limit, offset = offset).map { entry ->(entry.name?: "$UNLABELLED_COLLECTION ${entry.id}") to entry.count }
+        dao.getClusterCountsAsc(scanId, limit = limit, offset = offset).map { entry -> (Triple(entry.collection.toDomain().name, entry.collection.toDomain(), entry.count)) }
     }
 }
 

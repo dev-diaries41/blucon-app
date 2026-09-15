@@ -7,11 +7,11 @@ class DeviceCountsPagingSource(
     private val scanEntryRepository: ScanEntryRepository,
     private val scanId: Long?= null,
     sortBy: SortBy = SortBy.Date(),
-) : DataPagingSource<Pair<String, Int>, Nothing>(
+) : DataPagingSource<Triple<String, Nothing?, Int>, Nothing>(
     filter = null,
     sortBy = sortBy,
 ) {
-    override suspend fun getItems(sortBy: SortBy, pageSize: Int, offset: Int, filter: Nothing?): List<Pair<String, Int>> {
+    override suspend fun getItems(sortBy: SortBy, pageSize: Int, offset: Int, filter: Nothing?): List<Triple<String, Nothing?, Int>> {
         val entries = scanEntryRepository.getDeviceNameCounts(
             scanId=scanId,
             limit = pageSize + 1,
