@@ -57,6 +57,7 @@ import com.fpf.blucon.ui.components.collections.CollectionItemsList
 import com.fpf.blucon.ui.components.collections.CollectionPicker
 import com.fpf.blucon.ui.components.modals.TextInputModal
 import com.fpf.blucon.ui.components.placeholders.EmptyItemsScreen
+import com.fpf.blucon.ui.components.search.Header
 import com.fpf.smartscan.ui.components.common.SlideRevealBox
 import com.fpf.smartscan.ui.components.pickers.OptionPicker
 import kotlinx.coroutines.FlowPreview
@@ -232,7 +233,9 @@ fun CollectionItemsScreen(
                     },
                     onOffsetChange = { offset = it },
                     maxCollapsePx = maxCollapsablePx,
-                )
+               headerRow = { Header("${state.totalItems} unique device ${if(state.totalItems == 1) "name" else "names"}") },
+
+               )
 
                 EmptyItemsScreen(
                     isVisible = items.itemCount == 0
