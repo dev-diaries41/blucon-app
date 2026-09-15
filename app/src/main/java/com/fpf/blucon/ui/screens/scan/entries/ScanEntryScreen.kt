@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Business
+import androidx.compose.material.icons.filled.CollectionsBookmark
 import androidx.compose.material.icons.filled.Devices
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
@@ -64,12 +65,14 @@ fun ScanEntryScreen(
     val devices = viewModel.devices.collectAsLazyPagingItems()
     val companyCounts = deviceMetadataViewModel.companyCounts.collectAsLazyPagingItems()
     val deviceNameCounts = deviceMetadataViewModel.deviceNameCounts.collectAsLazyPagingItems()
+    val collectionCounts = deviceMetadataViewModel.collectionCounts.collectAsLazyPagingItems()
 
     // actions
     var showMenu by remember { mutableStateOf(false) }
     var showSortOptions by remember { mutableStateOf(false) }
     var showCompanyCounts by remember { mutableStateOf(false) }
     var showDeviceCounts by remember { mutableStateOf(false) }
+    var showCollectionCounts by remember { mutableStateOf(false) }
 
     val menuActions: List<MenuActionConfig> = listOf(
         MenuActionConfig.Button(
@@ -157,7 +160,7 @@ fun ScanEntryScreen(
                             onViewAllManufacturers = {showCompanyCounts = true},
                             onViewAllDevices = {showDeviceCounts = true},
                             onCollectionClick = { onViewCollection(it) },
-                            onViewCollections = {onViewAllCollections()}
+                            onViewCollections = {showCollectionCounts = true}
                         )
                     }
                 }
@@ -202,6 +205,23 @@ fun ScanEntryScreen(
             isVisible = true,
             headerContent = {
                 Header(stringResource(R.string.devices_names), Icons.Filled.Devices)
+            }
+        )
+    }
+
+
+    BottomSheet(
+        show = showCollectionCounts,
+        onDismiss = {showCollectionCounts = false}
+    ) {
+        CountsList(
+            items = collectionCounts,
+            isVisible = true,
+            headerContent = {
+                Header(stringResource(R.string.title_collections), Icons.Filled.CollectionsBookmark)
+            },
+            onItemClick = {
+                onViewCollection(it.second)
             }
         )
     }
