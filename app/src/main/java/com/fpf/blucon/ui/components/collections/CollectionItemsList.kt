@@ -195,12 +195,12 @@ fun DeviceInfoCard(
                     .widthIn(min = 100.dp)
                     .clip(MaterialTheme.shapes.large)
                     .background(MaterialTheme.colorScheme.surfaceContainer)
-                    .padding(16.dp)
+                    .padding(4.dp)
             ) {
                 Text(
                     text = device.name,
                     style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 1,
+                    maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     color = MaterialTheme.colorScheme.primary
                 )
