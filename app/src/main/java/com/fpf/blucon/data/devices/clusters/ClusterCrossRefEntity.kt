@@ -3,11 +3,11 @@ package com.fpf.blucon.data.devices.clusters
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
+import androidx.room.PrimaryKey
 import com.fpf.blucon.data.devices.DeviceEntity
 
 @Entity(
     tableName = "device_cluster_crossref",
-    primaryKeys = ["deviceId", "clusterId"],
     foreignKeys = [
         ForeignKey(
             entity = DeviceClusterEntity::class,
@@ -27,6 +27,7 @@ import com.fpf.blucon.data.devices.DeviceEntity
     ]
 )
 data class ClusterCrossRefEntity(
+    @PrimaryKey
     val deviceId: Long,
     val clusterId: Long
 )
