@@ -15,6 +15,11 @@ class DeviceRepository(
     suspend fun getByIds(ids: List<Long>): List<DeviceInfo> = dao.getByIds(ids).map{it.toDomain()}
     suspend fun getByNames(names: List<String>): List<DeviceInfo> = dao.getByNames(names).map { it.toDomain() }
     suspend fun get(): List<DeviceInfo> = dao.get().map{it.toDomain()}
-    suspend fun getPage(limit: Int, offset: Int): List<DeviceInfo> = dao.getPage(limit=limit, offset=offset).map { it.toDomain() }
+    suspend fun getPage(limit: Int, offset: Int, descending: Boolean = true): List<DeviceInfo> = if(descending){
+        dao.getPageDesc(limit=limit, offset=offset)
+    }else{
+        dao.getPageAsc(limit=limit, offset=offset)
+    }.map{it.toDomain()}
+
     suspend fun getUnclusteredItems(): List<Long> = dao.getUnclusteredItemIds()
 }

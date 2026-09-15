@@ -23,7 +23,10 @@ interface DeviceDao {
     suspend fun get(): List<DeviceEntity>
 
     @Query("SELECT * FROM device_name ORDER BY name ASC LIMIT :limit OFFSET :offset")
-    suspend fun getPage(limit: Int, offset: Int): List<DeviceEntity>
+    suspend fun getPageAsc(limit: Int, offset: Int): List<DeviceEntity>
+
+    @Query("SELECT * FROM device_name ORDER BY name DESC LIMIT :limit OFFSET :offset")
+    suspend fun getPageDesc(limit: Int, offset: Int): List<DeviceEntity>
 
     @Query("""
         SELECT id 
