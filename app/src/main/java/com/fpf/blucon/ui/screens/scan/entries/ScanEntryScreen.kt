@@ -57,7 +57,7 @@ fun ScanEntryScreen(
     if(scan == null) return
 
     val state by viewModel.state.collectAsState()
-
+    val devicesState by deviceMetadataViewModel.state.collectAsState()
     val devices = viewModel.devices.collectAsLazyPagingItems()
     val companyCounts = deviceMetadataViewModel.companyCounts.collectAsLazyPagingItems()
     val deviceNameCounts = deviceMetadataViewModel.deviceNameCounts.collectAsLazyPagingItems()
@@ -144,13 +144,13 @@ fun ScanEntryScreen(
                 items = devices,
                 onOffsetChange = { offset = it },
                 maxCollapsePx = maxCollapsablePx,
-                headerRow = { Header("${state.totalDevices} devices") },
+                headerRow = { Header("${devicesState.totalEntries} devices") },
                 overview = {
-                    if (state.topManufacturerCounts.isNotEmpty() && state.topDeviceNameCounts.isNotEmpty()) {
+                    if (devicesState.topManufacturerCounts.isNotEmpty() && devicesState.topDeviceNameCounts.isNotEmpty()) {
                         ScanOverviewCard(
-                            topManufacturerCounts = state.topManufacturerCounts,
-                            topDeviceNameCounts = state.topDeviceNameCounts,
-                            topCollectionCounts = state.topCollectionCounts,
+                            topManufacturerCounts = devicesState.topManufacturerCounts,
+                            topDeviceNameCounts = devicesState.topDeviceNameCounts,
+                            topCollectionCounts = devicesState.topCollectionCounts,
                             onViewAllManufacturers = {showCompanyCounts = true},
                             onViewAllDevices = {showDeviceCounts = true}
                         )

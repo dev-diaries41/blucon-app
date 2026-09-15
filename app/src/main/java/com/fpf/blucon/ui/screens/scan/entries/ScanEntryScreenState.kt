@@ -9,11 +9,7 @@ import com.fpf.blucon.ui.shared.state.SelectionState
 
 data class ScanEntryScreenState(
     val scan: BTScan? = null,
-    val totalDevices: Int = 0,
     val sortBy: SortBy = SortBy.Date(),
     val loading: Boolean = false,
     val selection: SelectionState<BTScanEntry> = SelectionState(),
-    val topManufacturerCounts: List<Triple<String, Nothing?, Int>> = emptyList(),
-    val topDeviceNameCounts: List<Triple<String, Nothing?, Int>> = emptyList(),
-    val topCollectionCounts: List<Triple<String, DeviceCollection, Int>> = emptyList(),
 )
