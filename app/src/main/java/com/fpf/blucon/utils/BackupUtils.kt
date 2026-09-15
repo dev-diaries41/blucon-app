@@ -119,9 +119,9 @@ object BackupUtils {
             }
 
             val files = getFiles(context)
-            val scans = parseJsonFiles<BTScan>(files[SCANS_FILE_NAME]!!)
+            val scans = parseJsonFiles<BTScan>(files[SCANS_FILE_NAME]!!).associateBy { it.id }
             val scanEntries = parseJsonFiles<BTScanEntry>(files[SCANS_ENTRIES_NAME]!!)
-            scanRepository.insertScanWithId(scans)
+            scanRepository.insertScanWithId(scans.values.toList())
             scanEntryRepository.addEntries(scanEntries)
         }
         catch (e: Exception){
@@ -185,3 +185,4 @@ object BackupUtils {
     }
 
 }
+
