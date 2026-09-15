@@ -72,6 +72,15 @@ interface DeviceClusterDao {
 """)
     suspend fun get(ids: List<Long>): List<DeviceClusterEntity>
 
+    @Query("""
+    SELECT metadata.*, COUNT(crossRef.deviceId) AS prototypeSize
+    FROM device_cluster metadata
+    JOIN device_cluster_crossref crossRef ON metadata.clusterId = crossRef.clusterId
+    WHERE metadata.label = :name
+    GROUP BY metadata.clusterId
+""")
+    suspend fun getByName(name: String): DeviceClusterEntity?
+
     @Query("SELECT clusterId FROM device_cluster metadata")
     suspend fun getIds(): List<Long>
 
