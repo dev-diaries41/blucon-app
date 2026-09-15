@@ -92,7 +92,7 @@ class DeviceMetadataViewModel(
         viewModelScope.launch {
             val manufacturerCounts = scanEntryRepository.getManufacturerCounts(limit = 6, scanId = scan?.id)
             val deviceNameCounts = scanEntryRepository.getDeviceNameCounts(limit = 6, scanId = scan?.id)
-            val topCollectionCounts = scanEntryRepository.getClusterCounts(limit = 6)
+            val topCollectionCounts = scanEntryRepository.getClusterCounts(limit = 6, scanId = scan?.id)
             val totalEntries = scan?.size ?: scanEntryRepository.countEntries()
             _state.update { it.copy( scanId = scan?.id, topManufacturerCounts = manufacturerCounts, topDeviceNameCounts=deviceNameCounts, totalEntries=totalEntries, topCollectionCounts=topCollectionCounts) }
         }
