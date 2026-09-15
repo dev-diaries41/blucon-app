@@ -18,6 +18,7 @@ import com.fpf.blucon.data.paging.CollectionCountsPagingSource
 import com.fpf.blucon.data.paging.CompanyCountsPagingSource
 import com.fpf.blucon.data.paging.DeviceCountsPagingSource
 import com.fpf.blucon.data.scans.ScanEntryRepository
+import com.fpf.blucon.metrics.CountMetric
 import com.fpf.blucon.ui.shared.state.DeviceMetadataState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -115,11 +116,13 @@ class DeviceMetadataViewModel(
 
     fun setOverviewInfo(scan: BTScan? = null) {
         viewModelScope.launch {
-            val manufacturerCounts = scanEntryRepository.getManufacturerCounts(limit = 6, scanId = scan?.id)
-            val deviceNameCounts = scanEntryRepository.getDeviceNameCounts(limit = 6, scanId = scan?.id)
-            val topCollectionCounts = scanEntryRepository.getClusterCounts(limit = 6, scanId = scan?.id)
             val totalEntries = scan?.size ?: scanEntryRepository.countEntries()
+            val manufacturerCounts = scanEntryRepository.getManufacturerCounts(limit = 6, scanId = scan?.id).map{it.addCoverage(totalEntries)}
+            val deviceNameCounts = scanEntryRepository.getDeviceNameCounts(limit = 6, scanId = scan?.id).map{it.addCoverage(totalEntries)}
+            val topCollectionCounts = scanEntryRepository.getClusterCounts(limit = 6, scanId = scan?.id).map{it.addCoverage(totalEntries)}
             _state.update { it.copy( scanId = scan?.id, topManufacturerCounts = manufacturerCounts, topDeviceNameCounts=deviceNameCounts, totalEntries=totalEntries, topCollectionCounts=topCollectionCounts) }
         }
     }
+
+    fun <T>CountMetric<T>.addCoverage(total: Int): CountMetric<T> = this.copy(coverage = 100 * count.toFloat() / total.toFloat())
 }
