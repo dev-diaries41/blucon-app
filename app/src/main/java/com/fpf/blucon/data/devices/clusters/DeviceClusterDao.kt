@@ -41,8 +41,9 @@ interface DeviceClusterDao {
     FROM device_cluster
     WHERE (:clusterIds IS NULL OR clusterId IN (:clusterIds))
     ORDER BY prototypeSize DESC
+    LIMIT COALESCE(:limit, -1)
 """)
-    suspend fun getCollections(clusterIds: List<Long>?): List<DeviceCollectionData>
+    suspend fun getCollections(clusterIds: List<Long>?, limit: Int?): List<DeviceCollectionData>
 
     @Query("""
     SELECT

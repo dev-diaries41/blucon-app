@@ -18,7 +18,7 @@ class DeviceClusterRepository(private val dao: DeviceClusterDao) {
     suspend fun getClusterIds(): List<Long> = dao.getIds()
     suspend fun getClustersForDevice(deviceId: Long): List<StoredClusterMetadata> = dao.getClustersForDevice(deviceId).map{it.toDomain()}
     suspend fun getClustersForDevices(deviceIds: List<Long>): List<StoredClusterMetadata> = dao.getClustersForDevices(deviceIds).map{it.toDomain()}
-    suspend fun getCollections(clusterIds: List<Long>): List<DeviceCollection> = dao.getCollections(clusterIds).map{ it.toDomain()}
+    suspend fun getCollections(clusterIds: List<Long>? = null, limit: Int? = null): List<DeviceCollection> = dao.getCollections(clusterIds, limit).map{ it.toDomain()}
     suspend fun getClusters(ids: List<Long>): List<StoredClusterMetadata> = dao.get(ids).map{it.toDomain()}
     suspend fun getCluster(id: Long): StoredClusterMetadata? = dao.get(listOf(id)).firstOrNull()?.toDomain()
 
