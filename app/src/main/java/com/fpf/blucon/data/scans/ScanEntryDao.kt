@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.fpf.blucon.data.CountData
 
 @Dao
 interface ScanEntryDao {
@@ -202,5 +203,39 @@ interface ScanEntryDao {
     LIMIT :limit OFFSET :offset
 """)
     suspend fun getDeviceNameCountsAsc(scanId: Long?, limit: Int, offset: Int): List<DeviceNameCount>
+
+    @Query("""
+    SELECT c.clusterId AS id, c.label AS name, COUNT(*) AS count
+    FROM scan_entry se
+    INNER JOIN device_name d ON d.name = se.deviceName
+    INNER JOIN device_cluster_crossref cc ON cc.deviceId = d.id
+    INNER JOIN device_cluster c ON c.clusterId = cc.clusterId
+    WHERE (:scanId IS NULL OR se.scanId = :scanId)
+    GROUP BY c.clusterId, c.label
+    ORDER BY count ASC
+    LIMIT :limit OFFSET :offset
+""")
+    suspend fun getClusterCountsAsc(
+        scanId: Long?,
+        limit: Int,
+        offset: Int
+    ): List<CountData>
+
+    @Query("""
+    SELECT c.clusterId AS id, c.label AS name, COUNT(*) AS count
+    FROM scan_entry se
+    INNER JOIN device_name d ON d.name = se.deviceName
+    INNER JOIN device_cluster_crossref cc ON cc.deviceId = d.id
+    INNER JOIN device_cluster c ON c.clusterId = cc.clusterId
+    WHERE (:scanId IS NULL OR se.scanId = :scanId)
+    GROUP BY c.clusterId, c.label
+    ORDER BY count DESC
+    LIMIT :limit OFFSET :offset
+""")
+    suspend fun getClusterCountsDesc(
+        scanId: Long?,
+        limit: Int,
+        offset: Int
+    ): List<CountData>
 
 }

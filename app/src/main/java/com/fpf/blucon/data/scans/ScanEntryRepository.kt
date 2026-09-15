@@ -1,5 +1,6 @@
 package com.fpf.blucon.data.scans
 
+import com.fpf.blucon.bluetooth.device.DeviceCollection.Companion.UNLABELLED_COLLECTION
 import com.fpf.blucon.bluetooth.scan.BTScanEntry
 import com.fpf.blucon.data.MetadataRepository
 import com.fpf.blucon.data.devices.DeviceDao
@@ -109,5 +110,11 @@ class ScanEntryRepository(
     }
 
     suspend fun getUniqueDeviceNames(scanId: Long? = null): List<String> = dao.getUniqueDevices(scanId)
+
+    suspend fun getClusterCounts(scanId: Long? = null, limit: Int = -1, offset: Int = 0, descending: Boolean = true): List<Pair<String, Int>> = if (descending) {
+        dao.getClusterCountsDesc(scanId, limit = limit, offset = offset).map { entry -> (entry.name?: "$UNLABELLED_COLLECTION ${entry.id}") to entry.count }
+    } else {
+        dao.getClusterCountsAsc(scanId, limit = limit, offset = offset).map { entry ->( entry.name?: "$UNLABELLED_COLLECTION ${entry.id}") to entry.count }
+    }
 }
 
