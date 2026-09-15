@@ -117,7 +117,7 @@ fun CollectionsScreen(
         }
     }
 
-    val screenTitle = stringResource(R.string.title_collection)
+    val screenTitle = stringResource(R.string.title_collections)
 
     LaunchedEffect(Unit) {
         onTopBarChange(
