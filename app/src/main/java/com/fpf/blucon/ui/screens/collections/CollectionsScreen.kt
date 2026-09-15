@@ -221,6 +221,7 @@ fun CollectionsScreen(
     TextInputModal(
         isVisible = isRenamingCollection,
         title=stringResource(R.string.rename),
+        initialValue = state.selection.selectedItems.firstOrNull()?.name?: "",
         placeholder = stringResource(R.string.placeholders_collection_name),
         onClose = { isRenamingCollection = false },
         onConfirm = {
