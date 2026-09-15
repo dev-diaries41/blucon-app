@@ -28,6 +28,11 @@
     <string name="scan_channel_name">Scan notifications</string>
     <string name="scan_channel_description">Notifications for scan updates</string>
 
+    <string name="scan_service_channel_name">Scan service notifications</string>
+    <string name="scan_service_channel_description">Notifications for scan service</string>
+
+    <string name="index_service_channel_name">Index service notifications</string>
+    <string name="index_service_channel_description">Notifications for index service</string>
     <!--Sort Options-->
     <string name="sort_date_asc_option">Date (ascending)</string>
     <string name="sort_date_desc_option">Date (descending)</string>

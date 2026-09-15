@@ -11,6 +11,7 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.fpf.blucon.errors.AppException
@@ -19,13 +20,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class LocationTracker(context: Context) {
-
     private val context = context.applicationContext
-    private val locationManager =
-        context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-
+    private val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
     private val _isLocationEnabled = MutableStateFlow(locationManager.isLocationEnabled)
     val isLocationEnabled: StateFlow<Boolean> = _isLocationEnabled.asStateFlow()
+
+    private val _isTracking = MutableStateFlow(false)
+    val isTracking: StateFlow<Boolean> = _isTracking.asStateFlow()
 
     private val _location = MutableStateFlow<Location?>(null)
     val location: StateFlow<Location?> = _location.asStateFlow()
@@ -33,7 +34,6 @@ class LocationTracker(context: Context) {
     private val locationStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             if (intent.action != LocationManager.PROVIDERS_CHANGED_ACTION) return
-
             _isLocationEnabled.value = locationManager.isLocationEnabled
         }
     }
@@ -78,15 +78,9 @@ class LocationTracker(context: Context) {
             ?.let { _location.value = it }
 
         val activeProvider = when {
-            isProviderAvailable(LocationManager.FUSED_PROVIDER) ->
-                LocationManager.FUSED_PROVIDER
-
-            isProviderAvailable(LocationManager.NETWORK_PROVIDER) ->
-                LocationManager.NETWORK_PROVIDER
-
-            isProviderAvailable(LocationManager.GPS_PROVIDER) ->
-                LocationManager.GPS_PROVIDER
-
+            isProviderAvailable(LocationManager.FUSED_PROVIDER) -> LocationManager.FUSED_PROVIDER
+            isProviderAvailable(LocationManager.NETWORK_PROVIDER) -> LocationManager.NETWORK_PROVIDER
+            isProviderAvailable(LocationManager.GPS_PROVIDER) -> LocationManager.GPS_PROVIDER
             else -> throw AppException.LocationUnavailableException("No valid location provider")
         }
 
@@ -97,23 +91,22 @@ class LocationTracker(context: Context) {
             locationListener,
             Looper.getMainLooper()
         )
+
+        _isTracking.value = true
+//        Log.d("locationtracker", "is tracking set")
     }
 
     fun stop() {
         locationManager.removeUpdates(locationListener)
+        _isTracking.value = false
     }
 
     private fun checkPermission() {
         if (
-            ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
+            ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            )
+        {
             throw AppException.LocationUnavailableException("Location permission not granted")
         }
     }

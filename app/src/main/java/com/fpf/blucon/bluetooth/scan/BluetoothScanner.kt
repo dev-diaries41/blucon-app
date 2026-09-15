@@ -17,6 +17,7 @@ import androidx.core.util.size
 import com.fpf.blucon.errors.AppException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class BluetoothScanner(
@@ -34,11 +35,14 @@ class BluetoothScanner(
     private val _devices = MutableStateFlow<Map<String, BluetoothScanResult>>(emptyMap())
     val devices: StateFlow<Map<String, BluetoothScanResult>> = _devices
 
+    private val _isScanning = MutableStateFlow(false)
+    val isScanning: StateFlow<Boolean> = _isScanning.asStateFlow()
 
     private val _isBluetoothEnabled = MutableStateFlow(
         bluetoothAdapter?.isEnabled == true
     )
     override val isBluetoothEnabled: StateFlow<Boolean> = _isBluetoothEnabled
+
 
     private val bluetoothStateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -71,6 +75,9 @@ class BluetoothScanner(
         val scanner = bluetoothAdapter.bluetoothLeScanner ?: return
 
         if (bleScanCallback != null) return
+
+        if (_isScanning.value) return
+        _isScanning.value = true
 
         val callback = object : ScanCallback() {
             override fun onScanResult(callbackType: Int, result: ScanResult) {
@@ -115,6 +122,7 @@ class BluetoothScanner(
         val callback = bleScanCallback ?: return
         bluetoothAdapter.bluetoothLeScanner?.stopScan(callback)
         bleScanCallback = null
+        _isScanning.value = false
     }
 
     @RequiresPermission(allOf = [Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT])

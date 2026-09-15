@@ -9,7 +9,7 @@ import com.fpf.blucon.data.mappers.toEntity
 class DeviceRepository(
     private val dao: DeviceDao
 ) {
-    suspend fun insert(deviceNames: List<NewDeviceInfo>): List<Long> = dao.insert(deviceNames.map { it.toEntity() })
+    suspend fun insertNew(deviceNames: List<NewDeviceInfo>): List<Long> = dao.insert(deviceNames.map { it.toEntity() })
     suspend fun insert(deviceNames: List<DeviceInfo>): List<Long> = dao.insert(deviceNames.map { it.toEntity() })
     suspend fun delete(ids: List<Long>) = dao.delete(ids)
     suspend fun getByIds(ids: List<Long>): List<DeviceInfo> = dao.getByIds(ids).map{it.toDomain()}

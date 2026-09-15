@@ -22,7 +22,7 @@ val dbModule = module {
 
     single { ScanRepository(get(), get()) }
     single{ MetadataRepository(get()) }
-    single { ScanEntryRepository(dao = get(), metadataRepository = get()) } // TODO: rename metadataRepository
+    single { ScanEntryRepository(dao = get(), metadataRepository = get(), deviceDao = get()) } // TODO: rename metadataRepository
     single{ DeviceRepository(get()) }
     single{ DeviceClusterRepository(get()) }
     single{ ClusterCrossRefRepository(get()) }
