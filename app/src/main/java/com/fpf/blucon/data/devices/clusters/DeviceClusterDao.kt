@@ -41,9 +41,49 @@ interface DeviceClusterDao {
     FROM device_cluster
     WHERE (:clusterIds IS NULL OR clusterId IN (:clusterIds))
     ORDER BY prototypeSize DESC
-    LIMIT COALESCE(:limit, -1)
+    LIMIT COALESCE(:limit, -1) OFFSET :offset
 """)
-    suspend fun getCollections(clusterIds: List<Long>?, limit: Int?): List<DeviceCollectionData>
+    suspend fun getCollectionsBySizeDesc(clusterIds: List<Long>?, limit: Int?, offset: Int): List<DeviceCollectionData>
+
+
+    @Query("""
+    SELECT
+        clusterId,
+        label,
+        prototypeSize AS size
+    FROM device_cluster
+    WHERE (:clusterIds IS NULL OR clusterId IN (:clusterIds))
+    ORDER BY prototypeSize ASC
+    LIMIT COALESCE(:limit, -1) OFFSET :offset
+""")
+    suspend fun getCollectionsBySizeAsc(clusterIds: List<Long>?, limit: Int?, offset: Int): List<DeviceCollectionData>
+
+
+    @Query("""
+    SELECT
+        clusterId,
+        label,
+        prototypeSize AS size
+    FROM device_cluster
+    WHERE (:clusterIds IS NULL OR clusterId IN (:clusterIds))
+    ORDER BY label DESC
+    LIMIT COALESCE(:limit, -1) OFFSET :offset
+""")
+    suspend fun getCollectionsByNameDesc(clusterIds: List<Long>?, limit: Int?, offset: Int): List<DeviceCollectionData>
+
+
+    @Query("""
+    SELECT
+        clusterId,
+        label,
+        prototypeSize AS size
+    FROM device_cluster
+    WHERE (:clusterIds IS NULL OR clusterId IN (:clusterIds))
+    ORDER BY label ASC
+    LIMIT COALESCE(:limit, -1) OFFSET :offset
+""")
+    suspend fun getCollectionsByNameAsc(clusterIds: List<Long>?, limit: Int?, offset: Int): List<DeviceCollectionData>
+
 
     @Query("""
     SELECT

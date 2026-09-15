@@ -3,6 +3,12 @@ package com.fpf.blucon.ui.screens.collections.items
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +27,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Tag
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -47,11 +54,12 @@ import com.fpf.blucon.ui.components.common.DropDownMenuWrapper
 import com.fpf.blucon.ui.components.common.ActionBar
 import com.fpf.blucon.ui.action.ActionConfig
 import com.fpf.blucon.ui.components.collections.CollectionItemsList
+import com.fpf.blucon.ui.components.collections.CollectionPicker
+import com.fpf.blucon.ui.components.modals.TextInputModal
 import com.fpf.blucon.ui.components.placeholders.EmptyItemsScreen
 import com.fpf.smartscan.ui.components.common.SlideRevealBox
 import com.fpf.smartscan.ui.components.pickers.OptionPicker
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.StateFlow
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(FlowPreview::class)
@@ -70,8 +78,7 @@ fun CollectionItemsScreen(
 
     val state by viewModel.state.collectAsState()
     val items = viewModel.collectionItems.collectAsLazyPagingItems()
-
-
+    val collections = viewModel.collections.collectAsLazyPagingItems()
 
     // actions
     var showMenu by remember { mutableStateOf(false) }
@@ -80,6 +87,7 @@ fun CollectionItemsScreen(
     var isCreatingCollectionAndMoving by remember { mutableStateOf(false) }
     var isAddingTag by remember { mutableStateOf(false) }
     var showMoreActions by remember { mutableStateOf(false) }
+    val spaceNotAllowedMessage = stringResource(R.string.msg_space_not_allowed)
 
     val menuActions: List<MenuActionConfig> = listOf(
         MenuActionConfig.Button(
@@ -262,5 +270,50 @@ fun CollectionItemsScreen(
             showSortOptions = false
         },
         onClose = {showSortOptions = false}
+    )
+
+    AnimatedVisibility(
+        visible = isMoving,
+        enter = fadeIn(animationSpec = tween(500)) + scaleIn(
+            initialScale = 0.8f,
+            animationSpec = tween(500)
+        ),
+        exit = fadeOut(animationSpec = tween(300)) + scaleOut(
+            targetScale = 0.8f,
+            animationSpec = tween(300)
+        )
+    ) {
+        CollectionPicker(
+            collections = collections,
+            onClose = { isMoving = false },
+            onSelectCollection = {
+                viewModel.onAction(CollectionItemAction.Move( it))
+                isMoving = false
+            },
+            onCreateNewCollection =  {
+                isMoving = false
+                isCreatingCollectionAndMoving = true
+            }
+        )
+    }
+
+    TextInputModal(
+        isVisible = isCreatingCollectionAndMoving,
+        title=stringResource(R.string.add_collection),
+        placeholder = stringResource(R.string.placeholders_collection_name),
+        onClose = {isCreatingCollectionAndMoving = false},
+        onConfirm =  {
+            viewModel.onAction(CollectionItemAction.CreateNewCollectionAndMove(it))
+            isCreatingCollectionAndMoving = false
+        },
+        leadingIcon = { Icon(Icons.Filled.Tag, contentDescription = "Tag", tint = MaterialTheme.colorScheme.primary) },
+        onValueChange = {
+            if (!it.text.contains(" ")) {
+                true
+            } else {
+                Toast.makeText(context, spaceNotAllowedMessage, Toast.LENGTH_SHORT).show()
+                false
+            }
+        }
     )
 }

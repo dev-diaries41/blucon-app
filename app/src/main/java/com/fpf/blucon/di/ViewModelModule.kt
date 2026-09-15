@@ -84,6 +84,7 @@ val viewModelModule = module {
             application = get(),
             clusterManager = get(),
             deviceRepository = get(),
+            deviceClusterRepository = get(),
             sharedPrefs = get()
         )
     }

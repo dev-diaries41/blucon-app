@@ -1,12 +1,9 @@
 package com.fpf.blucon.ui.screens.collections.items
 
 import android.app.Application
-import android.content.ClipData
-import android.content.Context
 import android.content.SharedPreferences
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
-import androidx.compose.ui.platform.Clipboard
 import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,6 +16,8 @@ import com.fpf.blucon.bluetooth.device.DeviceCollection
 import com.fpf.blucon.bluetooth.device.DeviceInfo
 import com.fpf.blucon.cluster.ClusterManager
 import com.fpf.blucon.data.devices.DeviceRepository
+import com.fpf.blucon.data.devices.clusters.DeviceClusterRepository
+import com.fpf.blucon.data.paging.CollectionPagingSource
 import com.fpf.blucon.data.paging.DevicePagingSource
 import com.fpf.blucon.events.CollectionItemEvent
 import com.fpf.blucon.events.CollectionItemEventType
@@ -29,21 +28,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class CollectionItemsViewModel(
     application: Application,
+    private val deviceClusterRepository: DeviceClusterRepository,
     private val clusterManager: ClusterManager,
     private val deviceRepository: DeviceRepository,
     private val sharedPrefs: SharedPreferences
@@ -76,6 +72,34 @@ class CollectionItemsViewModel(
                             clusterId=collection.id,
                             sortBy = sortBy,
                             deviceRepository = deviceRepository,
+                        )
+                    }
+                ).flow
+            }
+        }
+        .cachedIn(viewModelScope)
+
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val collections = _state
+        .map { Pair( it.sortBy, it.collection) }
+        .distinctUntilChanged()
+        .flatMapLatest { ( sortBy, collection) ->
+
+            if (collection?.id == null) {
+                flowOf(PagingData.Companion.empty())
+            } else {
+                Pager(
+                    config = PagingConfig(
+                        pageSize = 50,
+                        initialLoadSize = 50,
+                        prefetchDistance = 25,
+                        enablePlaceholders = false
+                    ),
+                    pagingSourceFactory = {
+                        CollectionPagingSource(
+                            sortBy = sortBy,
+                            deviceClusterRepository = deviceClusterRepository,
                         )
                     }
                 ).flow

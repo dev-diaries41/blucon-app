@@ -38,10 +38,9 @@ import com.fpf.blucon.bluetooth.device.DeviceCollection
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
-
 @Composable
-fun DeviceCollectionsList(
-    items: List<DeviceCollection>,
+fun PaginatedDeviceCollectionsList(
+    items: LazyPagingItems<DeviceCollection>,
     isVisible: Boolean,
     numGridColumns: Int = 2,
     isSelecting: Boolean = false,
@@ -115,20 +114,20 @@ fun DeviceCollectionsList(
             }
 
             items(
-                count = items.size,
+                count = items.itemCount,
                 key = { index ->
                     val item = items[index]
-                    item.id
+                    item?.id ?: index
                 }
             ) { index ->
-                val item = items[index]
+                val item = items[index] ?: return@items
 
                 DeviceCollectionCard(
                     collection = item,
                     isSelecting=isSelecting,
                     isChecked = { isChecked?.invoke(item)?: false},
-                    onItemClick = onItemClick,
-                    onItemLongClick = onItemLongClick
+                    onItemClick = { onItemClick?.invoke(item) },
+                    onItemLongClick = { onItemLongClick?.invoke(item) }
                 )
             }
         }
@@ -164,4 +163,3 @@ fun DeviceCollectionsList(
         }
     }
 }
-

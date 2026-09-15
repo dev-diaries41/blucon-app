@@ -18,7 +18,17 @@ class DeviceClusterRepository(private val dao: DeviceClusterDao) {
     suspend fun getClusterIds(): List<Long> = dao.getIds()
     suspend fun getClustersForDevice(deviceId: Long): List<StoredClusterMetadata> = dao.getClustersForDevice(deviceId).map{it.toDomain()}
     suspend fun getClustersForDevices(deviceIds: List<Long>): List<StoredClusterMetadata> = dao.getClustersForDevices(deviceIds).map{it.toDomain()}
-    suspend fun getCollections(clusterIds: List<Long>? = null, limit: Int? = null): List<DeviceCollection> = dao.getCollections(clusterIds, limit).map{ it.toDomain()}
+    suspend fun getCollectionsOrderedByName(clusterIds: List<Long>? = null, limit: Int? = null, offset: Int = 0, descending: Boolean = true): List<DeviceCollection> = if(descending) {
+        dao.getCollectionsByNameDesc(clusterIds, limit, offset).map { it.toDomain() }
+    }else{
+        dao.getCollectionsByNameAsc(clusterIds, limit, offset).map { it.toDomain() }
+    }
+    suspend fun getCollections(clusterIds: List<Long>? = null, limit: Int? = null, offset: Int = 0, descending: Boolean = true): List<DeviceCollection> = if(descending) {
+        dao.getCollectionsBySizeDesc(clusterIds, limit, offset).map { it.toDomain() }
+    }else{
+        dao.getCollectionsBySizeAsc(clusterIds, limit, offset).map { it.toDomain() }
+    }
+
     suspend fun getCollectionsByName(names: List<String>? = null, limit: Int? = null): List<DeviceCollection> = dao.getCollectionsByName(names, limit).map{ it.toDomain()}
 
     suspend fun getClusters(ids: List<Long>): List<StoredClusterMetadata> = dao.get(ids).map{it.toDomain()}
