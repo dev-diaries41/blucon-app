@@ -8,8 +8,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Business
+import androidx.compose.material.icons.filled.CollectionsBookmark
 import androidx.compose.material.icons.filled.Devices
 import androidx.compose.material.icons.filled.Hub
+import androidx.compose.material.icons.filled.Layers
 import androidx.compose.material.icons.filled.Scanner
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
@@ -53,9 +55,11 @@ fun HubScreen(
     val state by viewModel.state.collectAsState()
     val companyCounts = viewModel.companyCounts.collectAsLazyPagingItems()
     val deviceNameCounts = viewModel.deviceNameCounts.collectAsLazyPagingItems()
+    val collectionCounts = viewModel.collectionCounts.collectAsLazyPagingItems()
     val showEmptyScreen = companyCounts.itemCount == 0 && deviceNameCounts.itemCount == 0
     var showDevicesCounts by remember { mutableStateOf(false) }
     var showCompanyCounts by remember { mutableStateOf(false) }
+    var showCollectionCounts by remember { mutableStateOf(false) }
 
 
     LaunchedEffect(Unit) {
@@ -103,7 +107,7 @@ fun HubScreen(
                     onViewAllManufacturers = {showCompanyCounts = true},
                     onViewAllDevices = {showDevicesCounts = true},
                     onCollectionClick = { onViewCollection(it) },
-                    onViewCollections = {onViewAllCollections()}
+                    onViewCollections = {showCollectionCounts = true}
                 )
             }
         }
@@ -145,6 +149,19 @@ fun HubScreen(
             isVisible = true,
             headerContent = {
                 Header(stringResource(R.string.manufacturers), Icons.Filled.Business)
+            },
+        )
+    }
+
+    BottomSheet(
+        show = showCollectionCounts,
+        onDismiss = {showCollectionCounts = false}
+    ) {
+        CountsList(
+            items = collectionCounts,
+            isVisible = true,
+            headerContent = {
+                Header(stringResource(R.string.title_collections), Icons.Filled.CollectionsBookmark)
             },
         )
     }

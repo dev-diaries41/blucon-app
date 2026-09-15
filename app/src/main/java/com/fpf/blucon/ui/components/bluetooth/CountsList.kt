@@ -41,8 +41,8 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
-fun CountsList(
-    items: LazyPagingItems<Triple<String, Nothing?, Int>>,
+fun <T>CountsList(
+    items: LazyPagingItems<Triple<String, T, Int>>,
     isVisible: Boolean,
     onOffsetChange:( (Int) -> Unit)? = null,
     maxCollapsePx: Int = 0,
@@ -85,7 +85,6 @@ fun CountsList(
         }
             .distinctUntilChanged()
             .collect { (index, offset) ->
-                Log.d("countlist", "size=${items.itemCount}")
                 val visibleItemCount = listState.layoutInfo.visibleItemsInfo.size
                 val movedDown = index > previousIndex || (index == previousIndex && offset > previousOffset)
                 val movedUp = index < previousIndex || (index == previousIndex && offset < previousOffset)
@@ -123,13 +122,13 @@ fun CountsList(
                 count = items.itemCount,
                 key = { index ->
                     val item = items[index]
-                    item?.first ?: index
+                    item?.first + index
                 }
             ) { index ->
-                val (value, label, count) = items[index] ?: return@items
+                val (label, value, count) = items[index] ?: return@items
                 Row(
                     modifier = Modifier.padding(16.dp)
-                ){ InfoRow(label?: value, count.toString(), highlightLabel = true)
+                ){ InfoRow(label, count.toString(), highlightLabel = true)
                 }
             }
         }

@@ -14,6 +14,7 @@ import com.fpf.blucon.bluetooth.device.DeviceCollection
 import com.fpf.blucon.bluetooth.scan.BTScan
 import com.fpf.blucon.cluster.ClusterManager
 import com.fpf.blucon.data.devices.clusters.DeviceClusterRepository
+import com.fpf.blucon.data.paging.CollectionCountsPagingSource
 import com.fpf.blucon.data.paging.CompanyCountsPagingSource
 import com.fpf.blucon.data.paging.DeviceCountsPagingSource
 import com.fpf.blucon.data.scans.ScanEntryRepository
@@ -77,6 +78,30 @@ class DeviceMetadataViewModel(
                 ),
                 pagingSourceFactory = {
                     DeviceCountsPagingSource(
+                        scanId = scanId,
+                        sortBy=sortBy,
+                        scanEntryRepository = scanEntryRepository,
+                    )
+                }
+            ).flow
+
+        }
+        .cachedIn(viewModelScope)
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val collectionCounts = _state
+        .map { Pair(it.scanId, it.sortBy) }
+        .distinctUntilChanged()
+        .flatMapLatest { (scanId, sortBy) ->
+            Pager(
+                config = PagingConfig(
+                    pageSize = 50,
+                    initialLoadSize = 50,
+                    prefetchDistance = 25,
+                    enablePlaceholders = false
+                ),
+                pagingSourceFactory = {
+                    CollectionCountsPagingSource(
                         scanId = scanId,
                         sortBy=sortBy,
                         scanEntryRepository = scanEntryRepository,
