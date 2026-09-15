@@ -35,7 +35,9 @@ fun BTScanEntry.toEntity(): ScanEntryEntity = ScanEntryEntity(
     timestamp = timestamp,
     deviceAddress=deviceAddress,
     deviceName = deviceName,
-    manufacturerId = manufacturerId
+    manufacturerId = manufacturerId,
+    longitude = longitude,
+    latitude = latitude
 )
 
 fun ScanEntryEntity.toDomain(): BTScanEntry = BTScanEntry(
@@ -45,5 +47,7 @@ fun ScanEntryEntity.toDomain(): BTScanEntry = BTScanEntry(
     deviceAddress=deviceAddress,
     deviceName = deviceName,
     manufacturerId = manufacturerId,
+    longitude = longitude,
+    latitude = latitude,
     manufacturerName = null
 )

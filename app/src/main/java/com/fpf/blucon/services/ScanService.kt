@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
+import android.location.Location
 import android.os.IBinder
 import android.util.Log
 import androidx.annotation.RequiresPermission
@@ -98,6 +99,7 @@ class ScanService : Service(), KoinComponent {
     private fun observeLocation() {
         serviceScope.launch {
             locationTracker.location.collectLatest { location ->
+
                 if (location == null || currentScanId != null) return@collectLatest
 
                 try {
@@ -114,7 +116,7 @@ class ScanService : Service(), KoinComponent {
     }
 
     @SuppressLint("MissingPermission")
-    private suspend fun startBluetoothScan(location: android.location.Location) {
+    private suspend fun startBluetoothScan(location: Location) {
         if (currentScanId != null) return
 
         val newBTScan = NewBTScan(
@@ -138,11 +140,8 @@ class ScanService : Service(), KoinComponent {
         serviceScope.launch(Dispatchers.IO) {
             bluetoothScanner.devices.collectLatest { devices ->
                 val scanId = currentScanId ?: return@collectLatest
-
-                val entries = toScanEntries(
-                    devices.values.toList(),
-                    scanId
-                )
+                val location = locationTracker.location.value?: return@collectLatest
+                val entries = toScanEntries(devices.values.toList(), scanId, location)
 
                 if (entries.isNotEmpty()) {
                     scanEntryRepository.addEntries(entries)
@@ -153,7 +152,8 @@ class ScanService : Service(), KoinComponent {
 
     private fun toScanEntries(
         devices: List<BluetoothScanResult>,
-        scanId: Long
+        scanId: Long,
+        location: Location
     ): List<BTScanEntry> {
         return devices.map {
             val manufacturerId = it.manufacturerData.keys.firstOrNull()
@@ -165,6 +165,8 @@ class ScanService : Service(), KoinComponent {
                 rssi = it.rssi,
                 deviceName = it.deviceName,
                 manufacturerId = manufacturerId,
+                longitude = location.longitude,
+                latitude = location.latitude,
                 manufacturerName = scanEntryRepository.getCompanyName(manufacturerId)
             )
         }

@@ -8,6 +8,8 @@ data class BTScanEntry(
     val deviceAddress: String,
     val timestamp: Long,
     val rssi: Int,
+    val latitude: Double,
+    val longitude: Double,
     val manufacturerId: Int?,
     val manufacturerName: String?,
     val deviceName: String?

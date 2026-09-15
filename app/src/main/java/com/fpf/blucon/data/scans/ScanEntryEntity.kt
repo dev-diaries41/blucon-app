@@ -25,6 +25,8 @@ data class ScanEntryEntity (
     val deviceAddress: String,
     val timestamp: Long,
     val rssi: Int,
+    val latitude: Double,
+    val longitude: Double,
     val manufacturerId: Int?,
     val deviceName: String? = null
 )
