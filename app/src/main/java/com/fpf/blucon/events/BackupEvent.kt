@@ -1,6 +1,8 @@
 package com.fpf.blucon.events
 
 enum class BackupEventType {
+    RESTORE_JSON,
+
     RESTORE,
     BACKUP,
     JSON_EXPORT

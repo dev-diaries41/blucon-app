@@ -3,6 +3,8 @@ package com.fpf.blucon.utils
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import com.fpf.blucon.bluetooth.scan.BTScan
+import com.fpf.blucon.bluetooth.scan.BTScanEntry
 import com.fpf.blucon.errors.AppException
 import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.data.scans.ScanRepository
@@ -13,6 +15,10 @@ import java.io.File
 object BackupUtils {
     const val BACKUP_FILENAME = "bluecon.zip"
     private const val HASH_FILENAME = "hash.txt"
+
+    const val BACKUP_JSON_FILENAME = "bluecon_json.zip"
+
+    private const val HASH_JSON_FILENAME = "hash_json.txt"
     private const val TAG = "BackupUtils"
 
 
@@ -20,7 +26,6 @@ object BackupUtils {
     private const val SCANS_ENTRIES_NAME = "scan_entries.json"
     private const val COMPANY_COUNTS = "company_counts.json"
     private const val DEVICE_NAME_COUNTS = "device_name_counts.json"
-    const val JSON_EXPORT_ZIP = "scans.zip"
 
     private val json = Json {prettyPrint = true}
 
@@ -70,6 +75,7 @@ object BackupUtils {
 
     suspend fun exportJson(context: Context, scanEntryRepository: ScanEntryRepository, scanRepository: ScanRepository, outputUri: Uri){
         try{
+            val hashFile = File(context.cacheDir, HASH_JSON_FILENAME)
             val scanFile = File(context.cacheDir, SCANS_FILE_NAME)
             val scans = scanRepository.getScans()
             toJson(scans, scanFile)
@@ -86,8 +92,12 @@ object BackupUtils {
             val deviceNameCounts = scanEntryRepository.getDeviceNameCounts().associate { it.first to it.third }
             toJson(deviceNameCounts, deviceNameCountsFile)
 
-            val filesToZip = listOf(scanFile, scanEntriesFile, companyCountsFile, deviceNameCountsFile)
-            val zipFile = File(context.cacheDir, JSON_EXPORT_ZIP)
+
+            val filesToZip = listOf(scanFile, scanEntriesFile, companyCountsFile, deviceNameCountsFile, hashFile)
+            val hashes: List<String> = filesToZip.filter { it.exists() && it != hashFile }.map{hashFile(it)}
+            hashFile.writeText(hashes.joinToString("\n") )
+
+            val zipFile = File(context.cacheDir, BACKUP_JSON_FILENAME)
             zipFiles(zipFile, filesToZip)
             copyToUri(context, outputUri, zipFile)
         }catch (e: Exception){
@@ -96,6 +106,52 @@ object BackupUtils {
         }
     }
 
+
+    suspend fun restoreJson(context: Context, uri: Uri, scanEntryRepository: ScanEntryRepository, scanRepository: ScanRepository){
+        val backupZipFile = File(context.cacheDir, BACKUP_JSON_FILENAME)
+        try {
+            copyFromUri(context, uri, backupZipFile)
+            val extractedFiles = unzipFiles(backupZipFile, context.cacheDir)
+
+            if(!isValidBackupFile(extractedFiles, isJson = true)){
+                extractedFiles.forEach { it.delete() }
+                throw AppException.RestoreException("Invalid backup file")
+            }
+
+            val files = getFiles(context)
+            val scans = parseJsonFiles<BTScan>(files[SCANS_FILE_NAME]!!)
+            val scanEntries = parseJsonFiles<BTScanEntry>(files[SCANS_ENTRIES_NAME]!!)
+            scanRepository.insertScanWithId(scans)
+            scanEntryRepository.addEntries(scanEntries)
+        }
+        catch (e: Exception){
+            Log.e(TAG, "Unknow restore error", e)
+            throw AppException.RestoreException(cause = e)
+        }
+        finally {
+            backupZipFile.delete()
+        }
+
+    }
+
+    private fun getFiles(context: Context): Map<String, File>{
+        return mapOf(
+            SCANS_FILE_NAME to File(context.cacheDir, SCANS_FILE_NAME),
+            SCANS_ENTRIES_NAME to File(context.cacheDir, SCANS_ENTRIES_NAME),
+            COMPANY_COUNTS to File(context.cacheDir, COMPANY_COUNTS),
+            DEVICE_NAME_COUNTS to  File(context.cacheDir, DEVICE_NAME_COUNTS),
+        )
+    }
+
+    private inline fun <reified T>parseJsonFiles(file: File): List<T>{
+        val jsonStr = file.bufferedReader().readText()
+        return Json.decodeFromString<List<T>>(jsonStr)
+    }
+
+    private fun parseJsonFiles(file: File): Map<String, Int>{
+        val jsonStr = file.bufferedReader().readText()
+        return Json.decodeFromString<Map<String, Int>>(jsonStr)
+    }
     private inline fun <reified T> toJson(items: List<T>, outputFile: File) {
         outputFile.writeText(json.encodeToString(items))
     }
@@ -116,12 +172,14 @@ object BackupUtils {
         cachedDbFile.delete()
     }
 
-    private suspend fun isValidBackupFile(extractedFiles: List<File>): Boolean{
-        val hashFile = extractedFiles.find { it.name == HASH_FILENAME }?: return false
+
+    private suspend fun isValidBackupFile(extractedFiles: List<File>, isJson: Boolean = false): Boolean{
+        val hashFileName = if(isJson) HASH_JSON_FILENAME else HASH_FILENAME
+        val hashFile = extractedFiles.find { it.name == hashFileName }?: return false
         val hashesFromFile: List<String> = hashFile.readLines()
         if(hashesFromFile.isEmpty()) return false
 
-        val otherFiles = extractedFiles.filterNot{it.name == HASH_FILENAME}
+        val otherFiles = extractedFiles.filterNot{it.name == hashFileName}
         val computedHashes = otherFiles.map{hashFile(it)}
         return hashesFromFile.toSet() == computedHashes.toSet()
     }

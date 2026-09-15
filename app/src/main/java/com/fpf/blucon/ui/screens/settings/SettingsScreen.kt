@@ -28,7 +28,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.action.SettingActionConfig
 import com.fpf.blucon.utils.BackupUtils.BACKUP_FILENAME
@@ -40,7 +39,7 @@ import com.fpf.blucon.ui.theme.ColorSchemeType
 import com.fpf.blucon.ui.theme.ThemeManager
 import com.fpf.blucon.ui.theme.ThemeMode
 import com.fpf.blucon.ui.theme.format
-import com.fpf.blucon.utils.BackupUtils.JSON_EXPORT_ZIP
+import com.fpf.blucon.utils.BackupUtils.BACKUP_JSON_FILENAME
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -127,6 +126,13 @@ fun SettingsScreen(
         }
     }
 
+    val restoreJsonLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
+        uri?.let { selectedUri ->
+            context.contentResolver.takePersistableUriPermission(selectedUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            viewModel.restoreJson(selectedUri)
+        }
+    }
+
 
     val exportJsonLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.CreateDocument("application/zip")
@@ -151,14 +157,20 @@ fun SettingsScreen(
             enabled = !isBackupLoading && !isRestoreLoading,
             label = stringResource(id = R.string.setting_export),
             description = stringResource(R.string.setting_export_description),
-            onClick = { exportJsonLauncher.launch(JSON_EXPORT_ZIP) },
+            onClick = { exportJsonLauncher.launch(BACKUP_JSON_FILENAME) },
         ),
         SettingActionConfig.Button(
             enabled = !isBackupLoading && !isRestoreLoading,
             label = stringResource(id = R.string.setting_restore),
             description = stringResource(R.string.setting_backup_restore_description, "Import"),
             onClick = { restoreLauncher.launch(arrayOf("application/zip", "application/octet-stream")) },
-        )
+        ),
+        SettingActionConfig.Button(
+            enabled = !isBackupLoading && !isRestoreLoading,
+            label = stringResource(id = R.string.setting_restore_json),
+            description = stringResource(R.string.setting_restore_json_description),
+            onClick = { restoreJsonLauncher.launch(arrayOf("application/zip", "application/octet-stream")) },
+        ),
     )
 
 

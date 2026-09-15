@@ -111,4 +111,20 @@ class SettingsViewModel(
         }
     }
 
+    fun restoreJson(uri: Uri){
+        _isRestoreLoading.value = true
+        viewModelScope.launch(Dispatchers.IO){
+            try {
+                BackupUtils.restoreJson(getApplication(), uri, scanEntryRepository, scanRepository)
+                _backupEvent.emit(BackupEvent(BackupEventType.RESTORE_JSON, success = true, "Restore successful"))
+            }
+            catch (e: AppException.RestoreException){
+                _backupEvent.emit(BackupEvent(BackupEventType.RESTORE_JSON, success = false, e.message))
+            }
+            finally {
+                _isRestoreLoading.emit(false)
+            }
+        }
+    }
+
 }
