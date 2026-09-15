@@ -65,6 +65,8 @@ fun Main(
                     onTopBarChange = { topBarState.value = it },
                     onViewSettings = { navController.navigate(Routes.SETTINGS) },
                     onSearch = { navController.navigate(Routes.SEARCH) },
+                    onViewAllCollections = {navController.navigate(Routes.COLLECTIONS)},
+                    onViewCollection = {}
                     )
             }
             composable(Routes.SCAN) {

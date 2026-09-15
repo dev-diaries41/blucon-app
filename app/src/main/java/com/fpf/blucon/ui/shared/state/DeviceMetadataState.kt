@@ -9,5 +9,6 @@ data class DeviceMetadataState(
     val scanId: Long? = null,
     val topManufacturerCounts: Map<String, Int> = mapOf(),
     val topDeviceNameCounts: Map<String, Int> = mapOf(),
+    val topCollectionCounts: Map<String, Int> = mapOf(),
     val totalEntries: Int = 0
 )

@@ -10,19 +10,26 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
+import com.fpf.blucon.bluetooth.device.DeviceCollection
 import com.fpf.blucon.bluetooth.scan.BTScan
+import com.fpf.blucon.cluster.ClusterManager
+import com.fpf.blucon.data.devices.clusters.DeviceClusterRepository
 import com.fpf.blucon.data.paging.CompanyCountsPagingSource
 import com.fpf.blucon.data.paging.DeviceCountsPagingSource
 import com.fpf.blucon.data.scans.ScanEntryRepository
 import com.fpf.blucon.ui.shared.state.DeviceMetadataState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 class DeviceMetadataViewModel(
     application: Application,
     private val scanEntryRepository: ScanEntryRepository,
+    private val deviceClusterRepository: DeviceClusterRepository
 ) : AndroidViewModel(application) {
     companion object {
         private const val TAG = "DeviceMetadataViewModel"
@@ -85,8 +92,18 @@ class DeviceMetadataViewModel(
         viewModelScope.launch {
             val manufacturerCounts = scanEntryRepository.getManufacturerCounts(limit = 6, scanId = scan?.id)
             val deviceNameCounts = scanEntryRepository.getDeviceNameCounts(limit = 6, scanId = scan?.id)
+            val topCollectionCounts = scanEntryRepository.getClusterCounts(limit = 6)
             val totalEntries = scan?.size ?: scanEntryRepository.countEntries()
-            _state.update { it.copy( scanId = scan?.id, topManufacturerCounts = manufacturerCounts.toMap(), topDeviceNameCounts=deviceNameCounts.toMap(), totalEntries=totalEntries) }
+            _state.update { it.copy( scanId = scan?.id, topManufacturerCounts = manufacturerCounts.toMap(), topDeviceNameCounts=deviceNameCounts.toMap(), totalEntries=totalEntries, topCollectionCounts=topCollectionCounts.toMap()) }
+        }
+    }
+
+    fun viewDeviceCollection(collectionName: String, onNavigate: (DeviceCollection) -> Unit){
+        viewModelScope.launch(Dispatchers.IO) {
+            val collection = deviceClusterRepository.getCollectionsByName(listOf(collectionName)).firstOrNull()
+            withContext(Dispatchers.Main){
+                collection?.let{onNavigate(collection)}
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.fpf.blucon.ui.components.common
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,9 +26,10 @@ fun HorizontalCarouselRow(
     label: String,
     topItemCounts: Map<String, Int>,
     itemLabel: String = "items",
-    onViewAll: (() -> Unit)? = null
+    onViewAll: (() -> Unit)? = null,
+    onItemClick: ((String) -> Unit)? = null
 ) {
-
+    val isEmpty = topItemCounts.isEmpty()
     Column(
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
@@ -42,40 +44,52 @@ fun HorizontalCarouselRow(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            onViewAll?.let{
+            if (!isEmpty && onViewAll != null) {
                 TextButton(
-                    onClick = it,
+                    onClick = onViewAll,
                 ) {
                     Text("See all", style = MaterialTheme.typography.bodyMedium)
                 }
             }
         }
 
-        Row(
-            modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            topItemCounts.forEach { (manufacturer, count) ->
-                Column(
-                    modifier = Modifier
-                        .widthIn(min = 100.dp)
-                        .clip(MaterialTheme.shapes.large)
-                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-                        .padding(16.dp)
-                ) {
-                    Text(
-                        text = manufacturer,
-                        style = MaterialTheme.typography.bodyMedium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        color = MaterialTheme.colorScheme.primary
-                    )
+        if (isEmpty) {
+            Text("No items", style = MaterialTheme.typography.bodySmall)
+        } else {
 
-                    Text(
-                        text = "$count $itemLabel",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+            Row(
+                modifier = Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(20.dp)
+            ) {
+                topItemCounts.forEach { (key, count) ->
+                    Column(
+                        modifier = Modifier
+                            .widthIn(min = 100.dp)
+                            .clip(MaterialTheme.shapes.large)
+                            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                            .then(
+                                if (onItemClick != null) {
+                                    Modifier.clickable { onItemClick(key) }
+                                } else {
+                                    Modifier
+                                }
+                            )
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = key,
+                            style = MaterialTheme.typography.bodyMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+
+                        Text(
+                            text = "$count $itemLabel",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
             }
         }

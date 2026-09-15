@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.fpf.blucon.R
+import com.fpf.blucon.bluetooth.device.DeviceCollection
 import com.fpf.blucon.navigation.TopBarState
 import com.fpf.blucon.ui.components.bluetooth.CountsList
 import com.fpf.blucon.ui.components.bluetooth.DeviceOverviewCard
@@ -44,6 +45,8 @@ fun HubScreen(
     onTopBarChange: (TopBarState) -> Unit,
     onViewSettings: () -> Unit,
     onSearch: () -> Unit,
+    onViewCollection: (DeviceCollection) -> Unit,
+    onViewAllCollections: () -> Unit,
     viewModel: DeviceMetadataViewModel = koinViewModel(),
     ) {
     val screenTitle = stringResource(R.string.title_hub)
@@ -96,8 +99,13 @@ fun HubScreen(
                     totalEntries = state.totalEntries,
                     topManufacturerCounts = state.topManufacturerCounts,
                     topDeviceNameCounts = state.topDeviceNameCounts,
+                    topCollectionCounts = state.topCollectionCounts,
                     onViewAllManufacturers = {showCompanyCounts = true},
-                    onViewAllDevices = {showDevicesCounts = true}
+                    onViewAllDevices = {showDevicesCounts = true},
+                    onCollectionClick = {viewModel.viewDeviceCollection(it){
+                        collection -> onViewCollection(collection)
+                    } },
+                    onViewCollections = {onViewAllCollections()}
                 )
             }
         }

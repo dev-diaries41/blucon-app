@@ -52,6 +52,7 @@ val viewModelModule = module {
         DeviceMetadataViewModel(
             application = get(),
             scanEntryRepository = get(),
+            deviceClusterRepository = get()
         )
     }
 

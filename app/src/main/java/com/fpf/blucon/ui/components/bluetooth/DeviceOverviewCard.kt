@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.fpf.blucon.bluetooth.device.DeviceCollection
 import com.fpf.blucon.ui.components.common.HorizontalCarouselRow
 import com.fpf.blucon.ui.components.search.Header
 
@@ -17,22 +18,26 @@ fun DeviceOverviewCard(
     totalEntries: Int,
     topManufacturerCounts: Map<String, Int>,
     topDeviceNameCounts: Map<String, Int>,
+    topCollectionCounts: Map<String, Int>,
     onViewAllManufacturers: (() -> Unit)? = null,
-    onViewAllDevices: (() -> Unit)? = null
+    onViewAllDevices: (() -> Unit)? = null,
+    onViewCollections: (() -> Unit)? = null,
+    onCollectionClick: ((String) -> Unit)? = null
+
+
 ) {
     val topK = maxOf(topManufacturerCounts.size, topDeviceNameCounts.size)
 
-    val sortedManufacturers = topManufacturerCounts.entries
-        .sortedByDescending { it.value }
-
-    val sortedDevices = topDeviceNameCounts.entries
-        .sortedByDescending { it.value }
+    val sortedManufacturers = topManufacturerCounts.entries.sortedByDescending { it.value }
+    val sortedDevices = topDeviceNameCounts.entries.sortedByDescending { it.value }
+    val sortedCollections = topCollectionCounts.entries.sortedByDescending { it.value }
 
     if (sortedManufacturers.isEmpty()) return
     if (sortedDevices.isEmpty()) return
 
     val topDevices = sortedDevices.take(topK)
     val topManufacturers = sortedManufacturers.take(topK)
+    val topCollections = sortedCollections.take(topK)
 
     Surface(
         modifier = Modifier
@@ -55,6 +60,12 @@ fun DeviceOverviewCard(
                 label = "Top device names",
                 topItemCounts = topDevices.associate { it.key to it.value },
                 onViewAll = onViewAllDevices
+            )
+            HorizontalCarouselRow(
+                label = "Top collections",
+                topItemCounts = topCollections.associate { it.key to it.value },
+                onViewAll = onViewCollections,
+                onItemClick = onCollectionClick
             )
         }
     }
